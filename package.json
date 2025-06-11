@@ -13,9 +13,11 @@
     "@tailwindcss/vite": "^4.1.9",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
+    "lucide-react": "^0.514.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "tailwindcss": "^4.1.9"
+    "tailwindcss": "^4.1.9",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2",
