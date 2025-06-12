@@ -12,7 +12,7 @@ const Footer = () => {
           activeTab === "home" ? "bg-primary bg-opacity-20" : ""
         }`}
       >
-        <Home color={activeTab === "home" ? "#ebff57" : "white"} />
+        <Home color={activeTab === "home" ? "black" : "white"} />
       </button>
 
       <button
@@ -21,16 +21,16 @@ const Footer = () => {
           activeTab === "calendar" ? "bg-primary bg-opacity-20" : ""
         }`}
       >
-        <Calendar color={activeTab === "calendar" ? "#ebff57" : "white"} />
+        <Calendar color={activeTab === "calendar" ? "black" : "white"} />
       </button>
 
       <button
-        onClick={() => setActiveTab("users")}
+        onClick={() => setActiveTab("friends")}
         className={`p-2 rounded-full ${
-          activeTab === "users" ? "bg-primary bg-opacity-20" : ""
+          activeTab === "friends" ? "bg-primary bg-opacity-20" : ""
         }`}
       >
-        <Users color={activeTab === "users" ? "#ebff57" : "white"} />
+        <Users color={activeTab === "friends" ? "black" : "white"} />
       </button>
 
       <button
@@ -39,7 +39,7 @@ const Footer = () => {
           activeTab === "profile" ? "bg-primary bg-opacity-20" : ""
         }`}
       >
-        <User color={activeTab === "profile" ? "#ebff57" : "white"} />
+        <User color={activeTab === "profile" ? "black" : "white"} />
       </button>
     </div>
   );

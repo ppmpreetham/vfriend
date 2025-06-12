@@ -1,9 +1,10 @@
-import React from "react";
+import { Dot } from "lucide-react";
 
 interface FriendCardProps {
   name: string;
   available: boolean;
   location: string;
+  time: string;
   distance?: string;
 }
 
@@ -12,14 +13,20 @@ const FriendCard = ({
   available,
   location,
   distance,
+  time,
 }: FriendCardProps) => {
   return (
     <div className="flex p-4 bg-gray-900 rounded-xl m-4 flex-row items-center justify-between text-white">
       <div className="flex flex-col">
         <div className="text-xl">{name}</div>
         <div>
-          {location}
-          {distance ? ` | ${distance}m away` : ""}
+          {!available ? `Currently at ${location}` : `Last seen at ${location}`}
+          {distance && (
+            <>
+              <Dot className="inline-block mx-1" />
+              {`${distance}m`}
+            </>
+          )}
         </div>
       </div>
       <div className="flex items-center ml-2">
@@ -35,7 +42,7 @@ const FriendCard = ({
             }`}
           ></span>
         </span>
-        <span className="ml-2"></span>
+        <span className="ml-2">{time}</span>
       </div>
     </div>
   );

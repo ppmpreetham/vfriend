@@ -1,8 +1,8 @@
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Home from "./components/home/home";
-import Calendar from "./components/calendar/calendar";
+import Home from "./components/home/Home";
+import Calendar from "./components/calendar/Calendar";
 import Friends from "./components/friends/Friends";
 import Profile from "./components/profile/Profile";
 import useNavStore from "./store/useNavStore";
@@ -15,7 +15,7 @@ const App = () => {
         return <Home />;
       case "calendar":
         return <Calendar />;
-      case "users":
+      case "friends":
         return <Friends />;
       case "profile":
         return <Profile />;
