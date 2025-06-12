@@ -24,20 +24,20 @@ const Home = () => {
       />
       <FriendCard
         available={true}
-        name="Preetham"
-        location="AB1-209"
+        name="Danny"
+        location="AB2-109"
         time="11:30PM"
       />
       <FriendCard
         available={false}
-        name="Sreeyansh"
-        location="AB3-110"
+        name="Ayush"
+        location="AB4-110"
         distance="30"
         time="12:30 PM"
       />
       <FriendCard
         available={false}
-        name="Raghav"
+        name="Takuli"
         location="AB3-110"
         time="12:30 PM"
       />

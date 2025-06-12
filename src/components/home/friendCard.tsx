@@ -1,12 +1,5 @@
 import { Dot } from "lucide-react";
-
-interface FriendCardProps {
-  name: string;
-  available: boolean;
-  location: string;
-  time: string;
-  distance?: string;
-}
+import type { FriendCardProps } from "../../types/friendCard";
 
 const FriendCard = ({
   name,
@@ -16,7 +9,7 @@ const FriendCard = ({
   time,
 }: FriendCardProps) => {
   return (
-    <div className="flex p-4 bg-gray-900 rounded-xl m-4 flex-row items-center justify-between text-white">
+    <div className="flex p-4 bg-gray-900 rounded-xl m-4 flex-row items-center justify-between text-white select-none">
       <div className="flex flex-col">
         <div className="text-xl">{name}</div>
         <div>
