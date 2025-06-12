@@ -85,8 +85,10 @@ const Home = () => {
   ];
 
   const filteredFriends = showOnlyAvailable
-    ? friends.filter((friend) => friend.available)
-    : friends;
+    ? friends
+        .filter((friend) => friend.available)
+        .sort((a, b) => a.name.localeCompare(b.name))
+    : friends.sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div className="h-full w-full overflow-y-auto scrollbar-hide">
