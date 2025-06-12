@@ -23,8 +23,8 @@ const FriendCard = ({
           {!available ? `Currently at ${location}` : `Last seen at ${location}`}
           {distance && (
             <>
-              <Dot className="inline-block mx-1" />
-              {`${distance}m`}
+              <Dot className="inline-block mx-1 align-middle" color="#ebff57" />
+              <span className="align-middle">{`${distance}m`}</span>
             </>
           )}
         </div>

@@ -25,7 +25,7 @@ const App = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-between bg-gray-950 text-white">
+    <div className="w-screen h-screen flex flex-col justify-between bg-gray-950 text-white font-space">
       <Header />
       <main className="flex-1 overflow-hidden">{renderContent()}</main>
       <Footer />

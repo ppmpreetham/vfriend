@@ -2,6 +2,7 @@
 
 @theme {
   --color-primary: #ebff57;
+  --font-space: "Space Grotesk", sans-serif;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -10,3 +11,8 @@
     --foreground: #ededed;
   }
 } */
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("../public/SpaceGrotesk-VariableFont_wght.ttf");
+}
