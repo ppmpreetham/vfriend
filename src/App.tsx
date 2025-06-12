@@ -1,21 +1,33 @@
-import Header from "./components/Header";
 import "./App.css";
+import Header from "./components/Header";
 import Footer from "./components/Footer";
-import FriendCard from "./components/friendCard";
+import Home from "./components/home/home";
+import Calendar from "./components/calendar/calendar";
+import Friends from "./components/friends/Friends";
+import Profile from "./components/profile/Profile";
+import useNavStore from "./store/useNavStore";
+
 const App = () => {
+  const { activeTab } = useNavStore();
+  const renderContent = () => {
+    switch (activeTab) {
+      case "home":
+        return <Home />;
+      case "calendar":
+        return <Calendar />;
+      case "users":
+        return <Friends />;
+      case "profile":
+        return <Profile />;
+      default:
+        return <Home />;
+    }
+  };
+
   return (
     <div className="w-screen h-screen flex flex-col justify-between bg-gray-950 text-white">
       <Header />
-      <div className="h-full w-full">
-        <FriendCard available={false} name="Preetham" location="AB-1" />
-        <FriendCard
-          available={false}
-          name="Sreeyansh"
-          location="AB-1"
-          distance="3"
-        />
-      </div>
-
+      <main className="flex-1 overflow-hidden">{renderContent()}</main>
       <Footer />
     </div>
   );
