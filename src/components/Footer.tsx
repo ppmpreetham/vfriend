@@ -1,10 +1,11 @@
-import { Calendar, User, Users } from "lucide-react";
+import { Calendar, User, Users, Home } from "lucide-react";
 const Footer = () => {
   return (
-    <div className="flex p-6 justify-between items-center bg-gray-100">
-      <Calendar color="black" />
-      <Users color="black" />
-      <User color="black" />
+    <div className="flex p-6 justify-between items-center">
+      <Home color="white" />
+      <Calendar color="white" />
+      <Users color="white" />
+      <User color="white" />
     </div>
   );
 };

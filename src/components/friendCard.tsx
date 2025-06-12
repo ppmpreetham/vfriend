@@ -1,0 +1,44 @@
+import React from "react";
+
+interface FriendCardProps {
+  name: string;
+  available: boolean;
+  location: string;
+  distance?: string;
+}
+
+const FriendCard = ({
+  name,
+  available,
+  location,
+  distance,
+}: FriendCardProps) => {
+  return (
+    <div className="flex p-4 bg-gray-900 rounded-xl m-4 flex-row items-center justify-between text-white">
+      <div className="flex flex-col">
+        <div className="text-xl">{name}</div>
+        <div>
+          {location}
+          {distance ? ` | ${distance}m away` : ""}
+        </div>
+      </div>
+      <div className="flex items-center ml-2">
+        <span className="relative flex h-3 w-3">
+          <span
+            className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
+              available ? "bg-green-400" : "bg-red-400"
+            }`}
+          ></span>
+          <span
+            className={`relative inline-flex rounded-full h-3 w-3 ${
+              available ? "bg-green-500" : "bg-red-500"
+            }`}
+          ></span>
+        </span>
+        <span className="ml-2"></span>
+      </div>
+    </div>
+  );
+};
+
+export default FriendCard;
