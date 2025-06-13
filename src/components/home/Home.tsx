@@ -1,6 +1,7 @@
 import FriendCard from "./friendCard";
 import { useState } from "react";
 import { Search } from "lucide-react";
+import DebugTauriComponent from "./test";
 
 const Home = () => {
   const [showOnlyAvailable, setShowOnlyAvailable] = useState(false);
@@ -10,7 +11,7 @@ const Home = () => {
   const friends = [
     {
       available: true,
-      name: "Preetham",
+      name: "a",
       location: "AB1-209",
       time: "11:30PM",
     },
