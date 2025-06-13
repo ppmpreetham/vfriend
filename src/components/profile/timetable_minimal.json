@@ -1,0 +1,32 @@
+{
+  "u": "ppmpreetham",
+  "t": "2025-06-12T15:51:23.720831800+00:00",
+  "o": [
+    { "d": 1, "s": "t", "p": 8, "f": "A2-BMAT201L-TH-AB3-206-ALL" },
+    { "d": 1, "s": "t", "p": 9, "f": "F2-BCSE420L-TH-AB3-305-ALL" },
+    { "d": 1, "s": "t", "p": 10, "f": "D2-BCSE303L-TH-AB3-501-ALL" },
+    { "d": 1, "s": "t", "p": 11, "f": "TB2-BSTS102P-SS-AB3-205-ALL" },
+    { "d": 1, "s": "t", "p": 12, "f": "TG2-BCSE203E-ETH-AB3-303-ALL" },
+    { "d": 2, "s": "t", "p": 8, "f": "B2-BSTS102P-SS-AB3-205-ALL" },
+    { "d": 2, "s": "t", "p": 10, "f": "E2-BCSE205L-TH-AB3-401-ALL" },
+    { "d": 2, "s": "t", "p": 11, "f": "TC2-BCSE302L-TH-AB3-303-ALL" },
+    { "d": 2, "s": "t", "p": 12, "f": "TAA2-BMAT201L-TH-AB3-206-ALL" },
+    { "d": 2, "s": "l", "p": 1, "f": "L8-BCSE420P-LO-AB3-311-ALL" },
+    { "d": 2, "s": "l", "p": 2, "f": "L9-BCSE303P-LO-AB3-611-ALL" },
+    { "d": 2, "s": "l", "p": 3, "f": "L10-BCSE303P-LO-AB3-611-ALL" },
+    { "d": 3, "s": "t", "p": 8, "f": "C2-BCSE302L-TH-AB3-303-ALL" },
+    { "d": 3, "s": "t", "p": 9, "f": "A2-BMAT201L-TH-AB3-206-ALL" },
+    { "d": 3, "s": "t", "p": 10, "f": "F2-BCSE420L-TH-AB3-305-ALL" },
+    { "d": 3, "s": "t", "p": 11, "f": "TD2-BCSE303L-TH-AB3-501-ALL" },
+    { "d": 3, "s": "l", "p": 1, "f": "L14-BCSE203E-ELA-AB3-612-ALL" },
+    { "d": 4, "s": "t", "p": 8, "f": "D2-BCSE303L-TH-AB3-501-ALL" },
+    { "d": 4, "s": "t", "p": 9, "f": "B2-BSTS102P-SS-AB3-205-ALL" },
+    { "d": 4, "s": "t", "p": 11, "f": "TE2-BCSE205L-TH-AB3-401-ALL" },
+    { "d": 4, "s": "l", "p": 1, "f": "L20-BCSE302P-LO-AB1-614-ALL" },
+    { "d": 4, "s": "l", "p": 2, "f": "L21-BCSE203E-ELA-AB3-612-ALL" },
+    { "d": 4, "s": "l", "p": 3, "f": "L22-BCSE203E-ELA-AB3-612-ALL" },
+    { "d": 5, "s": "t", "p": 8, "f": "E2-BCSE205L-TH-AB3-401-ALL" },
+    { "d": 5, "s": "t", "p": 9, "f": "C2-BCSE302L-TH-AB3-303-ALL" },
+    { "d": 5, "s": "t", "p": 10, "f": "TA2-BMAT201L-TH-AB3-206-ALL" }
+  ]
+}

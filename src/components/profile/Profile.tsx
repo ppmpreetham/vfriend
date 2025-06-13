@@ -1,4 +1,6 @@
 import React from "react";
+import ScheduleGrid from "./ScheduleGrid";
+import scheduleData from "./timetable_minimal.json";
 
 const Profile = () => {
   return (
@@ -11,16 +13,19 @@ const Profile = () => {
             <div>SEM 4</div>
           </div>
           <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl justify-center">
-            <div className="text-3xl">WHAT</div>
-            <div>TO</div>
-            <div>PUT HERE</div>
+            <div className="text-3xl">HOBBIES</div>
+            <ul className="list-disc pl-5">
+              <li>Reading</li>
+              <li>Gaming</li>
+              <li>Coding</li>
+            </ul>
           </div>
         </div>
         <div className="mr-4 w-1/2 flex flex-col gap-2">
           <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl justify-center">
-            <div className="text-3xl">WHAT</div>
-            <div>TO</div>
-            <div>PUT HERE</div>
+            <div>
+              THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG ~Ayush {`flag{dh4rm1k154cu713frfr}`}{" "}
+            </div>
           </div>
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
             <div className="text-xl">NEXT FREE</div>
@@ -29,20 +34,7 @@ const Profile = () => {
         </div>
       </div>
       <div className="mx-4 my-2 text-4xl">TIME TABLE</div>
-      <div className="grid grid-cols-12 gap-2 mx-4 bg-primary text-black rounded-xl p-2">
-        {Array.from({ length: 7 }).map((_, rowIndex) => (
-          <React.Fragment key={`row-${rowIndex}`}>
-            {Array.from({ length: 12 }).map((_, colIndex) => (
-              <div
-                key={`cell-${rowIndex}-${colIndex}`}
-                className="bg-black/10 rounded-sm flex items-center justify-center text-xs"
-              >
-                {rowIndex + 1}-{colIndex + 1}
-              </div>
-            ))}
-          </React.Fragment>
-        ))}
-      </div>
+      <ScheduleGrid data={scheduleData} />
     </div>
   );
 };
