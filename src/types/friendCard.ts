@@ -5,3 +5,8 @@ export interface FriendCardProps {
   time: string;
   distance?: string;
 }
+
+export interface FriendPageFriend {
+  name: string;
+  registrationNumber: string;
+}

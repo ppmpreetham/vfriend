@@ -29,18 +29,6 @@ interface FreeTimeResult {
   end_time: string;
 }
 
-// Test function
-export async function testTauriConnection(): Promise<string> {
-  try {
-    const result = await invoke<string>('greet', { name: 'Test User' });
-    console.log('Tauri connection test result:', result);
-    return result;
-  } catch (error) {
-    console.error('Tauri connection test failed:', error);
-    throw error;
-  }
-}
-
 export async function checkConflicts(
   user1Schedule: CompactTimetable,
   user2Schedule: CompactTimetable
@@ -54,7 +42,6 @@ export async function checkConflicts(
   });
   
   try {
-    // Use camelCase parameter names
     const conflicts = await invoke<ConflictResult[]>('check_conflicts', {
       user1ScheduleJson: user1Json,
       user2ScheduleJson: user2Json
@@ -76,7 +63,6 @@ export async function checkConflictsDebug(
   const user2Json = JSON.stringify(user2Schedule);
   
   try {
-    // Use camelCase parameter names
     const result = await invoke<{conflicts: ConflictResult[], debug_info: string}>('check_conflicts_debug', {
       user1ScheduleJson: user1Json,
       user2ScheduleJson: user2Json
@@ -131,16 +117,5 @@ export async function isUserFreeAt(
   } catch (error) {
     console.error('Error checking if user is free:', error);
     return false;
-  }
-}
-
-export async function debugTimeSlots(): Promise<string> {
-  try {
-    const result = await invoke<string>('debug_time_slots');
-    console.log('Time slots debug info:', result);
-    return result;
-  } catch (error) {
-    console.error('Error debugging time slots:', error);
-    throw error;
   }
 }

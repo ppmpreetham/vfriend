@@ -1,7 +1,7 @@
 import { Dot } from "lucide-react";
 import type { FriendCardProps } from "../../types/friendCard";
 
-const FriendCard = ({
+const FriendCardHome = ({
   name,
   available,
   location,
@@ -41,4 +41,4 @@ const FriendCard = ({
   );
 };
 
-export default FriendCard;
+export default FriendCardHome;

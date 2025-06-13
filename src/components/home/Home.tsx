@@ -1,7 +1,7 @@
-import FriendCard from "./friendCard";
+import FriendCardHome from "./friendCardHome";
 import { useState } from "react";
 import { Search } from "lucide-react";
-import DebugTauriComponent from "./test";
+// import DebugTauriComponent from "./test";
 
 const Home = () => {
   const [showOnlyAvailable, setShowOnlyAvailable] = useState(false);
@@ -141,7 +141,7 @@ const Home = () => {
 
       {filteredFriends.length > 0 ? (
         filteredFriends.map((friend, index) => (
-          <FriendCard
+          <FriendCardHome
             key={index}
             available={friend.available}
             name={friend.name}
