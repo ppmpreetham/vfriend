@@ -189,3 +189,70 @@ export async function viewStoreContents(): Promise<void> {
   console.log("Timetables:", timetables);
   console.log("Metadata:", metadata);
 }
+
+// Add these type definitions after the imports
+export interface UserProfile {
+  username: string;
+  hobbies: string[];
+  tagline: string;
+  createdAt: string;
+  hasCompletedOnboarding: boolean;
+}
+
+// Add these new functions after the existing store functions
+
+// Get/set user profile
+export async function getUserProfile(
+  username: string
+): Promise<UserProfile | null> {
+  const profile = (await metadataStore.get(
+    `profile_${username}`
+  )) as UserProfile;
+  return profile || null;
+}
+
+export async function saveUserProfile(profile: UserProfile): Promise<void> {
+  await metadataStore.set(`profile_${profile.username}`, profile);
+  await metadataStore.save();
+}
+
+// Get current user's profile
+export async function getCurrentUserProfile(): Promise<UserProfile | null> {
+  const currentUser = await getCurrentUser();
+  if (!currentUser) return null;
+
+  return getUserProfile(currentUser);
+}
+
+// Check if user has completed onboarding
+export async function hasCompletedOnboarding(): Promise<boolean> {
+  const profile = await getCurrentUserProfile();
+  return profile?.hasCompletedOnboarding || false;
+}
+
+// Mark onboarding as complete
+export async function markOnboardingComplete(username: string): Promise<void> {
+  const profile = await getUserProfile(username);
+  if (profile) {
+    profile.hasCompletedOnboarding = true;
+    await saveUserProfile(profile);
+  }
+}
+
+// Initialize user profile
+export async function initializeUserProfile(
+  username: string,
+  hobbies: string[],
+  tagline: string
+): Promise<void> {
+  const profile: UserProfile = {
+    username,
+    hobbies: hobbies.slice(0, 4), // Ensure max 4 hobbies
+    tagline,
+    createdAt: new Date().toISOString(),
+    hasCompletedOnboarding: false,
+  };
+
+  await saveUserProfile(profile);
+  await setCurrentUser(username);
+}
