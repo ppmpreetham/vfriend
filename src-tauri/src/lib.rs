@@ -1,6 +1,7 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 pub mod commands;
 mod scheduling_conflict;
+mod parseHTML;
 // mod p2p;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -20,6 +21,7 @@ pub fn run() {
             commands::check_conflicts,
             commands::find_free_times,
             commands::is_free_at,
+            parseHTML::parseHTML
             // p2p::start_node,
             // p2p::create_ticket,
             // p2p::join_ticket,

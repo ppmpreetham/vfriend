@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { ReadHTMLFile } from "../../utils/inputHelper";
 import { Upload } from "lucide-react";
+import { parseHTMLTimetable } from "../../utils/timetableHelper";
 
 const FileInput = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFileUpload = async () => {
+    if (isLoading) return;
     setIsLoading(true);
     try {
       const htmlContent = await ReadHTMLFile();
       if (htmlContent) {
-        // should parse it here
+        // console.log(htmlContent)
+        console.log(await parseHTMLTimetable(htmlContent));
         console.log("HTML file loaded successfully");
       }
     } catch (error) {

@@ -1,5 +1,5 @@
 import { open } from "@tauri-apps/plugin-dialog";
-// import { readTextFile } from "@tauri-apps/plugin-fs";
+import { readTextFile } from "@tauri-apps/plugin-fs";
 
 export const ReadHTMLFile = async (): Promise<string | null> => {
   try {
@@ -14,9 +14,10 @@ export const ReadHTMLFile = async (): Promise<string | null> => {
       title: "Select an HTML file",
     });
 
-    return filePath ? filePath : null;
+    return filePath ? readTextFile(filePath) : null;
   } catch (error) {
     console.error("Error opening file dialog:", error);
     return null;
   }
 };
+
