@@ -1,25 +1,35 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ReadHTMLFile } from "../../utils/inputHelper";
 import { Upload } from "lucide-react";
 import { parseHTMLTimetable } from "../../utils/timetableHelper";
+import { saveTimetable, viewStoreContents } from "../../store/timeTableStore";
 
 const FileInput = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const isExecutingRef = useRef(false);
 
   const handleFileUpload = async () => {
-    if (isLoading) return;
+    if (isExecutingRef.current) {
+      return;
+    }
+
+    isExecutingRef.current = true;
     setIsLoading(true);
+
     try {
       const htmlContent = await ReadHTMLFile();
       if (htmlContent) {
-        // console.log(htmlContent)
-        console.log(await parseHTMLTimetable(htmlContent));
-        console.log("HTML file loaded successfully");
+        const timetable = await parseHTMLTimetable(htmlContent);
+        await saveTimetable(timetable);
+        console.log("---------");
+        await viewStoreContents();
+        console.log("Parsing completed:", timetable);
       }
     } catch (error) {
-      console.error("Error loading HTML file:", error);
+      console.error("Error:", error);
     } finally {
       setIsLoading(false);
+      isExecutingRef.current = false;
     }
   };
 
