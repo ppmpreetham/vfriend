@@ -26,6 +26,7 @@ serde_json = "1"
 base64 = "0.22.1"
 soup = "0.5.1"
 chrono = "0.4.41"
+tauri-plugin-store = "2"
 
 [target.'cfg(any(target_os = "android", target_os = "ios"))'.dependencies]
 tauri-plugin-barcode-scanner = "2"
