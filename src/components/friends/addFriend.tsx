@@ -25,7 +25,7 @@ const AddFriend = () => {
         </div>
         <div className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer">
           <Wifi size={24} />
-          Wi-Fi (soon)
+          Wi-Fi p2p (soon)
         </div>
       </div>
     </div>
