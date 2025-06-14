@@ -14,7 +14,7 @@
 
 @font-face {
   font-family: "Space Grotesk";
-  src: url("../public/SpaceGrotesk-VariableFont_wght.ttf");
+  src: url("/SpaceGrotesk-VariableFont_wght.ttf");
 }
 
 .scrollbar-hide::-webkit-scrollbar {
