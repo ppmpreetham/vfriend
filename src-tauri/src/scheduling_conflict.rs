@@ -262,7 +262,7 @@ pub fn initialize_lunch_periods() -> HashMap<String, LunchPeriod> {
 // Get the precise time slot information for a given class
 // Removed unused day parameter
 pub fn get_time_slot_info(
-    _day: u8, // Using underscore to mark it as intentionally unused
+    _day: u8,
     period: u8,
     slot_type: &str,
     time_slots: &HashMap<String, Vec<TimeSlot>>,
