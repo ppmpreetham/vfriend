@@ -6,6 +6,7 @@ import Calendar from "./components/calendar/Calendar";
 import Friends from "./components/friends/Friends";
 import Profile from "./components/profile/Profile";
 import useNavStore from "./store/useNavStore";
+import WelcomePage from "./components/welcome/welcomePage";
 
 const App = () => {
   const { activeTab } = useNavStore();
@@ -25,11 +26,13 @@ const App = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-between bg-gray-950 text-white font-space">
-      <Header />
-      <main className="flex-1 overflow-hidden">{renderContent()}</main>
-      <Footer />
-    </div>
+    <WelcomePage>
+      <div className="w-screen h-screen flex flex-col justify-between bg-gray-950 text-white font-space">
+        <Header />
+        <main className="flex-1 overflow-hidden">{renderContent()}</main>
+        <Footer />
+      </div>
+    </WelcomePage>
   );
 };
 
