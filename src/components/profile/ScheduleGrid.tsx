@@ -1,18 +1,7 @@
-type ClassEntry = {
-  d: number; // Day: 1 (Mon) to 6 (Sat)
-  s: string; // "t" (theory) or "l" (lab)
-  p: number; // Period: 1–12
-  f: string; // Full class info
-};
-
-type UserSchedule = {
-  u: string;
-  t: string;
-  o: ClassEntry[];
-};
+import type { CompactTimetable } from "../../types/timeTable";
 
 type ScheduleGridProps = {
-  data: UserSchedule;
+  data: CompactTimetable;
 };
 
 const ScheduleGrid: React.FC<ScheduleGridProps> = ({ data }) => {
