@@ -1,33 +1,6 @@
 // Import Tauri API
 import { invoke } from "@tauri-apps/api/core";
-
-// Type definitions
-interface CompactTimetable {
-  u: string;
-  t: string;
-  o: CompactSlot[];
-}
-
-interface CompactSlot {
-  d: number;
-  s: string;
-  p: number;
-  f: string;
-}
-
-interface ConflictResult {
-  day: number;
-  user1_class: string;
-  user1_time: string;
-  user2_class: string;
-  user2_time: string;
-}
-
-interface FreeTimeResult {
-  day: number;
-  start_time: string;
-  end_time: string;
-}
+import {CompactTimetable, ConflictResult, FreeTimeResult} from "../types/timeTable";
 
 export async function checkConflicts(
   user1Schedule: CompactTimetable,
