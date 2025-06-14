@@ -1,5 +1,3 @@
-import React from "react";
-
 type ClassEntry = {
   d: number; // Day: 1 (Mon) to 6 (Sat)
   s: string; // "t" (theory) or "l" (lab)

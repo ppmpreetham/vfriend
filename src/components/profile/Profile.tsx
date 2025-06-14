@@ -1,4 +1,3 @@
-import React from "react";
 import ScheduleGrid from "./ScheduleGrid";
 import scheduleData from "./timetable_minimal.json";
 
@@ -23,9 +22,7 @@ const Profile = () => {
         </div>
         <div className="mr-4 w-1/2 flex flex-col gap-2">
           <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl justify-center">
-            <div>
-              THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG ~Ayush {`flag{dh4rm1k154cu713frfr}`}{" "}
-            </div>
+            <div>THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG ~Ayush</div>
           </div>
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
             <div className="text-xl">NEXT FREE</div>
