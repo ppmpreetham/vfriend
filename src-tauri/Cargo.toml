@@ -28,6 +28,9 @@ soup = "0.5.1"
 chrono = "0.4.41"
 tauri-plugin-store = "2"
 tauri-plugin-sharing = { git = "https://github.com/inkibra/tauri-plugins", package="tauri-plugin-sharing" }
+tokio = { version = "1.45.1", features = ["full"] }
+iroh = "0.35.0"
+anyhow = "1.0"
 
 [target.'cfg(any(target_os = "android", target_os = "ios"))'.dependencies]
 tauri-plugin-barcode-scanner = "2"
