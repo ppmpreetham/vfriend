@@ -12,6 +12,7 @@ pub fn run() {
             Ok(())
         })
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_sharing::init())
         .invoke_handler(tauri::generate_handler![
             commands::check_conflicts,
             commands::find_free_times,
