@@ -1,17 +1,35 @@
+import { useMemo } from "react";
 import ScheduleGrid from "./ScheduleGrid";
 import { useCurrentUserProfile } from "../../hooks/useUserQueries";
-import { useCurrentUserTimetable } from "../../hooks/useTimeTableQueries";
+import { useCurrentUserTimetable, useCurrentUserNextFreeTime } from "../../hooks/useTimeTableQueries";
 import { resetAllStores, viewStoreContents } from "../../store/timeTableStore";
+import { useFreeBitmap } from "../../hooks/useTimeTableQueries";
 
 const Profile = () => {
-  // resetAllStores();
-  const userData = useCurrentUserProfile();
-  const {
-    data: timetableData,
-    isLoading: timetableLoading,
-    error: timetableError,
-  } = useCurrentUserTimetable();
-  console.log("Timetable Data:", timetableData);
+  // Get current time in HH:MM format
+  const currentTime = useMemo(() => {
+    const now = new Date();
+    return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  }, []);
+  const currentDay = useMemo(() => {
+  const now = new Date();
+  return now.getDay() === 0 ? 7 : now.getDay();
+}, []);
+
+
+const { data: nextFreeTime, isLoading: nextFreeLoading } = useCurrentUserNextFreeTime(currentTime, currentDay);
+const a = useFreeBitmap("ppmpreetham");
+console.log(a.data);
+console.log(nextFreeTime);
+
+const userData = useCurrentUserProfile();
+const {
+  data: timetableData,
+  isLoading: timetableLoading,
+  error: timetableError,
+} = useCurrentUserTimetable();
+
+(currentTime)
   if (userData.isLoading || timetableLoading) {
     return (
       <div className="w-screen h-full flex items-center justify-center">
@@ -56,7 +74,7 @@ const Profile = () => {
             </div>
             <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
               <div className="text-xl">NEXT FREE</div>
-              <div className="text-3xl">12:30 PM</div>
+              <div className="text-3xl">No timetable</div>
             </div>
           </div>
         </div>
@@ -97,7 +115,9 @@ const Profile = () => {
           </div>
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
             <div className="text-xl">NEXT FREE</div>
-            <div className="text-3xl">12:30 PM</div>
+            <div className="text-3xl">
+              {nextFreeLoading ? "Loading..." : (nextFreeTime || "Not available")}
+            </div>
           </div>
         </div>
       </div>

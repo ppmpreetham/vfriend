@@ -16,9 +16,12 @@ import {
   isUserFreeAtByUsername,
   findFriendsFreeTime,
   viewStoreContents,
+  getClashBitmap,
+  getFreeBitmap,
+  getNextFreeTime,
+  getCurrentUserNextFreeTime,
 } from "../store/timeTableStore";
 import { useTimetableStore } from "../store/useTimeTableStore";
-
 // Query Keys
 export const QUERY_KEYS = {
   currentUser: ["currentUser"] as const,
@@ -33,6 +36,10 @@ export const QUERY_KEYS = {
     ["userFreeAt", username, day, time] as const,
   friendsFreeTime: ["friendsFreeTime"] as const,
   storeContents: ["storeContents"] as const,
+  clashBitmap: (friendId: string) => ["clashBitmap", friendId] as const,
+  freeBitmap: (friendId: string) => ["freeBitmap", friendId] as const,
+  nextFreeTime: (username: string, time: string) => ["nextFreeTime", username, time] as const,
+  currentUserNextFreeTime: (time: string) => ["currentUserNextFreeTime", time] as const,
 };
 
 // ============= QUERIES =============
@@ -128,6 +135,44 @@ export function useStoreContents() {
     queryKey: QUERY_KEYS.storeContents,
     queryFn: viewStoreContents,
     enabled: false, // Only fetch when manually triggered
+  });
+}
+
+export function useClashBitmap(friendId: string) {
+  return useQuery({
+    queryKey: QUERY_KEYS.clashBitmap(friendId),
+    queryFn: () => getClashBitmap(friendId),
+    enabled: !!friendId,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useFreeBitmap(friendId: string) {
+  return useQuery({
+    queryKey: QUERY_KEYS.freeBitmap(friendId),
+    queryFn: () => getFreeBitmap(friendId),
+    enabled: !!friendId,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useNextFreeTime(username: string, currentTime: string, currentDay: number) {
+  return useQuery({
+    queryKey: QUERY_KEYS.nextFreeTime(username, currentTime),
+    queryFn: () => getNextFreeTime(username, currentTime, currentDay),
+    enabled: !!username && !!currentTime,
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useCurrentUserNextFreeTime(currentTime: string, currentDay: number) {
+  const { data: currentUser } = useCurrentUser();
+  
+  return useQuery({
+    queryKey: QUERY_KEYS.currentUserNextFreeTime(currentTime),
+    queryFn: () => getCurrentUserNextFreeTime(currentTime, currentDay),
+    enabled: !!currentUser && !!currentTime,
+    staleTime: 5 * 60 * 1000,
   });
 }
 

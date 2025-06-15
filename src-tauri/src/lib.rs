@@ -2,6 +2,8 @@
 pub mod commands;
 mod scheduling_conflict;
 mod parseHTML;
+pub mod newcommands;
+pub mod newercommands;
 // mod p2p;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -21,7 +23,9 @@ pub fn run() {
             commands::check_conflicts,
             commands::find_free_times,
             commands::is_free_at,
-            parseHTML::parseHTML
+            parseHTML::parseHTML,
+            newcommands::next_free_time,
+            newercommands::build_bitmap,
             // p2p::start_node,
             // p2p::create_ticket,
             // p2p::join_ticket,

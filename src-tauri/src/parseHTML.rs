@@ -90,7 +90,7 @@ pub fn parseHTML(html_content: String) -> Result<String, String> {
                             occupied_slots.push(CompactSlot {
                                 d: day_num,
                                 s: "t".to_string(), // theory
-                                p: period,
+                                p: period as u8,
                                 f: cell_text,
                             });
                         }

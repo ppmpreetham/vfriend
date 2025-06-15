@@ -1,4 +1,4 @@
-use chrono::{DateTime, NaiveDateTime, NaiveTime, Utc, Duration};
+use chrono::{DateTime, NaiveDateTime, NaiveTime, Utc, Duration, Timelike};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tauri::command;
@@ -189,9 +189,8 @@ pub fn find_mutual_free(students: Vec<Student>, student_id1: String, student_id2
 }
 
 #[command]
-pub fn next_free_time(students: Vec<Student>, student_id: String, time: String) -> Result<Option<String>, String> {
-    let student = students.iter().find(|s| s.u == student_id)
-        .ok_or("Student not found")?;
+pub fn next_free_time(students: Vec<Student>, student_id: String, time: String, day: u8) -> Result<Option<String>, String> {
+    let student = students.iter().find(|s| s.u == student_id).ok_or("Student not found")?;
     
     let time = NaiveTime::parse_from_str(&time, "%H:%M")
         .map_err(|_| "Invalid time format")?;
@@ -201,14 +200,44 @@ pub fn next_free_time(students: Vec<Student>, student_id: String, time: String) 
         return Ok(Some(time.format("%H:%M").to_string()));
     }
     
-    let (bitmap, _) = build_bitmap(&student.o);
+    let day_schedule: Vec<ScheduleEntry> = student.o.iter()
+        .filter(|entry| entry.d == day)
+        .cloned()
+        .collect();
+
+    let (bitmap, _) = build_bitmap(&day_schedule);
     let idx = idx.unwrap();
     
+    // Look for the next free slot on the current day
     for i in (idx + 1)..bitmap.len() {
         if bitmap[i] == 0 {
+            // Properly calculate time from bitmap index
             let base = NaiveTime::from_hms_opt(8, 0, 0).unwrap();
-            let offset = 5 * i as i64 + if i < 76 { 0 } else { -35 };
+            let offset = 5 * i as i64;
             let result_time = base + Duration::minutes(offset);
+            
+            // Validate that the time calculation is correct
+            println!("Current time: {}, Index: {}, Calculated time: {}", time, i, result_time);
+            
+            return Ok(Some(result_time.format("%H:%M").to_string()));
+        }
+    }
+    
+    // If no free time found today, check next day
+    let next_day = day + 1;
+    let next_day_schedule: Vec<ScheduleEntry> = student.o.iter()
+        .filter(|entry| entry.d == next_day)
+        .cloned()
+        .collect();
+
+    let (next_day_bitmap, _) = build_bitmap(&next_day_schedule);
+    
+    for i in 0..next_day_bitmap.len() {
+        if next_day_bitmap[i] == 0 {
+            let base = NaiveTime::from_hms_opt(8, 0, 0).unwrap();
+            let offset = 5 * i as i64;
+            let result_time = base + Duration::minutes(offset);
+            
             return Ok(Some(result_time.format("%H:%M").to_string()));
         }
     }

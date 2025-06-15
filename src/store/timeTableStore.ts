@@ -4,6 +4,12 @@ import {
   findCommonFreeTimes,
   isUserFreeAt,
 } from "../utils/timetableHelper";
+import {
+  buildBitmap,
+  generateClashBitmap,
+  generateFreeBitmap,
+  getNextFreeTime as getNextFreeTimeFromTimetable,
+} from "../utils/timetableBitmap";
 
 import type { CompactTimetable } from "../types/timeTable";
 import type { ConflictResult, FreeTimeResult } from "../types/timeTable";
@@ -17,6 +23,16 @@ export interface AppMetadata {
   currentUser: string;
   friendsList: string[];
   profiles: Record<string, UserProfile>;
+  // Add these:
+  userBitmap?: {
+    data: boolean[];
+    lastUpdated: string;
+  };
+  friendBitmaps: Record<string, {
+    clashMap: boolean[];
+    freeMap: boolean[];
+    lastUpdated: string;
+  }>;
 }
 
 // Initialize stores with the new structured format
@@ -121,10 +137,59 @@ export async function saveTimetable(
   // Save using current user as key, but preserve original username in data
   await timetableStore.set(currentUser, timetable);
   await timetableStore.save();
+  
+  // Add this to update bitmaps
+  await updateUserBitmap();
+  await updateAllFriendBitmaps();
+}
 
-  console.log(
-    `Timetable saved under key: "${currentUser}" with data username: "${timetable.u}"`
-  );
+// New helper functions
+async function updateUserBitmap(): Promise<void> {
+  const metadata = (await metadataStore.get("metadata")) as AppMetadata;
+  if (!metadata.friendBitmaps) metadata.friendBitmaps = {};
+  
+  const currentUser = metadata.currentUser;
+  const timetable = await getTimetable(currentUser);
+  if (!timetable) return;
+  
+  // Initialize if needed
+  if (!metadata.userBitmap) metadata.userBitmap = {
+    data: [],
+    lastUpdated: "",
+  };
+  
+  // Update user bitmap
+  metadata.userBitmap = {
+    data: await buildBitmap(timetable.o),
+    lastUpdated: new Date().toISOString()
+  };
+  
+  await metadataStore.set("metadata", metadata);
+  await metadataStore.save();
+}
+
+async function updateAllFriendBitmaps(): Promise<void> {
+  const metadata = (await metadataStore.get("metadata")) as AppMetadata;
+  if (!metadata.friendBitmaps) metadata.friendBitmaps = {};
+  
+  const currentUser = metadata.currentUser;
+  const userTimetable = await getTimetable(currentUser);
+  if (!userTimetable) return;
+  
+  const friends = metadata.friendsList;
+  for (const friendId of friends) {
+    const friendTimetable = await getTimetable(friendId);
+    if (friendTimetable) {
+      metadata.friendBitmaps[friendId] = {
+        clashMap: await generateClashBitmap(userTimetable.o, friendTimetable.o),
+        freeMap: await generateFreeBitmap(userTimetable.o, friendTimetable.o),
+        lastUpdated: new Date().toISOString()
+      };
+    }
+  }
+  
+  await metadataStore.set("metadata", metadata);
+  await metadataStore.save();
 }
 
 // Get a timetable by username
@@ -368,4 +433,46 @@ export async function initializeUserProfile(
   };
 
   await saveUserProfile(profile);
+}
+
+export interface AppMetadata {
+  currentUser: string;
+  friendsList: string[];
+  profiles: Record<string, UserProfile>;
+  userBitmap?: {
+    data: boolean[];
+    lastUpdated: string;
+  };
+  friendBitmaps: Record<string, {
+    clashMap: boolean[];
+    freeMap: boolean[];
+    lastUpdated: string;
+  }>;
+}
+
+export async function getClashBitmap(friendId: string): Promise<boolean[] | null> {
+  const metadata = (await metadataStore.get("metadata")) as AppMetadata;
+  return metadata.friendBitmaps?.[friendId]?.clashMap || null;
+}
+
+export async function getFreeBitmap(friendId: string): Promise<boolean[] | null> {
+  const metadata = (await metadataStore.get("metadata")) as AppMetadata;
+  return metadata.friendBitmaps?.[friendId]?.freeMap || null;
+}
+
+export async function getNextFreeTime(username: string, currentTime: string, currentDay: number): Promise<string | null> {
+  const timetable = await getTimetable(username);
+  if (!timetable) return null;
+  
+  return getNextFreeTimeFromTimetable(timetable, currentTime, currentDay);
+}
+
+export async function getCurrentUserNextFreeTime(currentTime: string, currentDay: number): Promise<string | null> {
+  const currentUser = await getCurrentUser();
+  if (!currentUser) return null;
+  
+  const timetable = await getTimetable(currentUser);
+  if (!timetable) return null;
+  
+  return getNextFreeTimeFromTimetable(timetable, currentTime, currentDay);
 }
