@@ -4,7 +4,7 @@ import { ReadHTMLFile } from "../../../utils/inputHelper";
 import { parseHTMLTimetable } from "../../../utils/timetableHelper";
 import { useSaveTimetable } from "../../../hooks/useTimeTableQueries";
 import { useCurrentUser } from "../../../hooks/useTimeTableQueries";
-import { setCurrentUser } from "../../../store/timeTableStore"; // Import this function
+import { setCurrentUser } from "../../../store/timeTableStore";
 import type { FormData } from "../OnboardingForm";
 
 interface TimetableStepProps {

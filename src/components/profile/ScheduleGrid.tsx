@@ -30,7 +30,7 @@ const ScheduleGrid: React.FC<ScheduleGridProps> = ({ data }) => {
           <div
             key={`cell-${rowIndex}-${colIndex}`}
             className={`rounded-sm aspect-square h-5 ${
-              hasClass ? "bg-black" : "bg-primary"
+              hasClass ? "bg-black" : ""
             }`}
           />
         ))
