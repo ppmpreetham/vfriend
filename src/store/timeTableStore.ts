@@ -1,14 +1,10 @@
 import { LazyStore } from "@tauri-apps/plugin-store";
 import {
   checkConflicts,
-  findCommonFreeTimes,
-  isUserFreeAt,
+
 } from "../utils/timetableHelper";
 import {
   buildBitmap,
-  generateClashBitmap,
-  generateFreeBitmap,
-  getNextFreeTime as getNextFreeTimeFromTimetable,
 } from "../utils/timetableBitmap";
 
 import type { CompactTimetable } from "../types/timeTable";
@@ -18,19 +14,21 @@ import type { ConflictResult, FreeTimeResult } from "../types/timeTable";
 const timetableStore = new LazyStore("timetables.json");
 const metadataStore = new LazyStore("timetable_metadata.json");
 
-// Define a structured metadata type
 export interface AppMetadata {
   currentUser: string;
   friendsList: string[];
   profiles: Record<string, UserProfile>;
-  // Add these:
+  
+  // Per-day bitmaps for current user (days 1-7)
   userBitmap?: {
-    data: boolean[];
+    data: Record<number, boolean[]>;  // day number -> bitmap array
     lastUpdated: string;
   };
+  
+  // Per-day bitmaps for friends
   friendBitmaps: Record<string, {
-    clashMap: boolean[];
-    freeMap: boolean[];
+    clashMap: Record<number, boolean[]>;  // day number -> clash bitmap
+    freeMap: Record<number, boolean[]>;   // day number -> free bitmap
     lastUpdated: string;
   }>;
 }
@@ -154,13 +152,22 @@ async function updateUserBitmap(): Promise<void> {
   
   // Initialize if needed
   if (!metadata.userBitmap) metadata.userBitmap = {
-    data: [],
+    data: {},
     lastUpdated: "",
   };
   
-  // Update user bitmap
+  // Group slots by day
+  const slotsByDay: Record<number, any[]> = {};
+  for (let day = 1; day <= 7; day++) {
+    // Filter slots for this day
+    const daySlots = timetable.o.filter(slot => slot.d === day);
+    // Create bitmap for this day - pass the day parameter
+    slotsByDay[day] = await buildBitmap(daySlots, day);
+  }
+  
+  // Update user bitmap with day-specific data
   metadata.userBitmap = {
-    data: await buildBitmap(timetable.o),
+    data: slotsByDay,
     lastUpdated: new Date().toISOString()
   };
   
@@ -180,9 +187,22 @@ async function updateAllFriendBitmaps(): Promise<void> {
   for (const friendId of friends) {
     const friendTimetable = await getTimetable(friendId);
     if (friendTimetable) {
+      // Initialize day-specific bitmaps
+      const clashMap: Record<number, boolean[]> = {};
+      const freeMap: Record<number, boolean[]> = {};
+      
+      // Process each day
+      for (let day = 1; day <= 7; day++) {
+        const userDaySlots = userTimetable.o.filter(slot => slot.d === day);
+        const friendDaySlots = friendTimetable.o.filter(slot => slot.d === day);
+        
+        // clashMap[day] = await generateClashBitmap(userDaySlots, friendDaySlots, day);
+        // freeMap[day] = await generateFreeBitmap(userDaySlots, friendDaySlots, day);
+      }
+      
       metadata.friendBitmaps[friendId] = {
-        clashMap: await generateClashBitmap(userTimetable.o, friendTimetable.o),
-        freeMap: await generateFreeBitmap(userTimetable.o, friendTimetable.o),
+        clashMap,
+        freeMap,
         lastUpdated: new Date().toISOString()
       };
     }
@@ -300,49 +320,6 @@ export async function checkConflictsByUsername(
   return checkConflicts(timetable1, timetable2);
 }
 
-// Find common free times for multiple users by username
-export async function findCommonFreeTimesByUsername(
-  usernames: string[]
-): Promise<FreeTimeResult[]> {
-  const timetables = await Promise.all(
-    usernames.map(async (username) => {
-      const timetable = await getTimetable(username);
-      if (!timetable) {
-        throw new Error(`Timetable not found for ${username}`);
-      }
-      return timetable;
-    })
-  );
-
-  return findCommonFreeTimes(timetables);
-}
-
-// Check if user is free at specific time by username
-export async function isUserFreeAtByUsername(
-  username: string,
-  day: number,
-  time: string
-): Promise<boolean> {
-  const timetable = await getTimetable(username);
-
-  if (!timetable) {
-    throw new Error(`Timetable not found for ${username}`);
-  }
-
-  return isUserFreeAt(timetable, day, time);
-}
-
-// Advanced: Find free times across all friends
-export async function findFriendsFreeTime(): Promise<FreeTimeResult[]> {
-  const currentUser = await getCurrentUser();
-  const friends = await getFriendsList();
-
-  // Include current user and all friends
-  const allUsers = [currentUser, ...friends].filter(Boolean);
-
-  return findCommonFreeTimesByUsername(allUsers);
-}
-
 // view the store contents for debugging
 export async function viewStoreContents(): Promise<void> {
   const timetables = await timetableStore.entries();
@@ -435,44 +412,18 @@ export async function initializeUserProfile(
   await saveUserProfile(profile);
 }
 
-export interface AppMetadata {
-  currentUser: string;
-  friendsList: string[];
-  profiles: Record<string, UserProfile>;
-  userBitmap?: {
-    data: boolean[];
-    lastUpdated: string;
-  };
-  friendBitmaps: Record<string, {
-    clashMap: boolean[];
-    freeMap: boolean[];
-    lastUpdated: string;
-  }>;
-}
 
-export async function getClashBitmap(friendId: string): Promise<boolean[] | null> {
+export async function getClashBitmap(friendId: string, day: number): Promise<boolean[] | null> {
   const metadata = (await metadataStore.get("metadata")) as AppMetadata;
-  return metadata.friendBitmaps?.[friendId]?.clashMap || null;
+  return metadata.friendBitmaps?.[friendId]?.clashMap?.[day] || null;
 }
 
-export async function getFreeBitmap(friendId: string): Promise<boolean[] | null> {
+export async function getFreeBitmap(friendId: string, day: number): Promise<boolean[] | null> {
   const metadata = (await metadataStore.get("metadata")) as AppMetadata;
-  return metadata.friendBitmaps?.[friendId]?.freeMap || null;
+  return metadata.friendBitmaps?.[friendId]?.freeMap?.[day] || null;
 }
 
-export async function getNextFreeTime(username: string, currentTime: string, currentDay: number): Promise<string | null> {
-  const timetable = await getTimetable(username);
-  if (!timetable) return null;
-  
-  return getNextFreeTimeFromTimetable(timetable, currentTime, currentDay);
-}
-
-export async function getCurrentUserNextFreeTime(currentTime: string, currentDay: number): Promise<string | null> {
-  const currentUser = await getCurrentUser();
-  if (!currentUser) return null;
-  
-  const timetable = await getTimetable(currentUser);
-  if (!timetable) return null;
-  
-  return getNextFreeTimeFromTimetable(timetable, currentTime, currentDay);
+export async function getUserBitmap(day: number): Promise<boolean[] | null> {
+  const metadata = (await metadataStore.get("metadata")) as AppMetadata;
+  return metadata.userBitmap?.data?.[day] || null;
 }

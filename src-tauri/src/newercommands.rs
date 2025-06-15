@@ -1,5 +1,5 @@
-use serde::Deserialize;
-use tauri::command;
+use serde::{Serialize, Deserialize};
+use tauri;
 use chrono::NaiveTime;
 
 #[derive(Debug, Deserialize)]
@@ -10,11 +10,11 @@ pub struct CompactSlot {
     f: String,    // original full text
 }
 
-#[command]
-pub fn build_bitmap(schedule: Vec<CompactSlot>) -> Vec<bool> {
+#[tauri::command]
+pub fn build_bitmap(schedule: Vec<CompactSlot>, target_day: u8) -> Vec<bool> {
     let mut bitmap = vec![false; 12]; // 12-period day
     for slot in schedule {
-        if (1..=12).contains(&slot.p) {
+        if slot.d == target_day && (1..=12).contains(&slot.p) {
             bitmap[(slot.p - 1) as usize] = true;
         }
     }
@@ -46,10 +46,12 @@ const LAB_PERIODS: [(&str, &str); 12] = [
     ("16:40", "17:30"), ("17:40", "18:30"), ("18:30", "19:20"),
     ];
     
-#[command]
+
+
+#[tauri::command]
 pub fn next_free_time_after(
-    bitmap: &[bool; 12],
-    kindmap: &[bool; 12],
+    bitmap: [bool; 12],  // Remove the & reference
+    kindmap: [bool; 12], // Remove the & reference
     current_time: NaiveTime,
 ) -> String {
     // Determine if we're in a lab day or theory day for lunch timing
@@ -154,10 +156,10 @@ pub struct FreeStatus {
     pub until: Option<NaiveTime> // if free: until when you're free, if busy: when next free
 }
 
-#[command]
+#[tauri::command] // Change #[command] to #[tauri::command]
 pub fn get_free_status(
-    bitmap: &[bool; 12],
-    kindmap: &[bool; 12],
+    bitmap: [bool; 12],  // Remove the & reference
+    kindmap: [bool; 12], // Remove the & reference
     current_time: NaiveTime,
 ) -> Option<FreeStatus> {
     for i in 0..12 {
@@ -224,37 +226,37 @@ pub fn get_free_status(
     None
 }
 
-fn main() {
+// fn main() {
 
-    let bitmap: [bool; 12] = [
-        true, true, true, // 1-3 busy
-        false, false, false, // 4-6 free
-        true, true, true, // 7-9 busy
-        false, false, false // 10-12 free
-    ];
+//     let bitmap: [bool; 12] = [
+//         true, true, true, // 1-3 busy
+//         false, false, false, // 4-6 free
+//         true, true, true, // 7-9 busy
+//         false, false, false // 10-12 free
+//     ];
 
-    let kindmap: [bool; 12] = [
-        false, false, false,
-        false, false, false,
-        true, true, true,
-        true, true, true,
-    ];
+//     let kindmap: [bool; 12] = [
+//         false, false, false,
+//         false, false, false,
+//         true, true, true,
+//         true, true, true,
+//     ];
 
-    let now = NaiveTime::parse_from_str("09:55", "%H:%M").unwrap();
+//     let now = NaiveTime::parse_from_str("09:55", "%H:%M").unwrap();
 
-    if let Some(status) = get_free_status(&bitmap, &kindmap, now) {
-        match status.is_busy {
-            true => println!(
-                "You’re busy now. Free from {} to {:?}",
-                status.from.format("%H:%M"),
-                status.until.map(|t| t.format("%H:%M").to_string())
-            ),
-            false => println!(
-                "You’re free now until {}",
-                status.until.unwrap().format("%H:%M")
-            ),
-        }
-    } else {
-        println!("No free time left today.");
-    }
-}
+//     if let Some(status) = get_free_status(&bitmap, &kindmap, now) {
+//         match status.is_busy {
+//             true => println!(
+//                 "You’re busy now. Free from {} to {:?}",
+//                 status.from.format("%H:%M"),
+//                 status.until.map(|t| t.format("%H:%M").to_string())
+//             ),
+//             false => println!(
+//                 "You’re free now until {}",
+//                 status.until.unwrap().format("%H:%M")
+//             ),
+//         }
+//     } else {
+//         println!("No free time left today.");
+//     }
+// }

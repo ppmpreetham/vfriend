@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getUserProfile,
-  saveUserProfile,
   getCurrentUserProfile,
   hasCompletedOnboarding,
   markOnboardingComplete,
@@ -12,21 +11,11 @@ import {
 // Query keys
 export const profileKeys = {
   all: ["profiles"] as const,
-  user: (username: string) => [...profileKeys.all, username] as const,
   currentUser: () => [...profileKeys.all, "current"] as const,
   onboardingStatus: () => ["onboarding", "status"] as const,
 };
 
-// Get user profile
-export function useUserProfile(username?: string) {
-  return useQuery({
-    queryKey: username ? profileKeys.user(username) : [],
-    queryFn: () => getUserProfile(username!),
-    enabled: !!username,
-  });
-}
-
-// Get current user profile
+// Essential queries
 export function useCurrentUserProfile() {
   return useQuery({
     queryKey: profileKeys.currentUser(),
@@ -34,7 +23,6 @@ export function useCurrentUserProfile() {
   });
 }
 
-// Check onboarding status
 export function useOnboardingStatus() {
   return useQuery({
     queryKey: profileKeys.onboardingStatus(),
@@ -42,7 +30,7 @@ export function useOnboardingStatus() {
   });
 }
 
-// Initialize user profile
+// Essential mutations
 export function useInitializeProfile() {
   const queryClient = useQueryClient();
 
@@ -67,22 +55,6 @@ export function useInitializeProfile() {
   });
 }
 
-// Save user profile
-export function useSaveProfile() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (profile: UserProfile) => saveUserProfile(profile),
-    onSuccess: (_, profile) => {
-      queryClient.invalidateQueries({
-        queryKey: profileKeys.user(profile.username),
-      });
-      queryClient.invalidateQueries({ queryKey: profileKeys.currentUser() });
-    },
-  });
-}
-
-// Mark onboarding complete
 export function useCompleteOnboarding() {
   const queryClient = useQueryClient();
 

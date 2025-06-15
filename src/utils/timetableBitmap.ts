@@ -34,8 +34,11 @@ function timetableToStudent(timetable: CompactTimetable): Student {
 /**
  * Builds a bitmap representation of a schedule
  */
-export async function buildBitmap(schedule: CompactSlot[]): Promise<boolean[]> {
-  return invoke<boolean[]>('build_bitmap', { schedule });
+export async function buildBitmap(schedule: CompactSlot[], targetDay: number): Promise<boolean[]> {
+  return invoke<boolean[]>("build_bitmap", {
+    schedule,
+    targetDay // Make sure to pass this parameter
+  });
 }
 
 /**
@@ -81,28 +84,24 @@ export async function findMutualFreeTime(
  * Generates a clash bitmap between two schedules
  */
 export async function generateClashBitmap(
-  schedule1: CompactSlot[],
-  schedule2: CompactSlot[]
-): Promise<boolean[]> {
-  const bitmap1 = await buildBitmap(schedule1);
-  const bitmap2 = await buildBitmap(schedule2);
-  
-  // Calculate clash bitmap (where both are 1)
-  return bitmap1.map((bit, i) => bit && bitmap2[i]);
+  userSlots: CompactSlot[], 
+  friendSlots: CompactSlot[],
+  targetDay: number
+): Promise<void> {
+  console.log("HEIO")
 }
 
 /**
  * Generates a free bitmap between two schedules
  */
 export async function generateFreeBitmap(
-  schedule1: CompactSlot[],
-  schedule2: CompactSlot[]
-): Promise<boolean[]> {
-  const bitmap1 = await buildBitmap(schedule1);
-  const bitmap2 = await buildBitmap(schedule2);
-  
-  // Calculate free bitmap (where both are 0)
-  return bitmap1.map((bit, i) => !bit && !bitmap2[i] ? true : false);
+  userSlots: CompactSlot[], 
+  friendSlots: CompactSlot[],
+  targetDay: number
+): Promise<void> {
+  // Implement your free time bitmap logic or call Rust function
+  // Make sure to pass targetDay if using the Rust function
+  // ...
 }
 
 /**
@@ -112,21 +111,10 @@ export async function generateFreeBitmap(
  * @returns Next free time in "HH:MM" format or null if not found
  */
 export async function getNextFreeTime(
-  timetable: CompactTimetable,
-  currentTime: string,
+  timetable: any, 
+  currentTime: string, 
   currentDay: number
 ): Promise<string | null> {
-  const student = timetableToStudent(timetable);
-  
-  try {
-    return await invoke<string | null>('next_free_time', {
-      students: [student],
-      studentId: timetable.u,
-      time: currentTime,
-      day: currentDay
-    });
-  } catch (error) {
-    console.error("Error getting next free time:", error);
-    return null;
-  }
+  // Implementation...
+  return null;
 }

@@ -1,35 +1,40 @@
 import { useMemo } from "react";
 import ScheduleGrid from "./ScheduleGrid";
 import { useCurrentUserProfile } from "../../hooks/useUserQueries";
-import { useCurrentUserTimetable, useCurrentUserNextFreeTime } from "../../hooks/useTimeTableQueries";
-import { resetAllStores, viewStoreContents } from "../../store/timeTableStore";
-import { useFreeBitmap } from "../../hooks/useTimeTableQueries";
+import { nextFreeTime as getnextFreeTime} from "../../hooks/timetablenewBitmap";
+import {
+  useCurrentUserTimetable,
+} from "../../hooks/useTimeTableQueries";
+import { getUserBitmap, resetAllStores, viewStoreContents } from "../../store/timeTableStore";
 
 const Profile = () => {
   // Get current time in HH:MM format
   const currentTime = useMemo(() => {
     const now = new Date();
-    return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    return `${String(now.getHours()).padStart(2, "0")}:${String(
+      now.getMinutes()
+    ).padStart(2, "0")}`;
   }, []);
   const currentDay = useMemo(() => {
-  const now = new Date();
-  return now.getDay() === 0 ? 7 : now.getDay();
-}, []);
+    const now = new Date();
+    return now.getDay() === 0 ? 7 : now.getDay();
+  }, []);
 
+  // const { data: nextFreeTime, isLoading: nextFreeLoading } =
+  //   getnextFreeTime({bitmap: getUserBitmap(), currentTime, kindmap: []});
+  // const a = useFreeBitmap("preetham");
 
-const { data: nextFreeTime, isLoading: nextFreeLoading } = useCurrentUserNextFreeTime(currentTime, currentDay);
-const a = useFreeBitmap("ppmpreetham");
-console.log(a.data);
-console.log(nextFreeTime);
+  // console.log(a.data);
+  // console.log(nextFreeTime);
 
-const userData = useCurrentUserProfile();
-const {
-  data: timetableData,
-  isLoading: timetableLoading,
-  error: timetableError,
-} = useCurrentUserTimetable();
+  const userData = useCurrentUserProfile();
+  const {
+    data: timetableData,
+    isLoading: timetableLoading,
+    error: timetableError,
+  } = useCurrentUserTimetable();
 
-(currentTime)
+  currentTime;
   if (userData.isLoading || timetableLoading) {
     return (
       <div className="w-screen h-full flex items-center justify-center">
@@ -116,7 +121,7 @@ const {
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
             <div className="text-xl">NEXT FREE</div>
             <div className="text-3xl">
-              {nextFreeLoading ? "Loading..." : (nextFreeTime || "Not available")}
+              {/* {nextFreeLoading ? "Loading..." : nextFreeTime || "Not available"} */}
             </div>
           </div>
         </div>
