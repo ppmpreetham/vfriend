@@ -72,7 +72,7 @@ pub fn parseHTML(html_content: String) -> Result<String, String> {
             let theory_cells: Vec<_> = rows[theory_row_idx].tag("td").find_all().collect();
             if theory_cells.len() >= 2 {
                 // Skip day name and "THEORY" cells, process remaining cells
-                for (col_idx, cell) in theory_cells.iter().skip(2).enumerate() {
+                for (col_idx, cell) in theory_cells.iter().skip(1).enumerate() {
                     // Check for green background
                     let has_green_bg = cell.get("bgcolor").map_or(false, |bg| bg == "#CCFF33");
                     
@@ -94,7 +94,7 @@ pub fn parseHTML(html_content: String) -> Result<String, String> {
             let lab_cells: Vec<_> = rows[lab_row_idx].tag("td").find_all().collect();
             if lab_cells.len() >= 2 {
                 // Skip day name and "LAB" cells, process remaining cells
-                for (col_idx, cell) in lab_cells.iter().skip(2).enumerate() {
+                for (col_idx, cell) in lab_cells.iter().skip(1).enumerate() {
                     // Check for green background
                     let has_green_bg = cell.get("bgcolor").map_or(false, |bg| bg == "#CCFF33");
                     
@@ -192,7 +192,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let theory_cells: Vec<_> = rows[theory_row_idx].tag("td").find_all().collect();
             if theory_cells.len() >= 2 {
                 // Skip day name and "THEORY" cells, process remaining cells
-                for (col_idx, cell) in theory_cells.iter().skip(2).enumerate() {
+                for (col_idx, cell) in theory_cells.iter().skip(1).enumerate() {
                     // Check for green background
                     let has_green_bg = cell.get("bgcolor").map_or(false, |bg| bg == "#CCFF33");
                     
@@ -214,7 +214,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let lab_cells: Vec<_> = rows[lab_row_idx].tag("td").find_all().collect();
             if lab_cells.len() >= 2 {
                 // Skip day name and "LAB" cells, process remaining cells
-                for (col_idx, cell) in lab_cells.iter().skip(2).enumerate() {
+                for (col_idx, cell) in lab_cells.iter().skip(1).enumerate() {
                     // Check for green background
                     let has_green_bg = cell.get("bgcolor").map_or(false, |bg| bg == "#CCFF33");
                     
