@@ -7,6 +7,7 @@ import {
 import NameStep from "./onboarding/NameStep";
 import HobbiesStep from "./onboarding/HobbiesStep";
 import TaglineStep from "./onboarding/TaglineStep";
+import SemesterStep from "./onboarding/SemesterStep";
 import TimetableStep from "./onboarding/TimetableStep";
 
 interface OnboardingFormProps {
@@ -17,6 +18,7 @@ export interface FormData {
   username: string;
   hobbies: string[];
   tagline: string;
+  semester?: number;
   timetableUploaded: boolean;
 }
 
@@ -50,7 +52,12 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
     {
       component: TaglineStep,
       title: "Tell us about yourself",
-      canProceed: () => formData.hobbies.length > 0,
+      canProceed: () => formData.tagline.trim().length > 0,
+    },
+    {
+      component: SemesterStep,
+      title: "What semester are you in?",
+      canProceed: () => formData.semester !== undefined && formData.semester >= 1 && formData.semester <= 10,
     },
     {
       component: TimetableStep,
@@ -75,22 +82,23 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
   };
 
   const handleComplete = async () => {
-    try {
-      // Initialize profile
-      await initializeProfileMutation.mutateAsync({
-        username: formData.username.trim(),
-        hobbies: formData.hobbies,
-        tagline: formData.tagline.trim(),
-      });
+  try {
+    // Initialize profile - properly pass the semester
+    await initializeProfileMutation.mutateAsync({
+      username: formData.username.trim(),
+      hobbies: formData.hobbies,
+      tagline: formData.tagline.trim(),
+      semester: formData.semester // Make sure semester is explicitly passed
+    });
 
-      // Mark onboarding as complete
-      await completeOnboardingMutation.mutateAsync(formData.username.trim());
+    // Mark onboarding as complete
+    await completeOnboardingMutation.mutateAsync(formData.username.trim());
 
-      onComplete();
-    } catch (error) {
-      console.error("Error completing onboarding:", error);
-    }
-  };
+    onComplete();
+  } catch (error) {
+    console.error("Error completing onboarding:", error);
+  }
+};
 
   const isLoading =
     initializeProfileMutation.isPending || completeOnboardingMutation.isPending;

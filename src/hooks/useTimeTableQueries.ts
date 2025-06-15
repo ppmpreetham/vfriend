@@ -188,20 +188,18 @@ export function useSaveTimetable() {
 
   return useMutation({
     mutationFn: saveTimetable,
-    onSuccess: (_, timetable) => {
-      // Update specific timetable cache
-      queryClient.setQueryData(QUERY_KEYS.timetable(timetable.u), timetable);
+    onSuccess: async (_, timetable) => {
+      // Get current user (storage key)
+      const currentUser = await getCurrentUser();
 
-      // If it's current user's timetable, update that cache too
-      const currentUser = queryClient.getQueryData(
-        QUERY_KEYS.currentUser
-      ) as string;
-      if (currentUser === timetable.u) {
+      if (currentUser) {
+        // Update cache using current user as key
+        queryClient.setQueryData(QUERY_KEYS.timetable(currentUser), timetable);
         queryClient.setQueryData(QUERY_KEYS.currentUserTimetable, timetable);
         syncCurrentUserTimetable(timetable);
       }
 
-      // Invalidate conflict and free time queries
+      // Invalidate other related queries
       queryClient.invalidateQueries({ queryKey: ["conflicts"] });
       queryClient.invalidateQueries({ queryKey: ["commonFreeTimes"] });
       queryClient.invalidateQueries({ queryKey: ["userFreeAt"] });

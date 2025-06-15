@@ -10,6 +10,8 @@ use chrono::Utc;
 #[derive(Debug, Serialize, Deserialize)]
 struct CompactTimetable {
     u: String,  // username
+    r: String,  // registration number
+    s: i32,     // semester
     t: String,  // timestamp
     o: Vec<CompactSlot>, // occupied slots
 }
@@ -26,6 +28,25 @@ struct CompactSlot {
 pub fn parseHTML(html_content: String) -> Result<String, String> {
     // Step 1: Create soup from provided HTML content
     let soup = Soup::new(&html_content);
+
+    // Extract registration number from the navbar
+    let mut registration_number = "Unknown".to_string();
+    if let Some(span) = soup.tag("span")
+        .class("navbar-text")
+        .class("text-light")
+        .class("small")
+        .class("fw-bold")
+        .find() {
+            let text = span.text();
+            // Text will be in format "23BRS1346 (STUDENT)", extract just the registration ID part
+            if let Some(index) = text.find(" (") {
+                registration_number = text[..index].trim().to_string();  // This will be "23BRS1346"
+            } else {
+                registration_number = text.trim().to_string();
+            }
+    }
+    
+    println!("Found registration number: {}", registration_number);
 
     // Step 2: Find the table by ID
     let table = soup.tag("table")
@@ -96,6 +117,8 @@ pub fn parseHTML(html_content: String) -> Result<String, String> {
     // Step 5: Create compact timetable
     let timetable = CompactTimetable {
         u: "ppmpreetham".to_string(),
+        r: registration_number,  // Use extracted registration number
+        s: 0,
         t: "2025-06-14T13:10:21+00:00".to_string(),
         o: occupied_slots,
     };
@@ -114,6 +137,25 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Step 2: Create soup
     let soup = Soup::new(&html);
+
+    // Extract registration number
+    let mut registration_number = "Unknown".to_string();
+    if let Some(span) = soup.tag("span")
+        .class("navbar-text")
+        .class("text-light")
+        .class("small")
+        .class("fw-bold")
+        .find() {
+            let text = span.text();
+            // Text will be in format "23BRS1346 (STUDENT)", extract just the number part
+            if let Some(index) = text.find(" (") {
+                registration_number = text[..index].trim().to_string();
+            } else {
+                registration_number = text.trim().to_string();
+            }
+    }
+    
+    println!("Found registration number: {}", registration_number);
 
     // Step 3: Find the table by ID
     let table = soup.tag("table")
@@ -195,6 +237,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Step 7: Create compact timetable
     let timetable = CompactTimetable {
         u: "ppmpreetham".to_string(),
+        r: registration_number,  // Use extracted registration number
+        s: 5,  // You might want to extract this from HTML as well
         t: Utc::now().to_rfc3339(),
         o: occupied_slots,
     };

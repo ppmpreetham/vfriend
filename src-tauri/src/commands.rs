@@ -31,6 +31,8 @@ pub fn check_conflicts(
     let user1_schedule: CompactTimetable = serde_json::from_str(user1_schedule_json)
         .unwrap_or_else(|_| CompactTimetable {
             u: "".to_string(),
+            r: "".to_string(),
+            s: 0,
             t: "".to_string(),
             o: vec![],
         });
@@ -38,6 +40,8 @@ pub fn check_conflicts(
     let user2_schedule: CompactTimetable = serde_json::from_str(user2_schedule_json)
         .unwrap_or_else(|_| CompactTimetable {
             u: "".to_string(),
+            r: "".to_string(),
+            s: 0,
             t: "".to_string(),
             o: vec![],
         });
@@ -157,6 +161,8 @@ pub fn is_free_at(schedule_json: &str, day: u8, time: &str) -> bool {
     let schedule: CompactTimetable =
         serde_json::from_str(schedule_json).unwrap_or_else(|_| CompactTimetable {
             u: "".to_string(),
+            r: "".to_string(),
+            s: 0,
             t: "".to_string(),
             o: vec![],
         });

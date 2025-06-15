@@ -1,6 +1,5 @@
 import { useOnboardingStatus } from "../../hooks/useUserQueries";
 import OnboardingForm from "./OnboardingForm";
-import GetStarted from "./GetStarted";
 
 interface WelcomePageProps {
   children?: React.ReactNode;

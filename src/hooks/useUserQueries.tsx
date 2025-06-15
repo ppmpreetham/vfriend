@@ -51,11 +51,13 @@ export function useInitializeProfile() {
       username,
       hobbies,
       tagline,
+      semester,
     }: {
       username: string;
       hobbies: string[];
       tagline: string;
-    }) => initializeUserProfile(username, hobbies, tagline),
+      semester?: number;
+    }) => initializeUserProfile(username, hobbies, tagline, semester),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: profileKeys.all });
       queryClient.invalidateQueries({

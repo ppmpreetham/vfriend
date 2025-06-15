@@ -1,6 +1,8 @@
 export interface CompactTimetable {
-  u: string;
-  t: string;
+  u: string;   // username
+  r: string;   // registration number
+  s: number;   // semester
+  t: string;   // timestamp
   o: CompactSlot[];
 }
 

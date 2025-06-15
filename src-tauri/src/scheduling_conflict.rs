@@ -5,6 +5,8 @@ use std::collections::HashMap;
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct CompactTimetable {
     pub u: String,           // username
+    pub r: String,           // registration number
+    pub s: i32,              // semester
     pub t: String,           // timestamp
     pub o: Vec<CompactSlot>, // occupied slots
 }
