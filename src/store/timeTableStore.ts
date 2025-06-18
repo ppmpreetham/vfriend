@@ -4,7 +4,7 @@ import {
 
 } from "../utils/timetableHelper";
 import {
-  buildBitmap,
+  buildBitmap, buildKindmap
 } from "../utils/timetableBitmap";
 
 import type { CompactTimetable } from "../types/timeTable";
@@ -22,6 +22,7 @@ export interface AppMetadata {
   // Per-day bitmaps for current user (days 1-7)
   userBitmap?: {
     data: Record<number, boolean[]>;  // day number -> bitmap array
+    kinds: Record<number, boolean[]>; // day number -> kind bitmap
     lastUpdated: string;
   };
   
@@ -29,6 +30,7 @@ export interface AppMetadata {
   friendBitmaps: Record<string, {
     clashMap: Record<number, boolean[]>;  // day number -> clash bitmap
     freeMap: Record<number, boolean[]>;   // day number -> free bitmap
+    kindMap: Record<number, boolean[]>; // day number -> kind bitmap
     lastUpdated: string;
   }>;
 }
@@ -150,24 +152,23 @@ async function updateUserBitmap(): Promise<void> {
   const timetable = await getTimetable(currentUser);
   if (!timetable) return;
   
-  // Initialize if needed
-  if (!metadata.userBitmap) metadata.userBitmap = {
-    data: {},
-    lastUpdated: "",
-  };
-  
   // Group slots by day
-  const slotsByDay: Record<number, any[]> = {};
+  const slotsByDay: Record<number, boolean[]> = {};
+  const kindsByDay: Record<number, boolean[]> = {};  // Add this for kindmap
+  
   for (let day = 1; day <= 7; day++) {
     // Filter slots for this day
     const daySlots = timetable.o.filter(slot => slot.d === day);
-    // Create bitmap for this day - pass the day parameter
+    
+    // Create bitmap and kindmap for this day
     slotsByDay[day] = await buildBitmap(daySlots, day);
+    kindsByDay[day] = await buildKindmap(daySlots, day);
   }
   
   // Update user bitmap with day-specific data
   metadata.userBitmap = {
     data: slotsByDay,
+    kinds: kindsByDay,
     lastUpdated: new Date().toISOString()
   };
   
@@ -183,29 +184,32 @@ async function updateAllFriendBitmaps(): Promise<void> {
   const userTimetable = await getTimetable(currentUser);
   if (!userTimetable) return;
   
-  const friends = metadata.friendsList;
-  for (const friendId of friends) {
+  const friendsList = metadata.friendsList || [];
+  
+  for (const friendId of friendsList) {
     const friendTimetable = await getTimetable(friendId);
-    if (friendTimetable) {
-      // Initialize day-specific bitmaps
-      const clashMap: Record<number, boolean[]> = {};
-      const freeMap: Record<number, boolean[]> = {};
+    if (!friendTimetable) continue;
+    
+    const clashMapByDay: Record<number, boolean[]> = {};
+    const freeMapByDay: Record<number, boolean[]> = {};
+    const kindMapByDay: Record<number, boolean[]> = {};  // Add this for kindmap
+    
+    for (let day = 1; day <= 7; day++) {
+      // Get user and friend slots for this day
+      const userDaySlots = userTimetable.o.filter(slot => slot.d === day);
+      const friendDaySlots = friendTimetable.o.filter(slot => slot.d === day);
       
-      // Process each day
-      for (let day = 1; day <= 7; day++) {
-        const userDaySlots = userTimetable.o.filter(slot => slot.d === day);
-        const friendDaySlots = friendTimetable.o.filter(slot => slot.d === day);
-        
-        // clashMap[day] = await generateClashBitmap(userDaySlots, friendDaySlots, day);
-        // freeMap[day] = await generateFreeBitmap(userDaySlots, friendDaySlots, day);
-      }
-      
-      metadata.friendBitmaps[friendId] = {
-        clashMap,
-        freeMap,
-        lastUpdated: new Date().toISOString()
-      };
+      kindMapByDay[day] = await buildKindmap(friendDaySlots, day);
     }
+    
+    // Update friend bitmaps with day-specific data
+    metadata.friendBitmaps = metadata.friendBitmaps || {};
+    metadata.friendBitmaps[friendId] = {
+      clashMap: clashMapByDay,
+      freeMap: freeMapByDay,
+      kindMap: kindMapByDay,
+      lastUpdated: new Date().toISOString()
+    };
   }
   
   await metadataStore.set("metadata", metadata);
@@ -425,5 +429,27 @@ export async function getFreeBitmap(friendId: string, day: number): Promise<bool
 
 export async function getUserBitmap(day: number): Promise<boolean[] | null> {
   const metadata = (await metadataStore.get("metadata")) as AppMetadata;
+  console.log(metadata.userBitmap?.data?.[day])
   return metadata.userBitmap?.data?.[day] || null;
+}
+
+// Add a new getter function for kindmaps
+export async function getUserKindmap(day: number): Promise<boolean[] | null> {
+  const metadata = (await metadataStore.get("metadata")) as AppMetadata;
+  
+  if (!metadata.userBitmap?.kinds || !metadata.userBitmap.kinds[day]) {
+    return null;
+  }
+  
+  return metadata.userBitmap.kinds[day];
+}
+
+export async function getFriendKindmap(friendId: string, day: number): Promise<boolean[] | null> {
+  const metadata = (await metadataStore.get("metadata")) as AppMetadata;
+  
+  if (!metadata.friendBitmaps?.[friendId]?.kindMap || !metadata.friendBitmaps[friendId].kindMap[day]) {
+    return null;
+  }
+  
+  return metadata.friendBitmaps[friendId].kindMap[day];
 }

@@ -37,7 +37,17 @@ function timetableToStudent(timetable: CompactTimetable): Student {
 export async function buildBitmap(schedule: CompactSlot[], targetDay: number): Promise<boolean[]> {
   return invoke<boolean[]>("build_bitmap", {
     schedule,
-    targetDay // Make sure to pass this parameter
+    targetDay
+  });
+}
+
+/**
+ * Builds a kindmap representation of a schedule
+ */
+export async function buildKindmap(schedule: CompactSlot[], targetDay: number): Promise<boolean[]> {
+  return invoke<boolean[]>("build_kindmap", {
+    schedule,
+    targetDay
   });
 }
 

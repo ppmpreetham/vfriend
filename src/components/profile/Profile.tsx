@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import ScheduleGrid from "./ScheduleGrid";
 import { useCurrentUserProfile } from "../../hooks/useUserQueries";
-import { nextFreeTime as getnextFreeTime} from "../../hooks/timetablenewBitmap";
+import { useUserDayBitmap, useUserDayKindmap, nextFreeTime as useNextFreeTime} from "../../hooks/timetablenewBitmap";
 import {
   useCurrentUserTimetable,
 } from "../../hooks/useTimeTableQueries";
@@ -15,17 +15,23 @@ const Profile = () => {
       now.getMinutes()
     ).padStart(2, "0")}`;
   }, []);
+
+  
   const currentDay = useMemo(() => {
     const now = new Date();
     return now.getDay() === 0 ? 7 : now.getDay();
   }, []);
-
-  // const { data: nextFreeTime, isLoading: nextFreeLoading } =
-  //   getnextFreeTime({bitmap: getUserBitmap(), currentTime, kindmap: []});
-  // const a = useFreeBitmap("preetham");
-
-  // console.log(a.data);
-  // console.log(nextFreeTime);
+  
+  // Get user bitmap and kindmap using React Query
+  const { data: bitmap, isLoading: bitmapLoading } = useUserDayBitmap(currentDay);
+  const { data: kindmap, isLoading: kindmapLoading } = useUserDayKindmap(currentDay);
+  
+  // Only call useNextFreeTime when bitmap and kindmap are available
+  const { data: nextFreeTime, isLoading: nextFreeLoading } = useNextFreeTime({
+    bitmap: bitmap || [], 
+    currentTime, 
+    kindmap: kindmap || []
+  });
 
   const userData = useCurrentUserProfile();
   const {
@@ -33,6 +39,13 @@ const Profile = () => {
     isLoading: timetableLoading,
     error: timetableError,
   } = useCurrentUserTimetable();
+  
+  // const { data: nextFreeTime, isLoading: nextFreeLoading } =
+  //   getnextFreeTime({bitmap: getUserBitmap(), currentTime, kindmap: []});
+  // const a = useFreeBitmap("preetham");
+
+  // console.log(a.data);
+  // console.log(nextFreeTime);
 
   currentTime;
   if (userData.isLoading || timetableLoading) {
@@ -121,7 +134,9 @@ const Profile = () => {
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
             <div className="text-xl">NEXT FREE</div>
             <div className="text-3xl">
-              {/* {nextFreeLoading ? "Loading..." : nextFreeTime || "Not available"} */}
+              {bitmapLoading || kindmapLoading || nextFreeLoading ? 
+                "Loading..." : 
+                nextFreeTime || "Not available"}
             </div>
           </div>
         </div>

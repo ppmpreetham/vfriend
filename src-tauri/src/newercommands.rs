@@ -21,6 +21,16 @@ pub fn build_bitmap(schedule: Vec<CompactSlot>, target_day: u8) -> Vec<bool> {
     bitmap
 }
 
+#[tauri::command]
+pub fn build_kindmap(schedule: Vec<CompactSlot>, target_day: u8) -> Vec<bool> {
+    let mut kindmap = vec![false; 12]; // 12-period day
+    for slot in schedule {
+        if slot.d == target_day && (1..=12).contains(&slot.p) {
+            kindmap[(slot.p - 1) as usize] = slot.s == "l"; // true for lab, false for theory
+        }
+    }
+    kindmap
+}
 
 const THEORY_TIMES: [&str; 12] = [
     "08:00", "08:55", "09:50", "10:45", "11:40", "12:35",

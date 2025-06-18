@@ -26,6 +26,7 @@ pub fn run() {
             parseHTML::parseHTML,
             // newcommands::next_free_time,
             newercommands::build_bitmap,
+            newercommands::build_kindmap,
             newercommands::next_free_time_after,
             // p2p::start_node,
             // p2p::create_ticket,
