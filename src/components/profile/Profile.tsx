@@ -5,21 +5,18 @@ import { useUserDayBitmap, useUserDayKindmap, nextFreeTime as useNextFreeTime} f
 import {
   useCurrentUserTimetable,
 } from "../../hooks/useTimeTableQueries";
-import { getUserBitmap, resetAllStores, viewStoreContents } from "../../store/timeTableStore";
+import { resetAllStores, viewStoreContents } from "../../store/timeTableStore";
 
 const Profile = () => {
   // Get current time in HH:MM format
-  const currentTime = useMemo(() => {
+ const { currentTime, currentDay } = useMemo(() => {
     const now = new Date();
-    return `${String(now.getHours()).padStart(2, "0")}:${String(
-      now.getMinutes()
-    ).padStart(2, "0")}`;
-  }, []);
-
-  
-  const currentDay = useMemo(() => {
-    const now = new Date();
-    return now.getDay() === 0 ? 7 : now.getDay();
+    return {
+      currentTime: `${String(now.getHours()).padStart(2, "0")}:${String(
+        now.getMinutes()
+      ).padStart(2, "0")}`,
+      currentDay: now.getDay() === 0 ? 7 : now.getDay()
+    };
   }, []);
   
   // Get user bitmap and kindmap using React Query
@@ -27,11 +24,20 @@ const Profile = () => {
   const { data: kindmap, isLoading: kindmapLoading } = useUserDayKindmap(currentDay);
   
   // Only call useNextFreeTime when bitmap and kindmap are available
-  const { data: nextFreeTime, isLoading: nextFreeLoading } = useNextFreeTime({
+  const { data: nextFreeTimeRaw, isLoading: nextFreeLoading } = useNextFreeTime({
     bitmap: bitmap || [], 
     currentTime, 
     kindmap: kindmap || []
   });
+
+  const nextFreeTime = useMemo(() => {
+    if (!nextFreeTimeRaw) return null;
+    const [hours, minutes] = nextFreeTimeRaw.split(':');
+    const hour = parseInt(hours, 10);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+  }, [nextFreeTimeRaw]);
 
   const userData = useCurrentUserProfile();
   const {
