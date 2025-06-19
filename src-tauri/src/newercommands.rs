@@ -160,16 +160,17 @@ pub fn next_free_time_after(
 // }
 
 
+#[derive(Serialize)]
 pub struct FreeStatus {
     pub is_busy: bool,           // true = busy, false = free
     pub from: NaiveTime,         // if free: current time or start of next free period
     pub until: Option<NaiveTime> // if free: until when you're free, if busy: when next free
 }
 
-#[tauri::command] // Change #[command] to #[tauri::command]
+#[tauri::command]
 pub fn get_free_status(
-    bitmap: [bool; 12],  // Remove the & reference
-    kindmap: [bool; 12], // Remove the & reference
+    bitmap: [bool; 12], 
+    kindmap: [bool; 12],
     current_time: NaiveTime,
 ) -> Option<FreeStatus> {
     for i in 0..12 {

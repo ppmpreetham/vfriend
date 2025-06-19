@@ -1,14 +1,9 @@
 import { LazyStore } from "@tauri-apps/plugin-store";
 import {
-  checkConflicts,
-
-} from "../utils/timetableHelper";
-import {
   buildBitmap, buildKindmap
 } from "../utils/timetableBitmap";
 
 import type { CompactTimetable } from "../types/timeTable";
-import type { ConflictResult, FreeTimeResult } from "../types/timeTable";
 
 // Create stores
 const timetableStore = new LazyStore("timetables.json");
@@ -310,19 +305,6 @@ export async function exportTimetable(username: string): Promise<string> {
 
 // Check conflicts between two timetables by username
 // This function now works with storage keys (simplified usernames)
-export async function checkConflictsByUsername(
-  storageKey1: string,
-  storageKey2: string
-): Promise<ConflictResult[]> {
-  const timetable1 = await getTimetable(storageKey1);
-  const timetable2 = await getTimetable(storageKey2);
-
-  if (!timetable1 || !timetable2) {
-    throw new Error("One or both timetables not found");
-  }
-
-  return checkConflicts(timetable1, timetable2);
-}
 
 // view the store contents for debugging
 export async function viewStoreContents(): Promise<void> {

@@ -28,6 +28,7 @@ pub fn run() {
             newercommands::build_bitmap,
             newercommands::build_kindmap,
             newercommands::next_free_time_after,
+            newercommands::get_free_status,
             // p2p::start_node,
             // p2p::create_ticket,
             // p2p::join_ticket,
