@@ -1,10 +1,6 @@
 use std::fs;
-use std::fs::File;
-use std::io::Write;
 use soup::prelude::*;
 use serde::{Serialize, Deserialize};
-use chrono::Utc;
-// use base64;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CompactTimetable {
@@ -21,6 +17,16 @@ struct CompactSlot {
     s: String,   // slot_type (t/l)
     p: u8,       // period
     f: String,   // full_text (original cell text)
+}
+
+// Helper function to extract course code and room information
+fn extract_course_info(cell_text: &str) -> String {
+    let parts: Vec<&str> = cell_text.split('-').collect();
+    if parts.len() >= 4 {
+        // Get course code (index 1) and room (indexes 3 and 4)
+        return format!("{}-{}-{}", parts[1], parts[3], parts[4]);
+    }
+    cell_text.to_string() // Return original if can't parse correctly
 }
 
 #[tauri::command]
@@ -91,7 +97,7 @@ pub fn parseHTML(html_content: String) -> Result<String, String> {
                                 d: day_num,
                                 s: "t".to_string(), // theory
                                 p: period as u8,
-                                f: cell_text,
+                                f: extract_course_info(&cell_text),
                             });
                         }
                     }
@@ -125,7 +131,7 @@ pub fn parseHTML(html_content: String) -> Result<String, String> {
                                 d: day_num,
                                 s: "l".to_string(), // lab
                                 p: period,
-                                f: cell_text,
+                                f: extract_course_info(&cell_text),
                             });
                         }
                     }

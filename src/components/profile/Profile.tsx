@@ -32,11 +32,27 @@ const Profile = () => {
 
   const nextFreeTime = useMemo(() => {
     if (!nextFreeTimeRaw) return null;
-    const [hours, minutes] = nextFreeTimeRaw.split(':');
+    
+    // Split the time string safely
+    const parts = nextFreeTimeRaw.split(':');
+    const hours = parts[0];
+    const minutes = parts[1];
+    
+    // Check if we have valid hour and minutes
+    if (!hours || isNaN(parseInt(hours, 10))) {
+      return "RIGHT NOW";
+    }
+    
     const hour = parseInt(hours, 10);
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const hour12 = hour % 12 || 12;
-    return `${hour12}:${minutes} ${ampm}`;
+    
+    // Use "00" as default if minutes are undefined
+    const formattedMinutes = minutes && !isNaN(parseInt(minutes, 10)) 
+      ? minutes 
+      : "00";
+      
+    return `${hour12}:${formattedMinutes} ${ampm}`;
   }, [nextFreeTimeRaw]);
 
   const userData = useCurrentUserProfile();
@@ -46,13 +62,6 @@ const Profile = () => {
     error: timetableError,
   } = useCurrentUserTimetable();
   
-  // const { data: nextFreeTime, isLoading: nextFreeLoading } =
-  //   getnextFreeTime({bitmap: getUserBitmap(), currentTime, kindmap: []});
-  // const a = useFreeBitmap("preetham");
-
-  // console.log(a.data);
-  // console.log(nextFreeTime);
-
   currentTime;
   if (userData.isLoading || timetableLoading) {
     return (
