@@ -1,0 +1,30 @@
+<svg width="117" height="29" viewBox="0 0 117 29" xmlns="http://www.w3.org/2000/svg">
+  <!-- Font -->
+  <defs>
+    <style>
+      @font-face {
+        font-family: 'Space Grotesk';
+        src: url('https://github.com/ppmpreetham/vfriend/raw/refs/heads/main/public/SpaceGrotesk-VariableFont_wght.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+  </defs>
+
+  <!-- Left Path (white background, border) -->
+  <path d="M3 0.5H74.5V28.5H3C1.61929 28.5 0.5 27.3807 0.5 26V3C0.5 1.61929 1.61929 0.5 3 0.5Z" fill="white" stroke="#635943"/>
+
+  <!-- Right Path (yellow background, border) -->
+  <mask id="right-box-mask" fill="white">
+    <path d="M75 0H114C115.657 0 117 1.34315 117 3V26C117 27.6569 115.657 29 114 29H75V0Z"/>
+  </mask>
+  <path d="M75 0H114C115.657 0 117 1.34315 117 3V26C117 27.6569 115.657 29 114 29H75V0Z" fill="#EBFF57"/>
+  <path d="M75 -1H114C116.209 -1 118 0.790861 118 3H116C116 1.89543 115.105 1 114 1H75V-1ZM118 26C118 28.2091 116.209 30 114 30H75V28H114C115.105 28 116 27.1046 116 26H118ZM75 29V0V29ZM114 -1C116.209 -1 118 0.790861 118 3V26C118 28.2091 116.209 30 114 30V28C115.105 28 116 27.1046 116 26V3C116 1.89543 115.105 1 114 1V-1Z"
+    fill="#635943" mask="url(#right-box-mask)"/>
+
+  <!-- Text: VERSION -->
+  <text x="37.5" y="19" font-family="'Space Grotesk', sans-serif" font-size="14" fill="#100D0D" text-anchor="middle">VERSION</text>
+
+  <!-- Text: v0.1 -->
+  <text x="96" y="19" font-family="'Space Grotesk', sans-serif" font-size="14" fill="#100D0D" text-anchor="middle">v0.1</text>
+</svg>

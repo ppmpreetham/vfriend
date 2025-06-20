@@ -171,7 +171,7 @@ async function updateUserBitmap(): Promise<void> {
   await metadataStore.save();
 }
 
-async function updateAllFriendBitmaps(): Promise<void> {
+export async function updateAllFriendBitmaps(): Promise<void> {
   const metadata = (await metadataStore.get("metadata")) as AppMetadata;
   if (!metadata.friendBitmaps) metadata.friendBitmaps = {};
   
