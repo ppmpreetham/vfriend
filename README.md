@@ -2,8 +2,8 @@
   <ul style="list-style: none; margin: 0; padding: 0;">
     <a href="https://vfriend.preetham.top/">
       <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="./dark_logo.png" />
-        <img alt="VFriend" src="./light_logo.png" width="200" style="margin-right: 30px;" />
+        <source media="(prefers-color-scheme: dark)" srcset="./README/dark_logo.png" />
+        <img alt="VFriend" src="./README/light_logo.png" width="200" style="margin-right: 30px;" />
       </picture>
     </a>
   </ul>
@@ -17,14 +17,14 @@
 <p align="center">
   <a href="https://github.com/ppmpreetham/vfriend/blob/main/LICENSE">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="./dark_license.svg" />
-      <img alt="MIT License" src="./light_license.svg" />
+      <source media="(prefers-color-scheme: dark)" srcset="./README/dark_license.svg" />
+      <img alt="MIT License" src="./README/light_license.svg" />
     </picture>
   </a>
   <a href="https://github.com/ppmpreetham/vfriend/releases/">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="./dark_version.svg" />
-      <img alt="Version" src="./light_version.svg" />
+      <source media="(prefers-color-scheme: dark)" srcset="./README/dark_version.svg" />
+      <img alt="Version" src="./README/light_version.svg" />
     </picture>
   </a>
 </p>
