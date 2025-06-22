@@ -7,25 +7,25 @@ const AddFriend = () => {
       <div className="text-4xl text-black">ADD FRIEND</div>
       <div className="grid grid-cols-2 gap-4 mt-4 text-white">
         <div
-          className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer"
+          className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
           onClick={() => {
             ShareLink();
           }}
         >
           <Share size={24} />
-          SHARE LINK
+          <div>SHARE LINK</div>
         </div>
-        <button className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer">
+        <button className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center">
           <QrCode size={24} />
-          QR CODE
+          <div>QR CODE</div>
         </button>
-        <div className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer">
+        <div className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center">
           <SmartphoneNfc size={24} />
-          NFC (soon)
+          <div>NFC (soon)</div>
         </div>
-        <div className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer">
+        <div className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center">
           <Wifi size={24} />
-          Wi-Fi p2p (soon)
+          <div>Wi-Fi p2p (soon)</div>
         </div>
       </div>
     </div>

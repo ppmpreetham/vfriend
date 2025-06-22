@@ -9,21 +9,16 @@ const Calendar = () => {
     error: timetableError,
   } = useCurrentUserTimetable();
 
-  // Convert timetable data to JSON string for QR code
   const getTimetableJsonString = () => {
     if (!timetableData) return "";
 
     try {
-      // Remove spaces to save data in QR code
       return compress(JSON.stringify(timetableData));
     } catch (error) {
       console.error("Error converting timetable to JSON:", error);
       return "";
     }
   };
-
-  // Debug logging to see what we're getting
-  console.log("Calendar - Current user timetable data:", timetableData);
 
   if (timetableLoading) {
     return (
