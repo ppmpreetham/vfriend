@@ -1,33 +1,130 @@
-import { Share, QrCode, SmartphoneNfc, Wifi } from "lucide-react";
+import { Share, QrCode, SmartphoneNfc, Wifi, ArrowLeft } from "lucide-react";
 import { ShareLink } from "./ShareLink";
+import useAddFriendStore from "../../store/useAddFriendStore";
+import QRGiver from "./QRGiver";
 
-const AddFriend = () => {
+const ShareLinkTab = () => (
+  <div className="p-4">
+    <h3 className="text-xl font-bold text-black mb-4">Share Link</h3>
+    <div className="text-black">
+      <p>Share your profile link with friends:</p>
+      <button
+        className="bg-black text-white p-2 rounded mt-2"
+        onClick={() => ShareLink()}
+      >
+        Generate & Share Link
+      </button>
+    </div>
+  </div>
+);
+
+const QRCodeTab = () => (
+  <div className="p-4">
+    <h3 className="text-xl font-bold text-black mb-4">QR Code</h3>
+    <div className="text-black text-center w-full flex flex-col items-center">
+      <p>Scan or show QR code to add friends</p>
+      <QRGiver />
+    </div>
+  </div>
+);
+
+const NFCTab = () => (
+  <div className="p-4">
+    <h3 className="text-xl font-bold text-black mb-4">NFC</h3>
+    <div className="text-black">
+      <p>NFC sharing coming soon!</p>
+    </div>
+  </div>
+);
+
+const P2PTab = () => (
+  <div className="p-4">
+    <h3 className="text-xl font-bold text-black mb-4">Wi-Fi P2P</h3>
+    <div className="text-black">
+      <p>Direct Wi-Fi connection coming soon!</p>
+    </div>
+  </div>
+);
+
+const MainTab = () => {
+  const { setActiveTab } = useAddFriendStore();
+
   return (
-    <div className="bg-primary rounded-xl h-fit w-full p-8">
+    <>
       <div className="text-4xl text-black">ADD FRIEND</div>
       <div className="grid grid-cols-2 gap-4 mt-4 text-white">
-        <div
+        <button
           className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
-          onClick={() => {
-            ShareLink();
-          }}
+          onClick={() => setActiveTab("share")}
         >
           <Share size={24} />
           <div>SHARE LINK</div>
-        </div>
-        <button className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center">
+        </button>
+        <button
+          className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
+          onClick={() => setActiveTab("qr")}
+        >
           <QrCode size={24} />
           <div>QR CODE</div>
         </button>
-        <div className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center">
+        <button
+          className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
+          onClick={() => setActiveTab("nfc")}
+        >
           <SmartphoneNfc size={24} />
           <div>NFC (soon)</div>
-        </div>
-        <div className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center">
+        </button>
+        <button
+          className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
+          onClick={() => setActiveTab("p2p")}
+        >
           <Wifi size={24} />
           <div>Wi-Fi p2p (soon)</div>
-        </div>
+        </button>
       </div>
+    </>
+  );
+};
+
+const AddFriend = () => {
+  const { activeTab, goBack } = useAddFriendStore();
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "share":
+        return <ShareLinkTab />;
+      case "qr":
+        return <QRCodeTab />;
+      case "nfc":
+        return <NFCTab />;
+      case "p2p":
+        return <P2PTab />;
+      default:
+        return <MainTab />;
+    }
+  };
+
+  return (
+    <div
+      className={`
+      bg-primary rounded-xl
+      ${
+        activeTab !== "main"
+          ? "fixed top-0 left-0 w-screen h-screen p-8"
+          : "w-full h-fit p-8"
+      }
+    `}
+    >
+      {activeTab !== "main" && (
+        <button
+          onClick={goBack}
+          className="flex items-center gap-2 text-black mb-4 hover:opacity-70 cursor-pointer"
+        >
+          <ArrowLeft size={20} />
+          <span>Back</span>
+        </button>
+      )}
+      {renderContent()}
     </div>
   );
 };

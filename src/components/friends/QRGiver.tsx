@@ -2,7 +2,7 @@ import QRCodeGenerator from "./QRCodeGenerator";
 import { useCurrentUserTimetable } from "../../hooks/useTimeTableQueries";
 import { compress } from "../../utils/compressor";
 
-const Calendar = () => {
+const QRGiver = () => {
   const {
     data: timetableData,
     isLoading: timetableLoading,
@@ -87,4 +87,4 @@ const Calendar = () => {
   );
 };
 
-export default Calendar;
+export default QRGiver;
