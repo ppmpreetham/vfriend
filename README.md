@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/ppmpreetham/vfriend/blob/main/LICENSE">
+  <a href="https://github.com/ppmpreetham/vfriend?tab=MIT-1-ov-file#">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="./README/dark_license.svg" />
       <img alt="MIT License" src="./README/light_license.svg" />

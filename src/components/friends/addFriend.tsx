@@ -15,10 +15,10 @@ const AddFriend = () => {
           <Share size={24} />
           SHARE LINK
         </div>
-        <div className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer">
+        <button className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer">
           <QrCode size={24} />
           QR CODE
-        </div>
+        </button>
         <div className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer">
           <SmartphoneNfc size={24} />
           NFC (soon)
