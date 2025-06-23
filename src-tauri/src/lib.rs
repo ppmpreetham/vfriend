@@ -4,6 +4,7 @@ pub mod newcommands;
 pub mod newercommands;
 mod scheduling_conflict;
 mod parseHTML;
+use tauri_plugin_deep_link::DeepLinkExt;
 // mod p2p;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -24,6 +25,11 @@ pub fn run() {
         .setup(|app| {
             #[cfg(mobile)]
             app.handle().plugin(tauri_plugin_barcode_scanner::init());
+            Ok(())
+        })
+        .setup(|app| {
+            #[cfg(desktop)]
+            app.deep_link().register("vfriend")?;
             Ok(())
         })
         .plugin(tauri_plugin_opener::init())

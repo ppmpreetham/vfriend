@@ -9,6 +9,7 @@
     "dialog:default",
     "fs:default",
     "store:default",
+    "deep-link:default",
     {
       "identifier": "fs:scope",
       "allow": [
