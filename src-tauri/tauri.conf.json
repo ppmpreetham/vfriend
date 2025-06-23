@@ -14,8 +14,8 @@
     "windows": [
       {
         "title": "vitfriend",
-        "width": 800,
-        "height": 600
+        "width": 600,
+        "height": 1000
       }
     ],
     "security": {
@@ -32,5 +32,16 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
+  },
+    "plugins": {
+    "deep-link": {
+      "mobile": [
+        { "host": "vfriend.preetham.top", "pathPrefix": ["/open"] },
+        { "host": "vfriend.preetham.top" }
+      ],
+      "desktop": {
+        "schemes": ["vfriend"]
+      }
+    }
   }
 }

@@ -1,13 +1,13 @@
-use serde::{Serialize, Deserialize};
-use tauri;
 use chrono::NaiveTime;
+use serde::{Deserialize, Serialize};
+use tauri;
 
 #[derive(Debug, Deserialize)]
 pub struct CompactSlot {
-    d: u8,        // day (1-7)
-    s: String,    // "t" or "l"
-    p: u8,        // period (1-12)
-    f: String,    // original full text
+    d: u8,     // day (1-7)
+    s: String, // "t" or "l"
+    p: u8,     // period (1-12)
+    f: String, // original full text
 }
 
 #[tauri::command]
@@ -33,30 +33,44 @@ pub fn build_kindmap(schedule: Vec<CompactSlot>, target_day: u8) -> Vec<bool> {
 }
 
 const THEORY_TIMES: [&str; 12] = [
-    "08:00", "08:55", "09:50", "10:45", "11:40", "12:35",
-    "14:00", "14:55", "15:50", "16:45", "17:40", "18:35",
-    ];
-    
-    const LAB_TIMES: [&str; 12] = [
-        "08:00", "08:50", "09:50", "10:40", "11:40", "12:30",
-    "14:00", "14:50", "15:50", "16:40", "17:40", "18:30",
+    "08:00", "08:55", "09:50", "10:45", "11:40", "12:35", "14:00", "14:55", "15:50", "16:45",
+    "17:40", "18:35",
+];
+
+const LAB_TIMES: [&str; 12] = [
+    "08:00", "08:50", "09:50", "10:40", "11:40", "12:30", "14:00", "14:50", "15:50", "16:40",
+    "17:40", "18:30",
 ];
 
 const THEORY_PERIODS: [(&str, &str); 12] = [
-    ("08:00", "08:50"), ("08:55", "09:45"), ("09:50", "10:40"),
-    ("10:45", "11:35"), ("11:40", "12:30"), ("12:35", "13:25"),
-    ("14:00", "14:50"), ("14:55", "15:45"), ("15:50", "16:40"),
-    ("16:45", "17:35"), ("17:40", "18:30"), ("18:35", "19:25"),
-    ];
-    
-const LAB_PERIODS: [(&str, &str); 12] = [
-    ("08:00", "08:50"), ("08:50", "09:40"), ("09:50", "10:40"),
-    ("10:40", "11:30"), ("11:40", "12:30"), ("12:30", "13:20"),
-    ("14:00", "14:50"), ("14:50", "15:40"), ("15:50", "16:40"),
-    ("16:40", "17:30"), ("17:40", "18:30"), ("18:30", "19:20"),
-    ];
-    
+    ("08:00", "08:50"),
+    ("08:55", "09:45"),
+    ("09:50", "10:40"),
+    ("10:45", "11:35"),
+    ("11:40", "12:30"),
+    ("12:35", "13:25"),
+    ("14:00", "14:50"),
+    ("14:55", "15:45"),
+    ("15:50", "16:40"),
+    ("16:45", "17:35"),
+    ("17:40", "18:30"),
+    ("18:35", "19:25"),
+];
 
+const LAB_PERIODS: [(&str, &str); 12] = [
+    ("08:00", "08:50"),
+    ("08:50", "09:40"),
+    ("09:50", "10:40"),
+    ("10:40", "11:30"),
+    ("11:40", "12:30"),
+    ("12:30", "13:20"),
+    ("14:00", "14:50"),
+    ("14:50", "15:40"),
+    ("15:50", "16:40"),
+    ("16:40", "17:30"),
+    ("17:40", "18:30"),
+    ("18:30", "19:20"),
+];
 
 #[tauri::command]
 pub fn next_free_time_after(
@@ -66,7 +80,7 @@ pub fn next_free_time_after(
 ) -> String {
     // Determine if we're in a lab day or theory day for lunch timing
     let is_lab_schedule = kindmap[5]; // Check period 6's type
-    
+
     // lunch times based on schedule type
     let lunch_start = if is_lab_schedule {
         NaiveTime::parse_from_str("13:20", "%H:%M").unwrap()
@@ -86,7 +100,7 @@ pub fn next_free_time_after(
         } else {
             THEORY_PERIODS[i]
         };
-        
+
         let start = NaiveTime::parse_from_str(start_str, "%H:%M").unwrap();
         let end = NaiveTime::parse_from_str(end_str, "%H:%M").unwrap();
 
@@ -99,7 +113,7 @@ pub fn next_free_time_after(
         if current_time >= start && current_time < end {
             return "YOU ARE FREE".to_string();
         }
-        
+
         // If there's a free period starting after current time but before lunch
         if current_time < start && start < lunch_start {
             return format!("{}", start);
@@ -110,7 +124,7 @@ pub fn next_free_time_after(
     if current_time < lunch_start {
         return format!("{}", lunch_start); // Next free time is lunch
     }
-    
+
     // If we're in lunch period
     if current_time >= lunch_start && current_time < lunch_end {
         return "YOU ARE FREE".to_string(); // Currently free during lunch
@@ -140,7 +154,7 @@ pub fn next_free_time_after(
         if current_time >= start && current_time < end {
             return "YOU ARE FREE".to_string();
         }
-        
+
         // Next free period starting after current time
         if current_time < start {
             return format!("{}", start);
@@ -159,17 +173,16 @@ pub fn next_free_time_after(
 //     println!("Next free time: {}", result);
 // }
 
-
 #[derive(Serialize)]
 pub struct FreeStatus {
-    pub is_busy: bool,           // true = busy, false = free
-    pub from: NaiveTime,         // if free: current time or start of next free period
-    pub until: Option<NaiveTime> // if free: until when you're free, if busy: when next free
+    pub is_busy: bool,            // true = busy, false = free
+    pub from: NaiveTime,          // if free: current time or start of next free period
+    pub until: Option<NaiveTime>, // if free: until when you're free, if busy: when next free
 }
 
 #[tauri::command]
 pub fn get_free_status(
-    bitmap: [bool; 12], 
+    bitmap: [bool; 12],
     kindmap: [bool; 12],
     current_time: NaiveTime,
 ) -> Option<FreeStatus> {
@@ -182,7 +195,7 @@ pub fn get_free_status(
 
         let start = NaiveTime::parse_from_str(start_str, "%H:%M").unwrap();
         let end = NaiveTime::parse_from_str(end_str, "%H:%M").unwrap();
-        
+
         if current_time >= start && current_time < end {
             if !bitmap[i] {
                 // currently free
@@ -221,10 +234,10 @@ pub fn get_free_status(
         } else {
             THEORY_PERIODS[i]
         };
-        
+
         let start = NaiveTime::parse_from_str(start_str, "%H:%M").unwrap();
         let end = NaiveTime::parse_from_str(end_str, "%H:%M").unwrap();
-        
+
         if current_time < start && !bitmap[i] {
             return Some(FreeStatus {
                 is_busy: false,

@@ -1,14 +1,23 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 pub mod commands;
-mod scheduling_conflict;
-mod parseHTML;
 pub mod newcommands;
 pub mod newercommands;
+mod scheduling_conflict;
+mod parseHTML;
 // mod p2p;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    let mut builder = tauri::Builder::default();
+    #[cfg(desktop)]
+    {
+        builder = builder.plugin(tauri_plugin_single_instance::init(|_app, argv, _cwd| {
+          println!("a new app instance was opened with {argv:?} and the deep link event was already triggered");
+          // when defining deep link schemes at runtime, you must also check `argv` here
+        }));
+    }
+    builder
+        .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_store::Builder::new().build())
@@ -24,7 +33,6 @@ pub fn run() {
             commands::find_free_times,
             commands::is_free_at,
             parseHTML::parseHTML,
-            // newcommands::next_free_time,
             newercommands::build_bitmap,
             newercommands::build_kindmap,
             newercommands::next_free_time_after,
