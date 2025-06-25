@@ -1,57 +1,62 @@
 import { useMemo } from "react";
 import ScheduleGrid from "./ScheduleGrid";
 import { useCurrentUserProfile } from "../../hooks/useUserQueries";
-import { useUserDayBitmap, useUserDayKindmap, nextFreeTime as useNextFreeTime} from "../../hooks/timetablenewBitmap";
 import {
-  useCurrentUserTimetable,
-} from "../../hooks/useTimeTableQueries";
+  useUserDayBitmap,
+  useUserDayKindmap,
+  nextFreeTime as useNextFreeTime,
+} from "../../hooks/timetablenewBitmap";
+import { useCurrentUserTimetable } from "../../hooks/useTimeTableQueries";
 import { resetAllStores, viewStoreContents } from "../../store/timeTableStore";
 
 const Profile = () => {
   // Get current time in HH:MM format
- const { currentTime, currentDay } = useMemo(() => {
+  const { currentTime, currentDay } = useMemo(() => {
     const now = new Date();
     return {
       currentTime: `${String(now.getHours()).padStart(2, "0")}:${String(
         now.getMinutes()
       ).padStart(2, "0")}`,
-      currentDay: now.getDay() === 0 ? 7 : now.getDay()
+      currentDay: now.getDay() === 0 ? 7 : now.getDay(),
     };
   }, []);
-  
+
   // Get user bitmap and kindmap using React Query
-  const { data: bitmap, isLoading: bitmapLoading } = useUserDayBitmap(currentDay);
-  const { data: kindmap, isLoading: kindmapLoading } = useUserDayKindmap(currentDay);
-  
+  const { data: bitmap, isLoading: bitmapLoading } =
+    useUserDayBitmap(currentDay);
+  const { data: kindmap, isLoading: kindmapLoading } =
+    useUserDayKindmap(currentDay);
+
   // Only call useNextFreeTime when bitmap and kindmap are available
-  const { data: nextFreeTimeRaw, isLoading: nextFreeLoading } = useNextFreeTime({
-    bitmap: bitmap || [], 
-    currentTime, 
-    kindmap: kindmap || []
-  });
+  const { data: nextFreeTimeRaw, isLoading: nextFreeLoading } = useNextFreeTime(
+    {
+      bitmap: bitmap || [],
+      currentTime,
+      kindmap: kindmap || [],
+    }
+  );
 
   const nextFreeTime = useMemo(() => {
     if (!nextFreeTimeRaw) return null;
-    
+
     // Split the time string safely
-    const parts = nextFreeTimeRaw.split(':');
+    const parts = nextFreeTimeRaw.split(":");
     const hours = parts[0];
     const minutes = parts[1];
-    
+
     // Check if we have valid hour and minutes
     if (!hours || isNaN(parseInt(hours, 10))) {
       return "RIGHT NOW";
     }
-    
+
     const hour = parseInt(hours, 10);
-    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const ampm = hour >= 12 ? "PM" : "AM";
     const hour12 = hour % 12 || 12;
-    
+
     // Use "00" as default if minutes are undefined
-    const formattedMinutes = minutes && !isNaN(parseInt(minutes, 10)) 
-      ? minutes 
-      : "00";
-      
+    const formattedMinutes =
+      minutes && !isNaN(parseInt(minutes, 10)) ? minutes : "00";
+
     return `${hour12}:${formattedMinutes} ${ampm}`;
   }, [nextFreeTimeRaw]);
 
@@ -61,7 +66,7 @@ const Profile = () => {
     isLoading: timetableLoading,
     error: timetableError,
   } = useCurrentUserTimetable();
-  
+
   currentTime;
   if (userData.isLoading || timetableLoading) {
     return (
@@ -93,7 +98,7 @@ const Profile = () => {
               <div>SEM 4</div>
             </div>
             <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl justify-center">
-              <div className="text-3xl">HOBBIES</div>
+              <div className="text-3xl">Free Places</div>
               <ul className="list-disc pl-5">
                 {userData.data?.hobbies?.map((hobby, index) => (
                   <li key={index}>{hobby}</li>
@@ -133,8 +138,8 @@ const Profile = () => {
             <div>{timetableData ? timetableData.r : "UNKNOWN"}</div>
             <div>SEM {timetableData.s}</div>
           </div>
-          <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl justify-center">
-            <div className="text-3xl">HOBBIES</div>
+          <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl gap-4">
+            <div className="text-3xl">I'll be at...</div>
             <ul className="list-disc pl-5">
               {userData.data?.hobbies?.map((hobby, index) => (
                 <li key={index}>{hobby}</li>
@@ -149,9 +154,9 @@ const Profile = () => {
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
             <div className="text-xl">NEXT FREE</div>
             <div className="text-3xl">
-              {bitmapLoading || kindmapLoading || nextFreeLoading ? 
-                "Loading..." : 
-                nextFreeTime || "Not available"}
+              {bitmapLoading || kindmapLoading || nextFreeLoading
+                ? "Loading..."
+                : nextFreeTime || "Not available"}
             </div>
           </div>
         </div>

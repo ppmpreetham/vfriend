@@ -68,7 +68,7 @@ const HobbiesStep = ({ formData, updateFormData }: HobbiesStepProps) => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Add a hobby"
+              placeholder="Hostel, Gazebo, etc..."
               className="flex-1 px-4 py-3 text-lg border-none rounded-xl bg-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:outline-none"
               maxLength={30}
               autoFocus={formData.hobbies.length === 0}
@@ -89,7 +89,7 @@ const HobbiesStep = ({ formData, updateFormData }: HobbiesStepProps) => {
       )}
 
       <p className="text-gray-300 text-center px-4">
-        Add up to 4 hobbies to help friends connect with you
+        Add up to 4 places you will be when you are free
         <br />
         <span className="text-sm opacity-75">
           ({formData.hobbies.length}/4 added)

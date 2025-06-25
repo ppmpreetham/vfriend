@@ -31,3 +31,13 @@
 
 ## Why VFriend?
 An year ago, while I was a freshman at my college, I had an oddly specific problem of having a little too many friends. Oftentimes,  I’d often find myself digging through old WhatsApp/Discord chats, trying to find the timetables they had sent me, one by one, over and over. It was tedious, repetitive, and honestly, a little ridiculous. I kept thinking, there has to be a better way to do this. But back then, I didn’t know much about app development. I had spent time learning web dev, but even now, as I write this, you could say, this is my first real app.
+
+## TO-DO
+- [ ] Seperate stores for oneSelf and friends
+- [ ] Remove redundant and unused Hooks
+- [ ] Add support for [Deep-Links](https://v2.tauri.app/plugin/deep-linking/#setting-up) on Mobile(Android and IOS)
+- [ ] Deep-Link onClick functionality
+- [ ] Better addFriend functionality
+- [ ] Setup Permissions for fs, Dialog for Mobile(Android and IOS)
+- [ ] NFC Functionality
+- [ ] peer-to-peer functionality

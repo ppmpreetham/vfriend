@@ -46,7 +46,7 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
     },
     {
       component: HobbiesStep,
-      title: "What are your hobbies?",
+      title: "Where do you spend your free time at?",
       canProceed: () => formData.hobbies.length > 0,
     },
     {
@@ -57,7 +57,10 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
     {
       component: SemesterStep,
       title: "What semester are you in?",
-      canProceed: () => formData.semester !== undefined && formData.semester >= 1 && formData.semester <= 10,
+      canProceed: () =>
+        formData.semester !== undefined &&
+        formData.semester >= 1 &&
+        formData.semester <= 10,
     },
     {
       component: TimetableStep,
@@ -82,23 +85,23 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
   };
 
   const handleComplete = async () => {
-  try {
-    // Initialize profile - properly pass the semester
-    await initializeProfileMutation.mutateAsync({
-      username: formData.username.trim(),
-      hobbies: formData.hobbies,
-      tagline: formData.tagline.trim(),
-      semester: formData.semester // Make sure semester is explicitly passed
-    });
+    try {
+      // Initialize profile - properly pass the semester
+      await initializeProfileMutation.mutateAsync({
+        username: formData.username.trim(),
+        hobbies: formData.hobbies,
+        tagline: formData.tagline.trim(),
+        semester: formData.semester, // Make sure semester is explicitly passed
+      });
 
-    // Mark onboarding as complete
-    await completeOnboardingMutation.mutateAsync(formData.username.trim());
+      // Mark onboarding as complete
+      await completeOnboardingMutation.mutateAsync(formData.username.trim());
 
-    onComplete();
-  } catch (error) {
-    console.error("Error completing onboarding:", error);
-  }
-};
+      onComplete();
+    } catch (error) {
+      console.error("Error completing onboarding:", error);
+    }
+  };
 
   const isLoading =
     initializeProfileMutation.isPending || completeOnboardingMutation.isPending;

@@ -26,7 +26,7 @@ const FriendCardHome = ({
         <span className="relative flex h-3 w-3">
           <span
             className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-              available ? "bg-green-400" : "bg-red-400"
+              available ? "bg-primary" : "bg-red-400"
             }`}
           ></span>
           <span
