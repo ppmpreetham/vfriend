@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
-import {
-  useInitializeProfile,
-  useCompleteOnboarding,
-} from "../../hooks/useUserQueries";
+import { initializeUserStore } from "../../store/newtimeTableStore";
 import NameStep from "./onboarding/NameStep";
 import HobbiesStep from "./onboarding/HobbiesStep";
 import TaglineStep from "./onboarding/TaglineStep";
@@ -20,6 +17,8 @@ export interface FormData {
   tagline: string;
   semester?: number;
   timetableUploaded: boolean;
+  registrationNumber: string;
+  timetableData: any;
 }
 
 const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
@@ -28,21 +27,31 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
     username: "",
     hobbies: [],
     tagline: "",
+    registrationNumber: "",
     timetableUploaded: false,
+    timetableData: null,
   });
-
-  const initializeProfileMutation = useInitializeProfile();
-  const completeOnboardingMutation = useCompleteOnboarding();
+  const [isInitializing, setIsInitializing] = useState(false);
+  const [initError, setInitError] = useState<string | null>(null);
 
   const updateFormData = (updates: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...updates }));
   };
 
+  // Change steps order to name, semester, hobbies, tagline, timetable
   const steps = [
     {
       component: NameStep,
-      title: "What's your name?",
+      title: "Enter your name",
       canProceed: () => formData.username.trim().length > 0,
+    },
+    {
+      component: SemesterStep,
+      title: "Select your semester",
+      canProceed: () =>
+        formData.semester !== undefined &&
+        formData.semester >= 1 &&
+        formData.semester <= 10,
     },
     {
       component: HobbiesStep,
@@ -55,17 +64,9 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
       canProceed: () => formData.tagline.trim().length > 0,
     },
     {
-      component: SemesterStep,
-      title: "What semester are you in?",
-      canProceed: () =>
-        formData.semester !== undefined &&
-        formData.semester >= 1 &&
-        formData.semester <= 10,
-    },
-    {
       component: TimetableStep,
       title: "Upload your timetable",
-      canProceed: () => formData.timetableUploaded,
+      canProceed: () => formData.timetableUploaded && formData.timetableData,
     },
   ];
 
@@ -86,25 +87,38 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
 
   const handleComplete = async () => {
     try {
-      // Initialize profile - properly pass the semester
-      await initializeProfileMutation.mutateAsync({
-        username: formData.username.trim(),
-        hobbies: formData.hobbies,
-        tagline: formData.tagline.trim(),
-        semester: formData.semester, // Make sure semester is explicitly passed
+      console.log("Form data being submitted:", formData);
+      setIsInitializing(true);
+      setInitError(null);
+
+      // Use initializeUserStore which now sets welcome flag to true
+      const result = await initializeUserStore({
+        u: formData.username.trim(),
+        r: formData.registrationNumber.trim(),
+        s: formData.semester || 0,
+        h: formData.hobbies,
+        q: [formData.tagline.trim()],
+        t: new Date().toISOString(),
+        o: formData.timetableData,
       });
 
-      // Mark onboarding as complete
-      await completeOnboardingMutation.mutateAsync(formData.username.trim());
+      if (!result.success) {
+        throw new Error(
+          result.error ? String(result.error) : "Failed to initialize user"
+        );
+      }
 
+      // Call onComplete directly instead of using the mutation
       onComplete();
     } catch (error) {
       console.error("Error completing onboarding:", error);
+      setInitError(error instanceof Error ? error.message : "Unknown error");
+    } finally {
+      setIsInitializing(false);
     }
   };
 
-  const isLoading =
-    initializeProfileMutation.isPending || completeOnboardingMutation.isPending;
+  const isLoading = isInitializing;
   const canProceed = currentStepData.canProceed();
   const isLastStep = currentStep === steps.length - 1;
 
@@ -184,11 +198,8 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
         )}
 
         {/* Error Messages */}
-        {(initializeProfileMutation.isError ||
-          completeOnboardingMutation.isError) && (
-          <div className="text-red-400 text-center mt-4">
-            Something went wrong. Please try again.
-          </div>
+        {initError && (
+          <div className="text-red-400 text-center mt-4">{initError}</div>
         )}
       </div>
     </div>

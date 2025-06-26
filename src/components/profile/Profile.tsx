@@ -1,13 +1,14 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import ScheduleGrid from "./ScheduleGrid";
-import { useCurrentUserProfile } from "../../hooks/useUserQueries";
+import { useUserProfile } from "../../hooks/useUserProfile";
+import { nextFreeTime as useNextFreeTime } from "../../utils/invokeFunctions";
+import { useUserTimetable } from "../../hooks/useUserTimetable"; // Import the new hook
 import {
-  useUserDayBitmap,
-  useUserDayKindmap,
-  nextFreeTime as useNextFreeTime,
-} from "../../hooks/timetablenewBitmap";
-import { useCurrentUserTimetable } from "../../hooks/useTimeTableQueries";
-import { resetAllStores, viewStoreContents } from "../../store/timeTableStore";
+  resetAllStores,
+  viewAllStores,
+  getUserBitmap,
+  getUserKindmap,
+} from "../../store/newtimeTableStore";
 
 const Profile = () => {
   // Get current time in HH:MM format
@@ -21,11 +22,53 @@ const Profile = () => {
     };
   }, []);
 
-  // Get user bitmap and kindmap using React Query
-  const { data: bitmap, isLoading: bitmapLoading } =
-    useUserDayBitmap(currentDay);
-  const { data: kindmap, isLoading: kindmapLoading } =
-    useUserDayKindmap(currentDay);
+  // Use states for bitmap and kindmap
+  const [bitmap, setBitmap] = useState<boolean[]>([]);
+  const [kindmap, setKindmap] = useState<boolean[]>([]);
+  const [bitmapLoading, setBitmapLoading] = useState(true);
+  const [kindmapLoading, setKindmapLoading] = useState(true);
+  const [allBitmaps, setAllBitmaps] = useState<Record<number, boolean[]>>({});
+
+  // Use the new hook for user profile
+  const userData = useUserProfile();
+
+  // Fetch bitmap and kindmap directly
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setBitmapLoading(true);
+        setKindmapLoading(true);
+
+        // Get bitmap for current day
+        const dayBitmap = await getUserBitmap(currentDay);
+        setBitmap(dayBitmap);
+        setBitmapLoading(false);
+
+        // Get kindmap for current day
+        const dayKindmap = await getUserKindmap(currentDay);
+        setKindmap(dayKindmap);
+        setKindmapLoading(false);
+
+        // Fetch all bitmaps for the schedule grid
+        const bitmaps: Record<number, boolean[]> = {};
+        for (let day = 1; day <= 6; day++) {
+          try {
+            bitmaps[day] = await getUserBitmap(day);
+          } catch (error) {
+            console.error(`Failed to get bitmap for day ${day}:`, error);
+            bitmaps[day] = [];
+          }
+        }
+        setAllBitmaps(bitmaps);
+      } catch (error) {
+        console.error("Error fetching bitmap/kindmap data:", error);
+        setBitmapLoading(false);
+        setKindmapLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [currentDay]);
 
   // Only call useNextFreeTime when bitmap and kindmap are available
   const { data: nextFreeTimeRaw, isLoading: nextFreeLoading } = useNextFreeTime(
@@ -60,15 +103,19 @@ const Profile = () => {
     return `${hour12}:${formattedMinutes} ${ampm}`;
   }, [nextFreeTimeRaw]);
 
-  const userData = useCurrentUserProfile();
+  // Replace the direct function call with the hook
   const {
     data: timetableData,
     isLoading: timetableLoading,
     error: timetableError,
-  } = useCurrentUserTimetable();
+  } = useUserTimetable();
 
-  currentTime;
-  if (userData.isLoading || timetableLoading) {
+  if (
+    userData.isLoading ||
+    timetableLoading ||
+    bitmapLoading ||
+    kindmapLoading
+  ) {
     return (
       <div className="w-screen h-full flex items-center justify-center">
         <div className="text-2xl">Loading profile...</div>
@@ -91,16 +138,14 @@ const Profile = () => {
         <div className="flex h-2/5 w-full gap-2 uppercase">
           <div className="ml-4 w-1/2 flex flex-col gap-2">
             <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
-              <div className="text-3xl">
-                {userData.data?.username || "UNKNOWN"}
-              </div>
+              <div className="text-3xl">{userData.data?.u || "UNKNOWN"}</div>
               <div>{timetableData ? "TIMETABLE FOUND" : "UNKNOWN"}</div>
               <div>SEM 4</div>
             </div>
             <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl justify-center">
               <div className="text-3xl">Free Places</div>
               <ul className="list-disc pl-5">
-                {userData.data?.hobbies?.map((hobby, index) => (
+                {userData.data?.h?.map((hobby: string, index: number) => (
                   <li key={index}>{hobby}</li>
                 )) || <li>No hobbies listed</li>}
               </ul>
@@ -108,7 +153,7 @@ const Profile = () => {
           </div>
           <div className="mr-4 w-1/2 flex flex-col gap-2">
             <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl justify-center">
-              <div>{userData.data?.tagline || "No tagline set"}</div>
+              <div>{userData.data?.q || "No tagline set"}</div>
             </div>
             <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
               <div className="text-xl">NEXT FREE</div>
@@ -123,6 +168,22 @@ const Profile = () => {
             Upload your timetable to see your schedule
           </div>
         </div>
+        <div
+          className="bg-red-500 text-black m-4 p-2 rounded-xl text-2xl cursor-pointer"
+          onClick={() => {
+            resetAllStores();
+          }}
+        >
+          Reset everything
+        </div>
+        <div
+          className="bg-green-500 text-black m-4 p-2 rounded-xl text-2xl cursor-pointer"
+          onClick={() => {
+            viewAllStores();
+          }}
+        >
+          VIEW STORES
+        </div>
       </div>
     );
   }
@@ -132,16 +193,14 @@ const Profile = () => {
       <div className="flex h-2/5 w-full gap-2 uppercase">
         <div className="ml-4 w-1/2 flex flex-col gap-2">
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
-            <div className="text-3xl">
-              {userData.data?.username || "UNKNOWN"}
-            </div>
-            <div>{timetableData ? timetableData.r : "UNKNOWN"}</div>
-            <div>SEM {timetableData.s}</div>
+            <div className="text-3xl">{userData.data?.u || "UNKNOWN"}</div>
+            <div>{userData ? userData.data?.r : "UNKNOWN"}</div>
+            <div>SEM {userData.data?.s}</div>
           </div>
           <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl gap-4">
             <div className="text-3xl">I'll be at...</div>
             <ul className="list-disc pl-5">
-              {userData.data?.hobbies?.map((hobby, index) => (
+              {userData.data?.h?.map((hobby, index) => (
                 <li key={index}>{hobby}</li>
               )) || <li>No hobbies listed</li>}
             </ul>
@@ -149,7 +208,7 @@ const Profile = () => {
         </div>
         <div className="mr-4 w-1/2 flex flex-col gap-2">
           <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl justify-center">
-            <div>{userData.data?.tagline || "No tagline set"}</div>
+            <div>{userData.data?.q || "No tagline set"}</div>
           </div>
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
             <div className="text-xl">NEXT FREE</div>
@@ -162,7 +221,7 @@ const Profile = () => {
         </div>
       </div>
       <div className="mx-4 my-2 text-4xl">TIME TABLE</div>
-      <ScheduleGrid data={timetableData} />
+      <ScheduleGrid bitmaps={allBitmaps} />
       <div
         className="bg-red-500 text-black m-4 p-2 rounded-xl text-2xl cursor-pointer"
         onClick={() => {
@@ -174,7 +233,7 @@ const Profile = () => {
       <div
         className="bg-green-500 text-black m-4 p-2 rounded-xl text-2xl cursor-pointer"
         onClick={() => {
-          viewStoreContents();
+          viewAllStores();
         }}
       >
         VIEW STORES

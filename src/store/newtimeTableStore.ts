@@ -27,10 +27,10 @@ export interface userData extends personData {
   welcome?: boolean; // welcome screen flag
 }
 
-const friendsStore = new LazyStore("friends.json");
-const userStore = new LazyStore("user.json");
+export const friendsStore = new LazyStore("friends.json");
+export const userStore = new LazyStore("user.json");
 
-export async function initializeUserStore({ u, r, s, h, q, t, o }: userData) {
+export async function initializeUserStore({ u, r, s, h, q, t, o }: shareData) {
   try {
     const b: Record<number, boolean[]> = {};
     const k: Record<number, boolean[]> = {};
@@ -50,6 +50,7 @@ export async function initializeUserStore({ u, r, s, h, q, t, o }: userData) {
       k, // kindmap for each day of the week
       o, // original schedule
       theme: "dark",
+      welcome: true, // set welcome flag to true
     });
     await userStore.save();
 
@@ -69,6 +70,19 @@ export async function initializeFriendsStore() {
   } catch (error) {
     console.error("Failed to initialize friends store:", error);
     return { success: false, error };
+  }
+}
+
+export async function getCurrentUserProfile(): Promise<userData | null> {
+  try {
+    const userData = (await userStore.get("userData")) as userData | null;
+    if (!userData) {
+      throw new Error("User data not found");
+    }
+    return userData;
+  } catch (error) {
+    console.error("Failed to get current user profile:", error);
+    return null;
   }
 }
 
@@ -133,6 +147,19 @@ export async function getUserBitmap(day: number): Promise<boolean[]> {
     return userData.b[day];
   } catch (error) {
     console.error("Failed to get user bitmap:", error);
+    throw error;
+  }
+}
+
+export async function getUserTimetable(): Promise<CompactSlot[]> {
+  try {
+    const userData = (await userStore.get("userData")) as userData | null;
+    if (!userData || !userData.o) {
+      throw new Error("No timetable found for the user");
+    }
+    return userData.o;
+  } catch (error) {
+    console.error("Failed to get user timetable:", error);
     throw error;
   }
 }

@@ -1,4 +1,4 @@
-import { useOnboardingStatus } from "../../hooks/useUserQueries";
+import { useOnboardingStatus } from "../../hooks/useOnboardingStatus";
 import OnboardingForm from "./OnboardingForm";
 
 interface WelcomePageProps {
