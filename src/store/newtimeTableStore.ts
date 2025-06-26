@@ -3,8 +3,7 @@ import type { CompactSlot } from "../types/timeTable";
 import {
   buildBitmap,
   buildKindmap,
-  nextFreeTime,
-  getFreeStatus,
+  getFreeStatusDirect,
 } from "../utils/invokeFunctions";
 
 export interface shareData {
@@ -243,7 +242,7 @@ export async function getFreeTimeOfAllFriends(
       const kindmap = friend.k[day] || friend.k[0];
 
       try {
-        const status = await getFreeStatus({ bitmap, currentTime, kindmap });
+        const status = await getFreeStatusDirect({ bitmap, currentTime, kindmap });
         if (status.data) {
           results.push({
             username: name,

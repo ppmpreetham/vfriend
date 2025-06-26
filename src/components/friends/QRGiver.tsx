@@ -19,8 +19,7 @@ const QRGiver = () => {
       return "";
     }
   };
-  console.log(decompress(compress(JSON.stringify(userData))));
-
+  
   if (timetableLoading) {
     return (
       <div className="w-screen h-full flex items-center justify-center">

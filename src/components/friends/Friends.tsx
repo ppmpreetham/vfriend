@@ -76,7 +76,7 @@ const Friends = () => {
               </div>
             </div>
             <div
-              className="flex items-center justify-center gap-2 rounded-full bg-primary text-white w-1/2 p-2 cursor-pointer"
+              className="flex items-center justify-center gap-2 rounded-full bg-primary text-black w-1/2 p-2 cursor-pointer"
               onClick={toggleAddFriendModal}
             >
               Add Friends

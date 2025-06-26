@@ -76,6 +76,33 @@ export function getFreeStatus(params: NextFreeTimeParams) {
   });
 }
 
+interface FreeStatusResponse {
+  is_busy: boolean;
+  from?: string;
+}
+
+export async function getFreeStatusDirect({
+  bitmap,
+  currentTime,
+  kindmap,
+}: {
+  bitmap: boolean[];
+  currentTime: string;
+  kindmap: boolean[];
+}): Promise<{ data: FreeStatusResponse }> {
+  try {
+    const result = await invoke("get_free_status", {
+      bitmap,
+      currentTime,
+      kindmap,
+    });
+    return { data: result as FreeStatusResponse };
+  } catch (error) {
+    console.error("Error in getFreeStatusDirect:", error);
+    throw error;
+  }
+}
+
 export async function parseHTMLTimetable(
   htmlContent: string
 ): Promise<CompactTimetable> {

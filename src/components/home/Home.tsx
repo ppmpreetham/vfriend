@@ -13,8 +13,12 @@ const Home = () => {
   useEffect(() => {
     const loadFriends = async () => {
       try {
-        const currentTime = new Date().toISOString();
-        const friendsData = await getFreeTimeOfAllFriends(currentTime);
+        const now = new Date();
+        const formattedTime = `${now.getHours()
+          .toString()
+          .padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+
+        const friendsData = await getFreeTimeOfAllFriends(formattedTime);
         setFriends(friendsData);
       } catch (error) {
         console.error("Failed to load friends data:", error);
