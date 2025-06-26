@@ -37,8 +37,43 @@
   </div>
 </div>
 
+> [!WARNING]  
+> This app is still in development, and is not yet ready for production use. There are many features that are still missing, and there may be bugs. Please use it at your own risk.
+
 ## Why VFriend?
 An year ago, while I was a freshman at my college, I had an oddly specific problem of having a little too many friends. Oftentimes,  I’d often find myself digging through old WhatsApp/Discord chats, trying to find the timetables they had sent me, one by one, over and over. It was tedious, repetitive, and honestly, a little ridiculous. I kept thinking, there has to be a better way to do this. But back then, I didn’t know much about app development. I had spent time learning web dev, but even now, as I write this, you could say, this is my first real app.
+
+## Usage
+0. **Install Node.js**: Make sure you have Node.js installed on your system. You can download it from [nodejs.org](https://nodejs.org/).
+1. **Install pnpm**: If you haven't already, install `pnpm` globally
+    ```bash
+    npm install -g pnpm
+    ```
+2. **Install Rust**: Make sure you have Rust installed on your system. You can download it from [rustup.rs](https://rustup.rs/).
+3. **Install Tauri CLI**: Install the Tauri CLI globally using `pnpm`:
+    ```bash
+    pnpm install -g @tauri-apps/cli
+    ``` 
+4. **Install Tauri**: Follow the [Tauri installation guide](https://tauri.app/v2/getting-started/prerequisites/) to set up your environment.
+
+5. **Clone the Repository**: 
+   ```bash
+   git clone https://github.com/ppmpreetham/vfriend.git
+   cd vfriend
+   ```
+6. **Install Dependencies**:
+   ```bash
+    pnpm install
+    ```
+7. **Run the App**:
+    ```bash
+      pnpm tauri dev
+      ```
+8. **Build the App**:
+    ```bash
+      pnpm tauri build
+      ```
+  
 
 ## TO-DO
 - [x] Seperate stores for oneSelf and friends
