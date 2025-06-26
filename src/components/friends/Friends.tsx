@@ -24,17 +24,20 @@ const Friends = () => {
   // Handle clicks outside the modal
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
         setShowAddFriendModal(false);
       }
     };
 
     if (showAddFriendModal) {
-      document.addEventListener('mousedown', handleOutsideClick);
+      document.addEventListener("mousedown", handleOutsideClick);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [showAddFriendModal]);
 
@@ -42,10 +45,8 @@ const Friends = () => {
     <div className="w-screen h-full">
       {/* Modal Overlay */}
       {showAddFriendModal && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
-        >
-          <div 
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div
             ref={modalRef}
             className="bg-background rounded-lg w-11/12 max-w-md p-4 relative"
           >
@@ -75,7 +76,7 @@ const Friends = () => {
               </div>
             </div>
             <div
-              className="flex items-center justify-center gap-2 rounded-full bg-primary text-black w-1/2 p-2 cursor-pointer"
+              className="flex items-center justify-center gap-2 rounded-full bg-primary text-white w-1/2 p-2 cursor-pointer"
               onClick={toggleAddFriendModal}
             >
               Add Friends

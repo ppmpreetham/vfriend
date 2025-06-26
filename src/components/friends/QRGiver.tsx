@@ -1,5 +1,4 @@
 import QRCodeGenerator from "./QRCodeGenerator";
-import { useUserTimetable } from "../../hooks/useUserTimetable";
 import { useShareUserProfile } from "../../hooks/useShareUserProfile";
 import { compress, decompress } from "../../utils/compressor";
 

@@ -1,7 +1,8 @@
-import { Share, QrCode, SmartphoneNfc, Wifi, ArrowLeft } from "lucide-react";
+import { Share, QrCode, Wifi, ArrowLeft, Sparkles } from "lucide-react";
 import { ShareLink } from "./ShareLink";
 import useAddFriendStore from "../../store/useAddFriendStore";
 import QRGiver from "./QRGiver";
+import CodeTab from "./FriendAddTypes/Access";
 
 const ShareLinkTab = () => (
   <div className="p-4">
@@ -28,15 +29,6 @@ const QRCodeTab = () => (
   </div>
 );
 
-const NFCTab = () => (
-  <div className="p-4">
-    <h3 className="text-xl font-bold text-black mb-4">NFC</h3>
-    <div className="text-black">
-      <p>NFC sharing coming soon!</p>
-    </div>
-  </div>
-);
-
 const P2PTab = () => (
   <div className="p-4">
     <h3 className="text-xl font-bold text-black mb-4">Wi-Fi P2P</h3>
@@ -52,7 +44,7 @@ const MainTab = () => {
   return (
     <>
       <div className="text-4xl text-black">ADD FRIEND</div>
-      <div className="grid grid-cols-2 gap-4 mt-4 text-white">
+      <div className="grid grid-cols-2 gap-4 mt-4 text-black">
         <button
           className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
           onClick={() => setActiveTab("share")}
@@ -69,10 +61,10 @@ const MainTab = () => {
         </button>
         <button
           className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
-          onClick={() => setActiveTab("nfc")}
+          onClick={() => setActiveTab("code")}
         >
-          <SmartphoneNfc size={24} />
-          <div>NFC (soon)</div>
+          <Sparkles size={24} />
+          <div>ACCESS CODE</div>
         </button>
         <button
           className="bg-black p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
@@ -95,8 +87,8 @@ const AddFriend = () => {
         return <ShareLinkTab />;
       case "qr":
         return <QRCodeTab />;
-      case "nfc":
-        return <NFCTab />;
+      case "code":
+        return <CodeTab />;
       case "p2p":
         return <P2PTab />;
       default:
