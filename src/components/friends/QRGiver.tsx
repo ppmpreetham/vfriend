@@ -1,5 +1,6 @@
 import QRCodeGenerator from "./QRCodeGenerator";
-import { useCurrentUserTimetable } from "../../hooks/useTimeTableQueries";
+import { useUserTimetable } from "../../hooks/useUserTimetable";
+import { useUserProfile } from "../../hooks/useUserProfile";
 import { compress } from "../../utils/compressor";
 
 const QRGiver = () => {
@@ -7,7 +8,9 @@ const QRGiver = () => {
     data: timetableData,
     isLoading: timetableLoading,
     error: timetableError,
-  } = useCurrentUserTimetable();
+  } = useUserTimetable();
+
+  const userData = useUserProfile();
 
   const getTimetableJsonString = () => {
     if (!timetableData) return "";
@@ -68,17 +71,20 @@ const QRGiver = () => {
           <div className="mt-6 p-4 rounded-lg">
             <h3 className="font-semibold mb-2">My Timetable Info:</h3>
             <p>
-              <strong>User:</strong> {timetableData.u}
+              <strong>User:</strong> {userData?.data?.u || "Unknown User"}
             </p>
             <p>
-              <strong>Semester:</strong> {timetableData.s}
+              <strong>Semester:</strong>{" "}
+              {userData.data?.s || "Unknown Semester"}
             </p>
             <p>
               <strong>Last Updated:</strong>{" "}
-              {new Date(timetableData.t).toLocaleString()}
+              {userData.data?.t
+                ? new Date(userData.data.t).toLocaleString()
+                : "Unknown"}
             </p>
             <p>
-              <strong>Total Slots:</strong> {timetableData.o.length}
+              <strong>Total Slots:</strong> {timetableData.length}
             </p>
           </div>
         </div>

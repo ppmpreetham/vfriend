@@ -3,12 +3,12 @@ import ReactDOM from "react-dom/client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { queryClient } from "./lib/queryClient";
-import { initializeStores } from "./store/timeTableStore";
+// import { initializeStores } from "./store/timeTableStore";
 
 import App from "./App";
 
 // Initialize stores
-initializeStores();
+// initializeStores();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
