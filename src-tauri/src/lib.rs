@@ -35,14 +35,14 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_sharing::init())
         .invoke_handler(tauri::generate_handler![
-            commands::check_conflicts,
-            commands::find_free_times,
-            commands::is_free_at,
             parseHTML::parseHTML,
             newercommands::build_bitmap,
             newercommands::build_kindmap,
             newercommands::next_free_time_after,
             newercommands::get_free_status,
+            // commands::check_conflicts,
+            // commands::find_free_times,
+            // commands::is_free_at,
             // p2p::start_node,
             // p2p::create_ticket,
             // p2p::join_ticket,

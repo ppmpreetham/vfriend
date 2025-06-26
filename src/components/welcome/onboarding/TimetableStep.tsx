@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Upload, CheckCircle } from "lucide-react";
 import { ReadHTMLFile } from "../../../utils/inputHelper";
-import { parseHTMLTimetable } from "../../../utils/timetableHelper";
+import { parseHTMLTimetable } from "../../../utils/invokeFunctions";
 import type { FormData } from "../OnboardingForm";
 
 interface TimetableStepProps {

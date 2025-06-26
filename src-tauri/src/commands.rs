@@ -1,3 +1,7 @@
+//======================================================//
+//               LEGACY CODE, NOT USED                  //
+//======================================================//
+
 use crate::scheduling_conflict::{
     find_common_free_times, get_time_slot_info, initialize_lunch_periods, initialize_time_slots,
     is_user_free_at, CompactTimetable, Friend,

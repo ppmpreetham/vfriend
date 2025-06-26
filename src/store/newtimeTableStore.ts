@@ -86,6 +86,21 @@ export async function getCurrentUserProfile(): Promise<userData | null> {
   }
 }
 
+export async function shareCurrentUserProfile(): Promise<shareData | null> {
+  try {
+    const userData = (await userStore.get("userData")) as userData | null;
+    if (!userData) {
+      throw new Error("User data not found");
+    }
+
+    const { u, r, s, h, q, t, o } = userData;
+    return { u, r, s, h, q, t, o };
+  } catch (error) {
+    console.error("Failed to share current user profile:", error);
+    return null;
+  }
+}
+
 export async function addFriend(friend: shareData) {
   try {
     const b: Record<number, boolean[]> = {};

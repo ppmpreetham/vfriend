@@ -2,10 +2,16 @@ import { invoke } from "@tauri-apps/api/core";
 import type { CompactSlot } from "../types/timeTable";
 import { useQuery } from "@tanstack/react-query";
 
+import { CompactTimetable } from "../types/timeTable";
 export interface NextFreeTimeParams {
   bitmap: boolean[];
   currentTime: string;
   kindmap: boolean[];
+}
+export interface FreeStatus {
+  is_busy: boolean;
+  from: string;
+  until: string | null;
 }
 
 /**
@@ -52,12 +58,6 @@ export function nextFreeTime(params: NextFreeTimeParams) {
   });
 }
 
-export interface FreeStatus {
-  is_busy: boolean;
-  from: string;
-  until: string | null;
-}
-
 /**
  * Fetches the status of the user's schedule
  */
@@ -74,4 +74,18 @@ export function getFreeStatus(params: NextFreeTimeParams) {
     refetchInterval: 60_000,
     refetchOnWindowFocus: true,
   });
+}
+
+export async function parseHTMLTimetable(
+  htmlContent: string
+): Promise<CompactTimetable> {
+  try {
+    const jsonString = await invoke<string>("parseHTML", { htmlContent });
+    const timetable = JSON.parse(jsonString) as CompactTimetable;
+    console.log("Parsed timetable:", timetable);
+    return timetable;
+  } catch (error) {
+    console.error("Error parsing HTML timetable:", error);
+    throw error;
+  }
 }

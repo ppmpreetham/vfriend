@@ -1,3 +1,7 @@
+//======================================================//
+//               LEGACY CODE, NOT USED                  //
+//======================================================//
+
 use chrono::{DateTime, Duration, NaiveDateTime, NaiveTime, Timelike, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;

@@ -20,4 +20,3 @@ export const ReadHTMLFile = async (): Promise<string | null> => {
     return null;
   }
 };
-

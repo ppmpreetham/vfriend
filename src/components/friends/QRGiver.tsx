@@ -1,27 +1,26 @@
 import QRCodeGenerator from "./QRCodeGenerator";
 import { useUserTimetable } from "../../hooks/useUserTimetable";
-import { useUserProfile } from "../../hooks/useUserProfile";
-import { compress } from "../../utils/compressor";
+import { useShareUserProfile } from "../../hooks/useShareUserProfile";
+import { compress, decompress } from "../../utils/compressor";
 
 const QRGiver = () => {
   const {
-    data: timetableData,
+    data: userData,
     isLoading: timetableLoading,
     error: timetableError,
-  } = useUserTimetable();
-
-  const userData = useUserProfile();
+  } = useShareUserProfile();
 
   const getTimetableJsonString = () => {
-    if (!timetableData) return "";
+    if (!userData) return "";
 
     try {
-      return compress(JSON.stringify(timetableData));
+      return compress(JSON.stringify(userData));
     } catch (error) {
       console.error("Error converting timetable to JSON:", error);
       return "";
     }
   };
+  console.log(decompress(compress(JSON.stringify(userData))));
 
   if (timetableLoading) {
     return (
@@ -45,7 +44,7 @@ const QRGiver = () => {
     );
   }
 
-  if (!timetableData) {
+  if (!userData) {
     return (
       <div className="w-screen h-full flex items-center justify-center">
         <div className="text-center text-gray-500">
@@ -71,20 +70,17 @@ const QRGiver = () => {
           <div className="mt-6 p-4 rounded-lg">
             <h3 className="font-semibold mb-2">My Timetable Info:</h3>
             <p>
-              <strong>User:</strong> {userData?.data?.u || "Unknown User"}
+              <strong>User:</strong> {userData?.u || "Unknown User"}
             </p>
             <p>
-              <strong>Semester:</strong>{" "}
-              {userData.data?.s || "Unknown Semester"}
+              <strong>Semester:</strong> {userData?.s || "Unknown Semester"}
             </p>
             <p>
               <strong>Last Updated:</strong>{" "}
-              {userData.data?.t
-                ? new Date(userData.data.t).toLocaleString()
-                : "Unknown"}
+              {userData?.t ? new Date(userData.t).toLocaleString() : "Unknown"}
             </p>
             <p>
-              <strong>Total Slots:</strong> {timetableData.length}
+              <strong>Total Slots:</strong> {userData?.o?.length}
             </p>
           </div>
         </div>
