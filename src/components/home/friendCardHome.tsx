@@ -7,6 +7,7 @@ const FriendCardHome = ({
   location,
   distance,
   time,
+  
 }: FriendCardProps) => {
   return (
     <div className="flex p-4 bg-gray-900 rounded-xl m-4 flex-row items-center justify-between text-white select-none">

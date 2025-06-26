@@ -3,6 +3,7 @@ import type { CompactSlot } from "../types/timeTable";
 import {
   buildBitmap,
   buildKindmap,
+  currentlyAt,
   getFreeStatusDirect,
 } from "../utils/invokeFunctions";
 
@@ -234,20 +235,30 @@ export async function getFreeTimeOfAllFriends(
 
     const results: FriendStatusData[] = [];
 
-    const day = new Date(currentTime).getDay() + 1;
+    // Get current day (0 = Sunday, 1 = Monday, etc.)
+    const today = new Date().getDay();
+    console.log(`Current day index: ${today} (${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][today]})`);
 
     for (const friend of friendsData) {
       const name = friend.u;
-      const bitmap = friend.b[day] || friend.b[0];
-      const kindmap = friend.k[day] || friend.k[0];
+      
+      // Log available bitmap days for debugging
+      console.log(`Friend ${name} has bitmap days:`, Object.keys(friend.b));
+      
+      // Use today's bitmap, with fallback to day 0 if not available
+      const bitmap = friend.b[today] || friend.b[0];
+      const kindmap = friend.k[today] || friend.k[0];
 
       try {
+        console.log(`Friend ${name}, using day ${today}, bitmap:`, bitmap, "kindmap:", kindmap);
         const status = await getFreeStatusDirect({ bitmap, currentTime, kindmap });
+        const location = await currentlyAt(currentTime, friend.o, today) || "";
+        console.log(`Friend ${name} status:`, status);
         if (status.data) {
           results.push({
             username: name,
             available: !status.data.is_busy,
-            location: "",
+            location: location,
             time: status.data.from || "",
           });
         }

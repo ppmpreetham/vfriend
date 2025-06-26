@@ -17,8 +17,10 @@ const Home = () => {
         const formattedTime = `${now.getHours()
           .toString()
           .padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
-
+        
+        console.log("Current formatted time:", formattedTime);
         const friendsData = await getFreeTimeOfAllFriends(formattedTime);
+        console.log("Friends data returned:", friendsData);
         setFriends(friendsData);
       } catch (error) {
         console.error("Failed to load friends data:", error);

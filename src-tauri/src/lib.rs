@@ -40,6 +40,7 @@ pub fn run() {
             newercommands::build_kindmap,
             newercommands::next_free_time_after,
             newercommands::get_free_status,
+            newercommands::currently_at,
             // commands::check_conflicts,
             // commands::find_free_times,
             // commands::is_free_at,

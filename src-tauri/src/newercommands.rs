@@ -250,6 +250,65 @@ pub fn get_free_status(
     None
 }
 
+#[tauri::command]
+pub fn currently_at(
+    time: &str,
+    time_table: Vec<CompactSlot>,
+    day: u8,
+) -> Option<String> {
+    // Parse the current time
+    let current_time = match NaiveTime::parse_from_str(time, "%H:%M") {
+        Ok(t) => t,
+        Err(_) => return None, // Invalid time format
+    };
+
+    // Find which period the current time belongs to
+    let mut current_period = None;
+
+    // Check against both theory and lab periods to find the current period
+    for i in 0..12 {
+        // Check theory periods
+        let (theory_start, theory_end) = THEORY_PERIODS[i];
+        let theory_start_time = NaiveTime::parse_from_str(theory_start, "%H:%M").unwrap();
+        let theory_end_time = NaiveTime::parse_from_str(theory_end, "%H:%M").unwrap();
+        
+        if current_time >= theory_start_time && current_time < theory_end_time {
+            current_period = Some(i as u8 + 1);
+            break;
+        }
+
+        // Check lab periods
+        let (lab_start, lab_end) = LAB_PERIODS[i];
+        let lab_start_time = NaiveTime::parse_from_str(lab_start, "%H:%M").unwrap();
+        let lab_end_time = NaiveTime::parse_from_str(lab_end, "%H:%M").unwrap();
+        
+        if current_time >= lab_start_time && current_time < lab_end_time {
+            current_period = Some(i as u8 + 1);
+            break;
+        }
+    }
+    
+    // If we couldn't determine the current period, return None
+    let period = match current_period {
+        Some(p) => p,
+        None => return None,
+    };
+
+    // Look for a matching slot in the time_table with the same day and period
+    for slot in time_table {
+        if slot.d == day && slot.p == period {
+            // Extract the location from the f field (part after the first hyphen)
+            if let Some(first_hyphen) = slot.f.find('-') {
+                let after_first_hyphen = &slot.f[first_hyphen + 1..];
+                return Some(after_first_hyphen.to_string());
+            }
+        }
+    }
+
+    // No matching slot found
+    None
+}
+
 // fn main() {
 
 //     let bitmap: [bool; 12] = [

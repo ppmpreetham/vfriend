@@ -116,3 +116,21 @@ export async function parseHTMLTimetable(
     throw error;
   }
 }
+
+export async function currentlyAt(
+  time: string,
+  timeTable: CompactSlot[],
+  day: number,
+): Promise<string | null> {
+  try {
+    const result = await invoke<string | null>("currently_at", {
+      time,
+      timeTable,
+      day,
+    });
+    return result;
+  } catch (error) {
+    console.error("Error in currentlyAt:", error);
+    throw error;
+  }
+}
