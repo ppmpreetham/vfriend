@@ -1,0 +1,223 @@
+import { LazyStore } from "@tauri-apps/plugin-store";
+import type { CompactSlot } from "../types/timeTable";
+import {
+  buildBitmap,
+  buildKindmap,
+  nextFreeTime,
+  getFreeStatus,
+} from "../utils/invokeFunctions";
+
+export interface shareData {
+  u: string; // username
+  r: string; // registration number
+  s: number; // semester
+  h: string[]; // hobbies
+  q: string[]; // quote
+  t: string; // timestamp
+  o: CompactSlot[];
+}
+
+export interface personData extends shareData {
+  b: Record<number, boolean[]>; // bitmap for each day of the week
+  k: Record<number, boolean[]>; // kindmap for each day of the week
+}
+
+export interface userData extends personData {
+  theme: string; // theme preference
+  welcome?: boolean; // welcome screen flag
+}
+
+const friendsStore = new LazyStore("friends.json");
+const userStore = new LazyStore("user.json");
+
+export async function initializeUserStore({ u, r, s, h, q, t, o }: userData) {
+  try {
+    const b: Record<number, boolean[]> = {};
+    const k: Record<number, boolean[]> = {};
+    for (let day = 0; day < 7; day++) {
+      b[day] = await buildBitmap(o, day);
+      k[day] = await buildKindmap(o, day);
+    }
+
+    await userStore.set("userData", {
+      u, // username
+      r, // registration number
+      s, // semester
+      h, // hobbies
+      q, // quote
+      t, // timestamp
+      b, // bitmap for each day of the week
+      k, // kindmap for each day of the week
+      o, // original schedule
+      theme: "dark",
+    });
+    await userStore.save();
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to initialize userStore:", error);
+    return { success: false, error };
+  }
+}
+
+export async function initializeFriendsStore() {
+  try {
+    await friendsStore.set("friends", []);
+    await friendsStore.save();
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to initialize friends store:", error);
+    return { success: false, error };
+  }
+}
+
+export async function addFriend(friend: shareData) {
+  try {
+    const b: Record<number, boolean[]> = {};
+    const k: Record<number, boolean[]> = {};
+    for (let day = 0; day < 7; day++) {
+      b[day] = await buildBitmap(friend.o, day);
+      k[day] = await buildKindmap(friend.o, day);
+    }
+
+    const person: personData = {
+      ...friend,
+      b,
+      k,
+    };
+
+    const friends: personData[] = (await friendsStore.get("friends")) || [];
+    friends.push(person);
+    await friendsStore.set("friends", friends);
+    await friendsStore.save();
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to add friend:", error);
+    return { success: false, error };
+  }
+}
+
+export async function viewAllStores() {
+  try {
+    const userData = await userStore.get("userData");
+    const friendsData = await friendsStore.get("friends");
+
+    console.log("User Data:", userData);
+    console.log("Friends Data:", friendsData);
+  } catch (error) {
+    console.error("Failed to view all stores:", error);
+  }
+}
+
+export async function resetAllStores() {
+  try {
+    await userStore.set("userData", null);
+    await userStore.save();
+
+    await friendsStore.set("friends", []);
+    await friendsStore.save();
+
+    console.log("All stores have been reset.");
+  } catch (error) {
+    console.error("Failed to reset all stores:", error);
+  }
+}
+
+export async function getUserBitmap(day: number): Promise<boolean[]> {
+  try {
+    const userData = (await userStore.get("userData")) as userData | null;
+    if (!userData || !userData.b || !userData.b[day]) {
+      throw new Error(`No bitmap found for day ${day}`);
+    }
+    return userData.b[day];
+  } catch (error) {
+    console.error("Failed to get user bitmap:", error);
+    throw error;
+  }
+}
+
+export async function getFriendBitmap(
+  username: string,
+  day: number
+): Promise<boolean[]> {
+  try {
+    const friendsData = (await friendsStore.get("friends")) as
+      | personData[]
+      | null;
+    if (!friendsData) {
+      throw new Error("No friends data found");
+    }
+    const friend = friendsData.find((f) => f.u === username);
+    if (!friend || !friend.b || !friend.b[day]) {
+      throw new Error(`No bitmap found for friend ${username} on day ${day}`);
+    }
+    return friend.b[day];
+  } catch (error) {
+    console.error("Failed to get friend bitmap:", error);
+    throw error;
+  }
+}
+
+export async function getUserKindmap(day: number): Promise<boolean[]> {
+  try {
+    const userData = (await userStore.get("userData")) as userData | null;
+    if (!userData || !userData.k || !userData.k[day]) {
+      throw new Error(`No kindmap found for day ${day}`);
+    }
+    return userData.k[day];
+  } catch (error) {
+    console.error("Failed to get user kindmap:", error);
+    throw error;
+  }
+}
+
+export interface FriendStatusData {
+  username: string;
+  available: boolean;
+  location: string;
+  time: string;
+}
+
+export async function getFreeTimeOfAllFriends(
+  currentTime: string
+): Promise<FriendStatusData[]> {
+  try {
+    const friendsData = (await friendsStore.get("friends")) as
+      | personData[]
+      | null;
+
+    if (!friendsData || friendsData.length === 0) {
+      return [];
+    }
+
+    const results: FriendStatusData[] = [];
+
+    const day = new Date(currentTime).getDay() + 1;
+
+    for (const friend of friendsData) {
+      const name = friend.u;
+      const bitmap = friend.b[day] || friend.b[0];
+      const kindmap = friend.k[day] || friend.k[0];
+
+      try {
+        const status = await getFreeStatus({ bitmap, currentTime, kindmap });
+        if (status.data) {
+          results.push({
+            username: name,
+            available: !status.data.is_busy,
+            location: "",
+            time: status.data.from || "",
+          });
+        }
+      } catch (error) {
+        console.error(`Error getting status for friend ${name}:`, error);
+      }
+    }
+
+    return results;
+  } catch (error) {
+    console.error("Failed to get free time of all friends:", error);
+    return [];
+  }
+}

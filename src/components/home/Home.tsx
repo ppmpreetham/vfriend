@@ -1,91 +1,30 @@
 import FriendCardHome from "./friendCardHome";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
-// import DebugTauriComponent from "./test";
+import { getFreeTimeOfAllFriends } from "../../store/newtimeTableStore";
+import type { FriendStatusData } from "../../store/newtimeTableStore";
 
 const Home = () => {
   const [showOnlyAvailable, setShowOnlyAvailable] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [friends, setFriends] = useState<FriendStatusData[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // sample data
-  const friends = [
-    {
-      available: true,
-      name: "a",
-      location: "AB1-209",
-      time: "11:30PM",
-    },
-    {
-      available: false,
-      name: "Sreeyansh",
-      location: "AB3-110",
-      distance: "30",
-      time: "12:30 PM",
-    },
-    {
-      available: false,
-      name: "Raghav",
-      location: "AB3-110",
-      time: "12:30 PM",
-    },
-    {
-      available: true,
-      name: "Danny",
-      location: "AB2-109",
-      time: "11:30PM",
-    },
-    {
-      available: false,
-      name: "Ayush",
-      location: "AB4-110",
-      distance: "30",
-      time: "12:30 PM",
-    },
-    {
-      available: false,
-      name: "Takuli",
-      location: "AB3-110",
-      time: "12:30 PM",
-    },
-    {
-      available: true,
-      name: "Preetham",
-      location: "AB1-209",
-      time: "11:30PM",
-    },
-    {
-      available: false,
-      name: "Sreeyansh",
-      location: "AB3-110",
-      distance: "30",
-      time: "12:30 PM",
-    },
-    {
-      available: false,
-      name: "Raghav",
-      location: "AB3-110",
-      time: "12:30 PM",
-    },
-    {
-      available: true,
-      name: "Preetham",
-      location: "AB1-209",
-      time: "11:30PM",
-    },
-    {
-      available: false,
-      name: "Sreeyansh",
-      location: "AB3-110",
-      distance: "30",
-      time: "12:30 PM",
-    },
-    {
-      available: false,
-      name: "Raghav",
-      location: "AB3-110",
-      time: "12:30 PM",
-    },
-  ];
+  useEffect(() => {
+    const loadFriends = async () => {
+      try {
+        const currentTime = new Date().toISOString();
+        const friendsData = await getFreeTimeOfAllFriends(currentTime);
+        setFriends(friendsData);
+      } catch (error) {
+        console.error("Failed to load friends data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFriends();
+  }, []);
 
   const filteredFriends = friends
     .filter((friend) => {
@@ -96,14 +35,14 @@ const Home = () => {
       if (searchTerm.trim() !== "") {
         const searchLower = searchTerm.toLowerCase();
         return (
-          friend.name.toLowerCase().includes(searchLower) ||
+          friend.username.toLowerCase().includes(searchLower) ||
           friend.location.toLowerCase().includes(searchLower)
         );
       }
 
       return true;
     })
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => a.username.localeCompare(b.username));
 
   return (
     <div className="h-full w-full overflow-y-auto scrollbar-hide">
@@ -139,14 +78,15 @@ const Home = () => {
         </div>
       </div>
 
-      {filteredFriends.length > 0 ? (
+      {loading ? (
+        <div className="text-center text-gray-400 my-8">Loading friends...</div>
+      ) : filteredFriends.length > 0 ? (
         filteredFriends.map((friend, index) => (
           <FriendCardHome
             key={index}
+            name={friend.username}
             available={friend.available}
-            name={friend.name}
             location={friend.location}
-            distance={friend.distance}
             time={friend.time}
           />
         ))
