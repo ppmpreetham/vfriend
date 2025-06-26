@@ -29,17 +29,13 @@
   </a>
 </p>
 
-<p align="center" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-  <picture style="flex: 1; min-width: 250px;">
-    <img alt="Home screen" src="README/app images/home.png" style="max-width: 100%;" />
-  </picture>
-  <picture style="flex: 1; min-width: 250px;">
-    <img alt="Friends screen" src="README/app images/friends.png" style="max-width: 100%;" />
-  </picture>
-  <picture style="flex: 1; min-width: 250px;">
-    <img alt="Profile screen" src="README/app images/profile.png" style="max-width: 100%;" />
-  </picture>
-</p>
+<div align="center" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+  <div style="display: flex; flex-direction: row; overflow-x: auto; gap: 10px; padding: 10px;">
+    <img alt="Home screen" src="README/app images/home.png" style="height: 600px; width: auto; object-fit: contain;" />
+    <img alt="Friends screen" src="README/app images/friends.png" style="height: 600px; width: auto; object-fit: contain;" />
+    <img alt="Profile screen" src="README/app images/profile.png" style="height: 600px; width: auto; object-fit: contain;" />
+  </div>
+</div>
 
 ## Why VFriend?
 An year ago, while I was a freshman at my college, I had an oddly specific problem of having a little too many friends. Oftentimes,  I’d often find myself digging through old WhatsApp/Discord chats, trying to find the timetables they had sent me, one by one, over and over. It was tedious, repetitive, and honestly, a little ridiculous. I kept thinking, there has to be a better way to do this. But back then, I didn’t know much about app development. I had spent time learning web dev, but even now, as I write this, you could say, this is my first real app.
