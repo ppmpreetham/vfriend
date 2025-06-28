@@ -63,7 +63,7 @@ An year ago, while I was a freshman at my college, I had an oddly specific probl
    ```
 6. **Install Dependencies**:
    ```bash
-    pnpm install
+    pnpm i
     ```
 7. **Run the App**:
     ```bash
@@ -73,7 +73,30 @@ An year ago, while I was a freshman at my college, I had an oddly specific probl
     ```bash
       pnpm tauri build
       ```
-  
+### Android
+To build the app for Android, you need to have the Android SDK and NDK installed. Follow the [Tauri Android guide](https://tauri.app/v2/guides/mobile/android/) for detailed instructions.
+
+0. Add this to `.vscode/settings.json` to ignore Tauri's Android schema:
+  ```json
+  "yaml.schemaStore.enable": false
+  ```
+
+1. First, initialize the Android project:
+   ```bash
+   pnpm tauri android init
+   ```
+2. Change these permissions for file access:
+Include the following permissions to the `manifest` tag in the `gen/android/app/src/main/AndroidManifest.xml` file:
+   ```xml
+   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+   ```
+
+3. Then, build the app for Android:
+   ```bash
+   pnpm tauri android build
+   ```
+
 
 ## TO-DO
 - [x] Seperate stores for oneSelf and friends

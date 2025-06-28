@@ -25,10 +25,6 @@ serde_json = "1"
 base64 = "0.22.1"
 soup = "0.5.1"
 chrono = { version = "0.4.41", features = ["serde"] }
-# tokio = { version = "1.45.1", features = ["full"] }
-# iroh = "0.34.0"
-# anyhow = "1.0"
-tauri-plugin-opener = "2.4.0"
 tauri-plugin-store = "2.3.0"
 tauri-plugin-sharing = { git = "https://github.com/inkibra/tauri-plugins", package="tauri-plugin-sharing" }
 tauri-plugin-dialog = "2.3.0"

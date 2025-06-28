@@ -1,6 +1,6 @@
 import QRCodeGenerator from "./QRCodeGenerator";
 import { useShareUserProfile } from "../../hooks/useShareUserProfile";
-import { compress, decompress } from "../../utils/compressor";
+import { compress } from "../../utils/compressor";
 
 const QRGiver = () => {
   const {

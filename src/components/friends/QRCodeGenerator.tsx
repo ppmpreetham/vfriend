@@ -53,6 +53,7 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrl(e.target.value);
   };
+  console.log(handleUrlChange)
 
   return (
     <div className="qr-code-generator p-4 max-w-md mx-auto">

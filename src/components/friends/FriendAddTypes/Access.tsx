@@ -12,6 +12,9 @@ const CodeTab = () => {
     error: timetableError,
   } = useShareUserProfile();
   
+  console.log(timetableError? "Error loading timetable" : "Timetable loaded successfully");
+  console.log(timetableLoading? "Loading timetable..." : "Timetable loading status: " + timetableLoading);
+
   const [accessCode, setAccessCode] = useState("");
   const [addStatus, setAddStatus] = useState({ message: "", isError: false });
 
