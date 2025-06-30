@@ -65,11 +65,16 @@ An year ago, while I was a freshman at my college, I had an oddly specific probl
    ```bash
     pnpm i
     ```
-7. **Run the App**:
+7. **Change the IP**:
+    Open `src-tauri/tauri.conf.json` and change the `devPath` to your IP address. For example:
+    ```json
+    "devPath": "http://172.22.198.42:1420/"
+    ```
+8. **Run the App**:
     ```bash
       pnpm tauri dev
       ```
-8. **Build the App**:
+9. **Build the App**:
     ```bash
       pnpm tauri build
       ```
