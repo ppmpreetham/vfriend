@@ -98,8 +98,8 @@ const ScheduleList = ({ timeline }: { timeline: gsap.core.Timeline }) => {
                         onMouseLeave={() => setShowMessage(false)}
                       >
                         {showMessage && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-primary text-black text-center text-xl cursor-pointer">
-                            Represents your current day
+                          <div className="absolute inset-0 flex items-center justify-center bg-primary text-black text-center text-lg cursor-pointer leading-none">
+                            Your current period
                           </div>
                         )}
                       </div>
