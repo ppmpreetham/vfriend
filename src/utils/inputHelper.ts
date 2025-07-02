@@ -1,18 +1,24 @@
 import { open } from "@tauri-apps/plugin-dialog";
 import { readTextFile } from "@tauri-apps/plugin-fs";
+// import { platform } from "@tauri-apps/plugin-os";
 
 export const ReadHTMLFile = async (): Promise<string | null> => {
   try {
     const filePath = await open({
-      filters: [
-        {
-          name: "HTML Files",
-          extensions: ["html", "htm"],
-        },
-      ],
+      // I HATE ANDROID
+      // // workaround for Android's file picker limitations
+      // filters: [
+      //   {
+      //     name: "HTML Files",
+      //     extensions: ["html", "htm"],
+      //   },
+      // ],
       multiple: false,
-      title: "Select an HTML file",
+      directory: false,
+      // title: "Select an HTML file",
     });
+
+    console.log("Selected file path:", filePath);
 
     return filePath ? readTextFile(filePath) : null;
   } catch (error) {

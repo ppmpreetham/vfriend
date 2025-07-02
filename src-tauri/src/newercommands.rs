@@ -251,11 +251,7 @@ pub fn get_free_status(
 }
 
 #[tauri::command]
-pub fn currently_at(
-    time: &str,
-    time_table: Vec<CompactSlot>,
-    day: u8,
-) -> Option<String> {
+pub fn currently_at(time: &str, time_table: Vec<CompactSlot>, day: u8) -> Option<String> {
     // Parse the current time
     let current_time = match NaiveTime::parse_from_str(time, "%H:%M") {
         Ok(t) => t,
@@ -271,7 +267,7 @@ pub fn currently_at(
         let (theory_start, theory_end) = THEORY_PERIODS[i];
         let theory_start_time = NaiveTime::parse_from_str(theory_start, "%H:%M").unwrap();
         let theory_end_time = NaiveTime::parse_from_str(theory_end, "%H:%M").unwrap();
-        
+
         if current_time >= theory_start_time && current_time < theory_end_time {
             current_period = Some(i as u8 + 1);
             break;
@@ -281,13 +277,13 @@ pub fn currently_at(
         let (lab_start, lab_end) = LAB_PERIODS[i];
         let lab_start_time = NaiveTime::parse_from_str(lab_start, "%H:%M").unwrap();
         let lab_end_time = NaiveTime::parse_from_str(lab_end, "%H:%M").unwrap();
-        
+
         if current_time >= lab_start_time && current_time < lab_end_time {
             current_period = Some(i as u8 + 1);
             break;
         }
     }
-    
+
     // If we couldn't determine the current period, return None
     let period = match current_period {
         Some(p) => p,

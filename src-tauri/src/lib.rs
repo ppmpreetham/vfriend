@@ -2,14 +2,14 @@
 pub mod commands;
 pub mod newcommands;
 pub mod newercommands;
-mod scheduling_conflict;
 mod parseHTML;
+mod scheduling_conflict;
 use tauri_plugin_deep_link::DeepLinkExt;
 // mod p2p;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let mut builder = tauri::Builder::default();
+    let mut builder = tauri::Builder::default().plugin(tauri_plugin_os::init());
     #[cfg(desktop)]
     {
         builder = builder.plugin(tauri_plugin_single_instance::init(|_app, argv, _cwd| {
