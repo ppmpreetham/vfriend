@@ -23,9 +23,11 @@ const TimetableStep = ({ formData, updateFormData }: TimetableStepProps) => {
     setError(null);
 
     try {
-      setHtmlContent(await ReadHTMLFile());
-      if (htmlContent) {
-        const timetable = await parseHTMLTimetable(htmlContent);
+      const content = await ReadHTMLFile();
+      setHtmlContent(content);
+
+      if (content) {
+        const timetable = await parseHTMLTimetable(content);
 
         updateFormData({
           timetableUploaded: true,
