@@ -107,8 +107,9 @@ Include the following permissions to the `manifest` tag in the `gen/android/app/
 - [x] Seperate stores for oneSelf and friends
 - [x] Remove redundant and unused Hooks
 - [x] Add support for [Deep-Links](https://v2.tauri.app/plugin/deep-linking/#setting-up) on Mobile(Android and IOS)
-- [ ] Deep-Link onClick functionality
 - [x] Better addFriend functionality
-- [ ] Setup Permissions for fs, Dialog for Mobile(Android and IOS)
+- [x] Setup Permissions for fs, Dialog for Mobile(Android and IOS)
+- [ ] Fix Dialog for Android (currently gives content://com.android.providers.media.documents/document/document%3A1000313997)
+- [ ] Deep-Link onClick functionality
 - [ ] NFC Functionality
 - [ ] peer-to-peer functionality

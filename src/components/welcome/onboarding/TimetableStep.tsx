@@ -13,6 +13,7 @@ const TimetableStep = ({ formData, updateFormData }: TimetableStepProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isExecutingRef = useRef(false);
+  const [htmlContent, setHtmlContent] = useState<string | null>(null);
 
   const handleFileUpload = async () => {
     if (isExecutingRef.current) return;
@@ -22,8 +23,9 @@ const TimetableStep = ({ formData, updateFormData }: TimetableStepProps) => {
     setError(null);
 
     try {
-      const htmlContent = await ReadHTMLFile();
+      setHtmlContent(await ReadHTMLFile());
       if (htmlContent) {
+        console.log("HTML Content:", htmlContent);
         const timetable = await parseHTMLTimetable(htmlContent);
 
         updateFormData({
@@ -78,7 +80,9 @@ const TimetableStep = ({ formData, updateFormData }: TimetableStepProps) => {
             : "Tap to Upload HTML File"}
         </button>
       </div>
-
+      <div>
+        {isUploading? htmlContent : ""}
+      </div>
       <div className="text-center px-4">
         <p className="text-gray-300 mb-2">
           Upload your VIT timetable HTML file for Semester {formData.semester}
