@@ -19,10 +19,14 @@ export const ReadHTMLFile = async (): Promise<string | null> => {
     });
 
     console.log("Selected file path:", filePath);
-    if (filePath){console.log(await readTextFile(filePath));
-
+    if (filePath) {
+      const fileContent = await readTextFile(filePath);
+      console.log("File content:", fileContent);
+      return fileContent;
+    } else{
+      console.log("No file selected");
+      return null;
     }
-    return filePath ? await readTextFile(filePath) : null;
   } catch (error) {
     console.error("Error opening file dialog:", error);
     return null;
