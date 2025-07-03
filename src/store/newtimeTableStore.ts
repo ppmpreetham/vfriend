@@ -214,6 +214,21 @@ export async function getUserKindmap(day: number): Promise<boolean[]> {
   }
 }
 
+export async function getFriendsData(): Promise<personData[]> {
+  try {
+    const friendsData = (await friendsStore.get("friends")) as
+      | personData[]
+      | null;
+    if (!friendsData) {
+      throw new Error("No friends data found");
+    }
+    return friendsData;
+  } catch (error) {
+    console.error("Failed to get friends data:", error);
+    return [];
+  }
+}
+
 export interface FriendStatusData {
   username: string;
   available: boolean;
@@ -238,22 +253,44 @@ export async function getFreeTimeOfAllFriends(
 
     // Get current day (0 = Sunday, 1 = Monday, etc.)
     const today = new Date().getDay();
-    console.log(`Current day index: ${today} (${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][today]})`);
+    console.log(
+      `Current day index: ${today} (${
+        [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ][today]
+      })`
+    );
 
     for (const friend of friendsData) {
       const name = friend.u;
-      
+
       // Log available bitmap days for debugging
       console.log(`Friend ${name} has bitmap days:`, Object.keys(friend.b));
-      
+
       // Use today's bitmap, with fallback to day 0 if not available
       const bitmap = friend.b[today] || friend.b[0];
       const kindmap = friend.k[today] || friend.k[0];
 
       try {
-        console.log(`Friend ${name}, using day ${today}, bitmap:`, bitmap, "kindmap:", kindmap);
-        const status = await getFreeStatusDirect({ bitmap, currentTime, kindmap });
-        const location = await currentlyAt(currentTime, friend.o, today) || "";
+        console.log(
+          `Friend ${name}, using day ${today}, bitmap:`,
+          bitmap,
+          "kindmap:",
+          kindmap
+        );
+        const status = await getFreeStatusDirect({
+          bitmap,
+          currentTime,
+          kindmap,
+        });
+        const location =
+          (await currentlyAt(currentTime, friend.o, today)) || "";
         console.log(`Friend ${name} status:`, status);
         if (status.data) {
           results.push({

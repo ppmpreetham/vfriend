@@ -1,6 +1,5 @@
 import { open } from "@tauri-apps/plugin-dialog";
 import { readTextFile } from "@tauri-apps/plugin-fs";
-// import { platform } from "@tauri-apps/plugin-os";
 
 export const ReadHTMLFile = async (): Promise<string | null> => {
   try {
@@ -23,7 +22,7 @@ export const ReadHTMLFile = async (): Promise<string | null> => {
       const fileContent = await readTextFile(filePath);
       console.log("File content:", fileContent);
       return fileContent;
-    } else{
+    } else {
       console.log("No file selected");
       return null;
     }
