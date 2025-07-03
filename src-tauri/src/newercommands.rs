@@ -177,7 +177,7 @@ pub fn next_free_time_after(
 pub struct FreeStatus {
     pub is_busy: bool,            // true = busy, false = free
     pub from: NaiveTime,          // if free: current time or start of next free period
-    pub until: Option<NaiveTime>, // if free: until when you're free, if busy: when next free
+    pub until: Option<NaiveTime>, // end of free period if free; next free time if busy
 }
 
 #[tauri::command]
@@ -186,69 +186,102 @@ pub fn get_free_status(
     kindmap: [bool; 12],
     current_time: NaiveTime,
 ) -> Option<FreeStatus> {
+    // Check if current_time is within any period
     for i in 0..12 {
         let (start_str, end_str) = if kindmap[i] {
             LAB_PERIODS[i]
         } else {
             THEORY_PERIODS[i]
         };
-
         let start = NaiveTime::parse_from_str(start_str, "%H:%M").unwrap();
         let end = NaiveTime::parse_from_str(end_str, "%H:%M").unwrap();
 
         if current_time >= start && current_time < end {
             if !bitmap[i] {
-                // currently free
+                // currently free → find longest contiguous free block
+                let mut last_end = end;
+                for j in i + 1..12 {
+                    if bitmap[j] {
+                        break;
+                    }
+                    let (_, next_end_str) = if kindmap[j] {
+                        LAB_PERIODS[j]
+                    } else {
+                        THEORY_PERIODS[j]
+                    };
+                    last_end = NaiveTime::parse_from_str(next_end_str, "%H:%M").unwrap();
+                }
+
                 return Some(FreeStatus {
                     is_busy: false,
                     from: current_time,
-                    until: Some(end),
+                    until: Some(last_end),
                 });
             } else {
-                // currently busy
-                let mut next_free: Option<NaiveTime> = None;
+                // currently busy → find next free period
+                let mut next_start = None;
                 for j in i + 1..12 {
                     if !bitmap[j] {
-                        let (start_j, _) = if kindmap[j] {
+                        let (next_start_str, _) = if kindmap[j] {
                             LAB_PERIODS[j]
                         } else {
                             THEORY_PERIODS[j]
                         };
-                        next_free = Some(NaiveTime::parse_from_str(start_j, "%H:%M").unwrap());
+                        next_start = Some(NaiveTime::parse_from_str(next_start_str, "%H:%M").unwrap());
                         break;
                     }
                 }
+
                 return Some(FreeStatus {
                     is_busy: true,
                     from: end,
-                    until: next_free,
+                    until: next_start,
                 });
             }
         }
     }
 
-    // Before day starts: look for next free
+    // Before day starts: look for first free period
     for i in 0..12 {
         let (start_str, end_str) = if kindmap[i] {
             LAB_PERIODS[i]
         } else {
             THEORY_PERIODS[i]
         };
-
         let start = NaiveTime::parse_from_str(start_str, "%H:%M").unwrap();
         let end = NaiveTime::parse_from_str(end_str, "%H:%M").unwrap();
 
         if current_time < start && !bitmap[i] {
+            // look for contiguous free blocks from this point
+            let mut last_end = end;
+            for j in i + 1..12 {
+                if bitmap[j] {
+                    break;
+                }
+                let (_, next_end_str) = if kindmap[j] {
+                    LAB_PERIODS[j]
+                } else {
+                    THEORY_PERIODS[j]
+                };
+                last_end = NaiveTime::parse_from_str(next_end_str, "%H:%M").unwrap();
+            }
+
             return Some(FreeStatus {
                 is_busy: false,
                 from: start,
-                until: Some(end),
+                until: Some(last_end),
             });
         }
     }
 
-    None
+    // No periods matched; day may be over or completely busy
+    Some(FreeStatus {
+        is_busy: true,
+        from: current_time,
+        until: None,
+    })
 }
+
 
 #[tauri::command]
 pub fn currently_at(time: &str, time_table: Vec<CompactSlot>, day: u8) -> Option<String> {
