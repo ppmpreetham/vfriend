@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import FriendCardFriend from "./FriendCardFriend";
+import FriendPage from "./FriendPage";
 import AddFriend from "./addFriend";
-import { getFriendsData, personData } from "../../store/newtimeTableStore";
+import { getFriendsData } from "../../store/newtimeTableStore";
+import { useFriendStore } from "../../store/friendStore";
 import { UserPlus, Search, ChevronLeft, X } from "lucide-react";
 
 interface Friend {
@@ -10,6 +12,7 @@ interface Friend {
 }
 
 const Friends = () => {
+  const isViewingFriend = useFriendStore((state) => state.isViewingFriend);
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddFriendModal, setShowAddFriendModal] = useState(false);
@@ -18,28 +21,7 @@ const Friends = () => {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function loadFriendsData() {
-      try {
-        setLoading(true);
-        const friendsData = await getFriendsData();
-
-        const mappedFriends: Friend[] = friendsData.map((friend) => ({
-          name: friend.u,
-          registrationNumber: friend.r,
-        }));
-
-        setFriends(mappedFriends);
-      } catch (error) {
-        console.error("Error loading friends data:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadFriendsData();
-  }, []);
-
+  // UI control functions BEFORE conditional rendering
   const filteredFriends = friends.filter((friend) => {
     if (searchQuery === "") return true;
 
@@ -63,6 +45,28 @@ const Friends = () => {
   };
 
   useEffect(() => {
+    async function loadFriendsData() {
+      try {
+        setLoading(true);
+        const friendsData = await getFriendsData();
+
+        const mappedFriends: Friend[] = friendsData.map((friend) => ({
+          name: friend.u,
+          registrationNumber: friend.r,
+        }));
+
+        setFriends(mappedFriends);
+      } catch (error) {
+        console.error("Error loading friends data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadFriendsData();
+  }, []);
+
+  useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       if (
         modalRef.current &&
@@ -80,6 +84,11 @@ const Friends = () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [showAddFriendModal]);
+
+  // conditional rendering
+  if (isViewingFriend) {
+    return <FriendPage />;
+  }
 
   return (
     <div className="w-screen h-full">
@@ -126,7 +135,6 @@ const Friends = () => {
             </div>
           </>
         ) : (
-          // Search mode with full-width search input
           <div className="flex items-center justify-between rounded-full bg-primary text-black w-full p-2">
             <div className="p-2 cursor-pointer" onClick={toggleSearchMode}>
               <ChevronLeft color="black" />
@@ -154,7 +162,6 @@ const Friends = () => {
         </div>
       ) : (
         <>
-          {/* Render filtered friends */}
           {filteredFriends.map((friend, index) => (
             <FriendCardFriend
               key={index}
@@ -163,7 +170,6 @@ const Friends = () => {
             />
           ))}
 
-          {/* Show message when no results found */}
           {filteredFriends.length === 0 && searchQuery !== "" && (
             <div className="text-center p-4 text-gray-500">
               No friends match your search.
