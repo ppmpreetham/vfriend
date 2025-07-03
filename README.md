@@ -2,8 +2,8 @@
   <ul style="list-style: none; margin: 0; padding: 0;">
     <a href="https://vfriend.preetham.top/">
       <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="./README/dark_logo.png" />
-        <img alt="VFriend" src="./README/light_logo.png" width="200" style="margin-right: 30px;" />
+        <source media="(prefers-color-scheme: dark)" srcset="./README/dark_logo.svg" />
+        <img alt="VFriend" src="./README/light_logo.svg" width="200" style="margin-right: 30px;" />
       </picture>
     </a>
   </ul>
@@ -121,15 +121,15 @@ To build the app for Android, you need to have the Android SDK and NDK installed
 - [x] Setup Permissions for fs, Dialog for Mobile(Android and IOS)
 - [x] Fix Dialog for Android (currently gives content://com.android.providers.media.documents/document/document%3A1000313997)
 - [x] Friend page Search functionality
+- [x] Friend individual page
+- [ ] Update Self Timetable
+- [ ] Update Friend Timetable
 - [ ] Share link to add friend functionality
 - [ ] QR Code deeplink functionality
 - [ ] Deep-Link onClick functionality
-- [ ] Friend individual page
 - [ ] peer-to-peer functionality
-- [ ] Update Self Timetable
-- [ ] Update Friend Timetable
 - [ ] NFC Functionality (optional)
-- [ ] Ability to change the time format
 - [ ] Settings page
+- [ ] Ability to change the time format
 - [ ] multiple themes
 - [ ] Calendar page
