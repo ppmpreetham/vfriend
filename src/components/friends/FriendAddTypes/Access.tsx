@@ -11,9 +11,15 @@ const CodeTab = () => {
     isLoading: timetableLoading,
     error: timetableError,
   } = useShareUserProfile();
-  
-  console.log(timetableError? "Error loading timetable" : "Timetable loaded successfully");
-  console.log(timetableLoading? "Loading timetable..." : "Timetable loading status: " + timetableLoading);
+
+  console.log(
+    timetableError ? "Error loading timetable" : "Timetable loaded successfully"
+  );
+  console.log(
+    timetableLoading
+      ? "Loading timetable..."
+      : "Timetable loading status: " + timetableLoading
+  );
 
   const [accessCode, setAccessCode] = useState("");
   const [addStatus, setAddStatus] = useState({ message: "", isError: false });
@@ -22,7 +28,7 @@ const CodeTab = () => {
     if (!userData) return "";
 
     try {
-      return compress(JSON.stringify(userData));
+      return compress(userData);
     } catch (error) {
       console.error("Error converting timetable to JSON:", error);
       return "";
@@ -38,34 +44,40 @@ const CodeTab = () => {
     try {
       // Decompress the access code to get JSON data
       const decompressedData = decompress(accessCode);
-      
+
       // Validate the decompressed data structure
-      if (!decompressedData || 
-          typeof decompressedData !== 'object' ||
-          !decompressedData.u || // username
-          !decompressedData.r || // registration number
-          typeof decompressedData.s !== 'number' || // semester
-          !Array.isArray(decompressedData.h) || // hobbies
-          !Array.isArray(decompressedData.q) || // quote
-          !decompressedData.t || // timestamp
-          !Array.isArray(decompressedData.o)) { // schedule (CompactSlot[])
-        
+      if (
+        !decompressedData ||
+        typeof decompressedData !== "object" ||
+        !decompressedData.u || // username
+        !decompressedData.r || // registration number
+        typeof decompressedData.s !== "number" || // semester
+        !Array.isArray(decompressedData.h) || // hobbies
+        !Array.isArray(decompressedData.q) || // quote
+        !decompressedData.t || // timestamp
+        !Array.isArray(decompressedData.o)
+      ) {
+        // schedule (CompactSlot[])
+
         setAddStatus({ message: "Invalid access code format", isError: true });
         return;
       }
-      
+
       // Add friend using the validated decompressed data
       const result = await addFriend(decompressedData);
-      
-        if (result.success) {
+
+      if (result.success) {
         setAddStatus({ message: "Friend added successfully!", isError: false });
         setAccessCode(""); // Clear input after successful add
       } else {
-        setAddStatus({ 
-          message: result.error && typeof result.error === 'object' && 'message' in result.error
-            ? `Failed: ${String(result.error.message)}`
-            : "Failed to add friend", 
-          isError: true 
+        setAddStatus({
+          message:
+            result.error &&
+            typeof result.error === "object" &&
+            "message" in result.error
+              ? `Failed: ${String(result.error.message)}`
+              : "Failed to add friend",
+          isError: true,
         });
       }
     } catch (error) {
@@ -104,14 +116,18 @@ const CodeTab = () => {
           value={accessCode}
           onChange={(e) => setAccessCode(e.target.value)}
         ></input>
-        <button 
+        <button
           className="bg-black text-white rounded p-2 cursor-pointer"
           onClick={handleAddFriend}
         >
           ADD Friend
         </button>
         {addStatus.message && (
-          <p className={`text-sm mt-1 ${addStatus.isError ? 'text-red-500' : 'text-green-500'}`}>
+          <p
+            className={`text-sm mt-1 ${
+              addStatus.isError ? "text-red-500" : "text-green-500"
+            }`}
+          >
             {addStatus.message}
           </p>
         )}
