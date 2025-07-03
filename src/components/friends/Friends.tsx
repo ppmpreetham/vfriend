@@ -4,16 +4,38 @@ import AddFriend from "./addFriend";
 
 import { UserPlus, Search, ChevronLeft, X } from "lucide-react";
 
+interface Friend {
+  name: string;
+  registrationNumber: string;
+}
+
 const Friends = () => {
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddFriendModal, setShowAddFriendModal] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
+  const [friends, setFriends] = useState<Friend[]>(
+    [
+      { name: "PPM", registrationNumber: "23BRS1346" },
+      { name: "AYUSH", registrationNumber: "22BRS1346" },
+      { name: "SIGMA", registrationNumber: "21BRS1346" },
+    ]
+  );
+
+  const filteredFriends = friends.filter((friend) => {
+    if (searchQuery === "") return true;
+
+    return (
+      friend.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      friend.registrationNumber.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  });
+
   const toggleSearchMode = () => {
     setIsSearchMode(!isSearchMode);
     if (isSearchMode) {
-      setSearchQuery(""); // everytime clear the search query
+      setSearchQuery("");
     }
   };
 
@@ -21,7 +43,6 @@ const Friends = () => {
     setShowAddFriendModal(!showAddFriendModal);
   };
 
-  // Handle clicks outside the modal
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       if (
@@ -105,10 +126,22 @@ const Friends = () => {
           </div>
         )}
       </div>
-      <FriendCardFriend name="PPM" registrationNumber="23BRS1346" />
-      <FriendCardFriend name="AYUSH" registrationNumber="22BRS1346" />
-      <FriendCardFriend name="SIGMA" registrationNumber="21BRS1346" />
-      <div></div>
+
+      {/* Render filtered friends */}
+      {filteredFriends.map((friend, index) => (
+        <FriendCardFriend
+          key={index}
+          name={friend.name}
+          registrationNumber={friend.registrationNumber}
+        />
+      ))}
+
+      {/* Show message when no results found */}
+      {filteredFriends.length === 0 && searchQuery !== "" && (
+        <div className="text-center p-4 text-gray-500">
+          No friends match your search.
+        </div>
+      )}
     </div>
   );
 };

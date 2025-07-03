@@ -4,9 +4,10 @@
     "identifier": "com.vitfriend.app",
     "build": {
       "beforeDevCommand": "pnpm dev --host",
-      "devUrl": "http://192.168.55.103:1420",
+      "devUrl": "http://localhost:1420",
       "beforeBuildCommand": "pnpm build",
-      "frontendDist": "../dist"
+      "frontendDist": "../dist",
+      "removeUnusedCommands": true
     },
     "app": {
       "withGlobalTauri": true,
