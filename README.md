@@ -96,8 +96,12 @@ Include the following permissions to the `manifest` tag in the `gen/android/app/
    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
    ```
+3. (Optional) Copy the `build.gradle.kts` to `gen/android/app/build.gradle.kts`:
+   ```bash
+   cp src-tauri/gen/android/build.gradle.kts src-tauri/gen/android/app/build.gradle.kts
+   ```
 
-3. Then, build the app for Android:
+4. Then, build the app for Android:
    ```bash
    pnpm tauri android build
    ```
