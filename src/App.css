@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import 'tailwind-scrollbar-hide/v4';
 
 @theme {
   --color-primary: #ebff57;

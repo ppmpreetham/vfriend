@@ -22,12 +22,13 @@ const ScheduleGrid: React.FC<ScheduleGridProps> = ({ bitmaps }) => {
   }, [bitmaps]);
 
   return (
-    <div className="mx-4 bg-primary text-black rounded-xl p-4">
+    <div className="mx-4 my-4 bg-primary text-black rounded-xl p-4">
       {/* Days and schedule grid */}
+      
       {scheduleMatrix.map((dayRow, rowIndex) => (
         <div
           key={`day-${rowIndex}`}
-          className="grid grid-cols-[auto_repeat(12,1fr)] gap-1 mb-1"
+          className="grid grid-cols-12 gap-1 mb-1"
         >
           {/* Schedule cells for this day */}
           {dayRow.map((hasClass, colIndex) => (

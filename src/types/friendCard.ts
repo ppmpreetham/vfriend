@@ -4,6 +4,7 @@ export interface FriendCardProps {
   location: string;
   time: string;
   distance?: string;
+  until?: string;
 }
 
 export interface FriendPageFriend {

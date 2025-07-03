@@ -1,8 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { CompactSlot } from "../types/timeTable";
 import { useQuery } from "@tanstack/react-query";
-
 import { CompactTimetable } from "../types/timeTable";
+
 export interface NextFreeTimeParams {
   bitmap: boolean[];
   currentTime: string;
@@ -79,6 +79,7 @@ export function getFreeStatus(params: NextFreeTimeParams) {
 interface FreeStatusResponse {
   is_busy: boolean;
   from?: string;
+  until?: string;
 }
 
 export async function getFreeStatusDirect({

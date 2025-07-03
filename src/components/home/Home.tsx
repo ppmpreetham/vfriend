@@ -94,6 +94,7 @@ const Home = () => {
             available={friend.available}
             location={friend.location}
             time={friend.time}
+            until={friend.until}
           />
         ))
       ) : (

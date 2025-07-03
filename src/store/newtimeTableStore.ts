@@ -219,6 +219,7 @@ export interface FriendStatusData {
   available: boolean;
   location: string;
   time: string;
+  until: string;
 }
 
 export async function getFreeTimeOfAllFriends(
@@ -260,6 +261,7 @@ export async function getFreeTimeOfAllFriends(
             available: !status.data.is_busy,
             location: location,
             time: status.data.from || "",
+            until: status.data.until || "",
           });
         }
       } catch (error) {

@@ -4,7 +4,7 @@
     "identifier": "com.vitfriend.app",
     "build": {
       "beforeDevCommand": "pnpm dev --host",
-      "devUrl": "http://10.53.229.42:1420",
+      "devUrl": "http://localhost:1420",
       "beforeBuildCommand": "pnpm build",
       "frontendDist": "../dist"
     },

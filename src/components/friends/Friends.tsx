@@ -70,7 +70,7 @@ const Friends = () => {
               className="flex items-center justify-center gap-2 rounded-full bg-primary text-black w-1/2 p-2 cursor-pointer"
               onClick={toggleSearchMode}
             >
-              Search Friends
+              Search
               <div className="py-2 rounded-full cursor-pointer">
                 <Search color="black" />
               </div>

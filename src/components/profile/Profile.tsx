@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import ScheduleGrid from "./ScheduleGrid";
 import { useUserProfile } from "../../hooks/useUserProfile";
 import { nextFreeTime as useNextFreeTime } from "../../utils/invokeFunctions";
-import { useUserTimetable } from "../../hooks/useUserTimetable"; // Import the new hook
+import { useUserTimetable } from "../../hooks/useUserTimetable";
 import {
   resetAllStores,
   viewAllStores,
@@ -131,11 +131,11 @@ const Profile = () => {
     );
   }
 
-  // Check if timetable data exists before rendering ScheduleGrid
+  // Check if timetable data exists before rendering ScheduleGrid.
   if (!timetableData) {
     return (
-      <div className="w-screen h-full flex flex-col">
-        <div className="flex h-2/5 w-full gap-2 uppercase">
+      <div className="w-screen h-full flex flex-col overflow-y-auto scrollbar-hide">
+        <div className="flex h-fit w-full gap-2 uppercase">
           <div className="ml-4 w-1/2 flex flex-col gap-2">
             <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
               <div className="text-3xl">{userData.data?.u || "UNKNOWN"}</div>
@@ -189,8 +189,8 @@ const Profile = () => {
   }
 
   return (
-    <div className="w-screen h-full flex flex-col">
-      <div className="flex h-2/5 w-full gap-2 uppercase">
+    <div className="w-screen h-full flex flex-col overflow-y-auto pb-8">
+      <div className="flex w-full gap-2 uppercase">
         <div className="ml-4 w-1/2 flex flex-col gap-2">
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
             <div className="text-3xl">{userData.data?.u || "UNKNOWN"}</div>
@@ -198,7 +198,7 @@ const Profile = () => {
             <div>SEM {userData.data?.s}</div>
           </div>
           <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl gap-4">
-            <div className="text-3xl">I'll be at...</div>
+            <div className="text-[clamp(1.25rem,1vh,1.875rem)]">I'll be at...</div>
             <ul className="list-disc pl-5">
               {userData.data?.h?.map((hobby, index) => (
                 <li key={index}>{hobby}</li>
@@ -220,23 +220,24 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <div className="mx-4 my-2 text-4xl">TIME TABLE</div>
       <ScheduleGrid bitmaps={allBitmaps} />
-      <div
-        className="bg-red-500 text-black m-4 p-2 rounded-xl text-2xl cursor-pointer"
-        onClick={() => {
-          resetAllStores();
-        }}
-      >
-        Reset everything
-      </div>
-      <div
-        className="bg-green-500 text-black m-4 p-2 rounded-xl text-2xl cursor-pointer"
-        onClick={() => {
-          viewAllStores();
-        }}
-      >
-        VIEW STORES
+      <div className="flex gap-4 mx-4">
+        <div
+          className="bg-red-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"
+          onClick={() => {
+            resetAllStores();
+          }}
+        >
+          Reset everything
+        </div>
+        <div
+          className="bg-green-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"
+          onClick={() => {
+            viewAllStores();
+          }}
+        >
+          VIEW STORES
+        </div>
       </div>
     </div>
   );

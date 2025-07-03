@@ -13,7 +13,6 @@ const TimetableStep = ({ formData, updateFormData }: TimetableStepProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isExecutingRef = useRef(false);
-  const [htmlContent, setHtmlContent] = useState<string | null>(null);
 
   const handleFileUpload = async () => {
     if (isExecutingRef.current) return;
@@ -24,7 +23,6 @@ const TimetableStep = ({ formData, updateFormData }: TimetableStepProps) => {
 
     try {
       const content = await ReadHTMLFile();
-      setHtmlContent(content);
 
       if (content) {
         const timetable = await parseHTMLTimetable(content);
