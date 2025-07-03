@@ -109,7 +109,17 @@ Include the following permissions to the `manifest` tag in the `gen/android/app/
 - [x] Add support for [Deep-Links](https://v2.tauri.app/plugin/deep-linking/#setting-up) on Mobile(Android and IOS)
 - [x] Better addFriend functionality
 - [x] Setup Permissions for fs, Dialog for Mobile(Android and IOS)
-- [ ] Fix Dialog for Android (currently gives content://com.android.providers.media.documents/document/document%3A1000313997)
+- [x] Fix Dialog for Android (currently gives content://com.android.providers.media.documents/document/document%3A1000313997)
+- [ ] Friend page Search functionality
+- [ ] Share link to add friend functionality
+- [ ] QR Code deeplink functionality
 - [ ] Deep-Link onClick functionality
-- [ ] NFC Functionality
+- [ ] Friend individual page
 - [ ] peer-to-peer functionality
+- [ ] Update Self Timetable
+- [ ] Update Friend Timetable
+- [ ] NFC Functionality (optional)
+- [ ] Ability to change the time format
+- [ ] Settings page
+- [ ] multiple themes
+- [ ] Calendar page
