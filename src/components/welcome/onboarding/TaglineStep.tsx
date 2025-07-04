@@ -6,12 +6,14 @@ interface TaglineStepProps {
   formData: FormData;
   updateFormData: (updates: Partial<FormData>) => void;
   onValidationChange?: (isValid: boolean) => void;
+  onNext?: () => void; // Added prop for moving to next step
 }
 
 const TaglineStep = ({
   formData,
   updateFormData,
   onValidationChange,
+  onNext,
 }: TaglineStepProps) => {
   const [error, setError] = useState<string | null>(null);
 
@@ -21,6 +23,17 @@ const TaglineStep = ({
     setError(isValid ? null : "Please enter a tagline");
     onValidationChange?.(isValid);
   }, [formData.tagline, onValidationChange]);
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (
+      e.key === "Enter" &&
+      !e.shiftKey && // shift + enter shouldn't trigger next step
+      formData.tagline.trim().length > 0
+    ) {
+      e.preventDefault();
+      onNext?.();
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center h-full space-y-8">
@@ -32,6 +45,7 @@ const TaglineStep = ({
         <textarea
           value={formData.tagline}
           onChange={(e) => updateFormData({ tagline: e.target.value })}
+          onKeyPress={handleKeyPress}
           placeholder="Write something about yourself..."
           className={`w-full px-4 py-4 text-lg text-center border-none rounded-xl bg-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:outline-none resize-none h-32 ${
             error && !formData.tagline ? "ring-2 ring-red-500" : ""

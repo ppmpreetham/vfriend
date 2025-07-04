@@ -5,9 +5,14 @@ import type { FormData } from "../OnboardingForm";
 interface SemesterStepProps {
   formData: FormData;
   updateFormData: (updates: Partial<FormData>) => void;
+  goToNextStep?: () => void;
 }
 
-const SemesterStep = ({ formData, updateFormData }: SemesterStepProps) => {
+const SemesterStep = ({
+  formData,
+  updateFormData,
+  goToNextStep,
+}: SemesterStepProps) => {
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,6 +23,12 @@ const SemesterStep = ({ formData, updateFormData }: SemesterStepProps) => {
       setError(null);
     } else {
       setError("Please enter a semester between 1 and 10");
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && formData.semester) {
+      goToNextStep?.();
     }
   };
 
@@ -34,11 +45,14 @@ const SemesterStep = ({ formData, updateFormData }: SemesterStepProps) => {
           max={10}
           value={formData.semester || ""}
           onChange={handleChange}
+          onKeyPress={handleKeyPress}
           placeholder="Enter your semester (1-10)"
           className="w-full px-4 py-4 text-lg text-center border-none rounded-xl bg-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           autoFocus
         />
-        {error && <p className="text-red-400 text-sm mt-2 text-center">{error}</p>}
+        {error && (
+          <p className="text-red-400 text-sm mt-2 text-center">{error}</p>
+        )}
       </div>
 
       <p className="text-gray-300 text-center px-4">

@@ -4,9 +4,20 @@ import type { FormData } from "../OnboardingForm";
 interface NameStepProps {
   formData: FormData;
   updateFormData: (updates: Partial<FormData>) => void;
+  goToNextStep?: () => void;
 }
 
-const NameStep = ({ formData, updateFormData }: NameStepProps) => {
+const NameStep = ({
+  formData,
+  updateFormData,
+  goToNextStep,
+}: NameStepProps) => {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && formData.username.trim()) {
+      goToNextStep?.();
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-full space-y-8">
       <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center">
@@ -18,6 +29,7 @@ const NameStep = ({ formData, updateFormData }: NameStepProps) => {
           type="text"
           value={formData.username}
           onChange={(e) => updateFormData({ username: e.target.value })}
+          onKeyPress={handleKeyPress}
           placeholder="Enter your name"
           className="w-full px-4 py-4 text-lg text-center border-none rounded-xl bg-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           maxLength={50}
