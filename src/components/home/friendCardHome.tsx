@@ -7,14 +7,18 @@ const FriendCardHome = ({
   location,
   distance,
   time,
-  until
+  until,
 }: FriendCardProps) => {
   return (
     <div className="flex p-4 bg-gray-900 rounded-xl m-4 flex-row items-center justify-between text-white select-none">
       <div className="flex flex-col">
         <div className="text-xl">{name}</div>
         <div>
-          {!available ? `Currently at ${location}` : `Free till ${until}`}
+          {!available
+            ? `Currently at ${location}`
+            : until === "19:25:00"
+            ? `Free till tomorrow`
+            : `Free till ${until}`}
           {distance && (
             <>
               <Dot className="inline-block mx-1 align-middle" color="#ebff57" />

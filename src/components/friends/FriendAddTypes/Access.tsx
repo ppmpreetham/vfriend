@@ -1,7 +1,7 @@
 import { useShareUserProfile } from "../../../hooks/useShareUserProfile";
 import { compress, decompress } from "../../../utils/compressor";
 import { Copy } from "lucide-react";
-import { addFriend } from "../../../store/newtimeTableStore";
+import { addFriend, shareData } from "../../../store/newtimeTableStore";
 import { useState } from "react";
 // import user1 from "../../../../tests/user3.json"
 
@@ -28,7 +28,18 @@ const CodeTab = () => {
     if (!userData) return "";
 
     try {
-      return compress(userData);
+      const shareableData: shareData = {
+        u: userData.u, // username
+        r: userData.r, // registration number
+        s: userData.s, // semester
+        h: userData.h, // hobbies
+        q: userData.q, // quote
+        t: userData.t, // timestamp
+        o: userData.o, // schedule
+      };
+
+      console.log("Compressing shareableData:", shareableData);
+      return compress(shareableData);
     } catch (error) {
       console.error("Error converting timetable to JSON:", error);
       return "";
@@ -57,8 +68,6 @@ const CodeTab = () => {
         !decompressedData.t || // timestamp
         !Array.isArray(decompressedData.o)
       ) {
-        // schedule (CompactSlot[])
-
         setAddStatus({ message: "Invalid access code format", isError: true });
         return;
       }
