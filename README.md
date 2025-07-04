@@ -2,8 +2,8 @@
   <ul style="list-style: none; margin: 0; padding: 0;">
     <a href="https://vfriend.preetham.top/">
       <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="./README/dark_logo.svg" />
-        <img alt="VFriend" src="./README/light_logo.svg" width="200" style="margin-right: 30px;" />
+        <source media="(prefers-color-scheme: dark)" srcset="./src/assets/dark_logo.svg" />
+        <img alt="VFriend" src="./src/assets/light_logo.svg" width="200" style="margin-right: 30px;" />
       </picture>
     </a>
   </ul>
@@ -78,7 +78,7 @@ An year ago, while I was a freshman at my college, I had an oddly specific probl
    ```
 9. **Build the App**:
    ```bash
-     pnpm tauri build
+     pnpm tauri android build -- --apk
    ```
 
 ### Android
