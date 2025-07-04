@@ -1,10 +1,11 @@
 import { Menu } from "lucide-react";
+import darkLogo from "../assets/dark_logo.svg";
 
 const Header = () => {
   return (
     <div className="flex items-center justify-between p-4">
       <div className="flex items-center">
-        <img src="/dark_logo.svg" alt="Logo" className="h-10" />
+        <img src={darkLogo} alt="Logo" className="h-10" />
         <div className="text-3xl text-primary">riend</div>
       </div>
       <div>

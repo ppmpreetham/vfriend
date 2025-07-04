@@ -274,6 +274,28 @@ pub fn get_free_status(
         }
     }
 
+    // Check if current time is after all periods (day is over)
+    let latest_period_end = NaiveTime::parse_from_str("19:25", "%H:%M").unwrap();
+    if current_time >= latest_period_end {
+        // After all classes, user is free until next day
+        return Some(FreeStatus {
+            is_busy: false,
+            from: current_time,
+            until: None,
+        });
+    }
+
+    // Check for lunch period
+    let lunch_start = NaiveTime::parse_from_str("13:25", "%H:%M").unwrap();
+    let lunch_end = NaiveTime::parse_from_str("14:00", "%H:%M").unwrap();
+    if current_time >= lunch_start && current_time < lunch_end {
+        return Some(FreeStatus {
+            is_busy: false,
+            from: current_time,
+            until: Some(lunch_end),
+        });
+    }
+
     // No periods matched; day may be over or completely busy
     Some(FreeStatus {
         is_busy: true,

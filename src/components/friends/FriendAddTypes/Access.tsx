@@ -28,15 +28,15 @@ const CodeTab = () => {
     if (!userData) return "";
 
     try {
-      const shareableData: shareData = {
-        u: userData.u, // username
-        r: userData.r, // registration number
-        s: userData.s, // semester
-        h: userData.h, // hobbies
-        q: userData.q, // quote
-        t: userData.t, // timestamp
-        o: userData.o, // schedule
-      };
+      const shareableData: shareData = (({ u, r, s, h, q, t, o }) => ({
+        u,
+        r,
+        s,
+        h,
+        q,
+        t,
+        o,
+      }))(userData);
 
       console.log("Compressing shareableData:", shareableData);
       return compress(shareableData);

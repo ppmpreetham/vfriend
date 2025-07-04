@@ -9,15 +9,22 @@ const FriendCardHome = ({
   time,
   until,
 }: FriendCardProps) => {
+  console.log(until);
   return (
     <div className="flex p-4 bg-gray-900 rounded-xl m-4 flex-row items-center justify-between text-white select-none">
       <div className="flex flex-col">
         <div className="text-xl">{name}</div>
         <div>
           {!available
-            ? `Currently at ${location}`
+            ? `Currently at ${location}${time ? ` until ${time}` : ""}`
+            : until === ""
+            ? `Free for the rest of the day`
             : until === "19:25:00"
             ? `Free till tomorrow`
+            : time && time.includes("Lunch")
+            ? `On lunch break till ${until}`
+            : time === "RIGHT NOW"
+            ? `Just became available`
             : `Free till ${until}`}
           {distance && (
             <>
