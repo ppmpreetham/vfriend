@@ -3,6 +3,7 @@ import { ShareLink } from "./ShareLink";
 import useAddFriendStore from "../../store/useAddFriendStore";
 import QRGiver from "./QRGiver";
 import CodeTab from "./FriendAddTypes/Access";
+import QRScanner from "./QRScanner";
 
 const ShareLinkTab = () => (
   <div className="p-4">
@@ -24,6 +25,7 @@ const QRCodeTab = () => (
     <h3 className="text-xl font-bold text-black mb-4">QR Code</h3>
     <div className="text-black text-center w-full flex flex-col items-center">
       <p>Scan or show QR code to add friends</p>
+      <QRScanner />
       <QRGiver />
     </div>
   </div>

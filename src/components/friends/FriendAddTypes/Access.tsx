@@ -1,7 +1,7 @@
 import { useShareUserProfile } from "../../../hooks/useShareUserProfile";
 import { compress, decompress } from "../../../utils/compressor";
 import { Copy } from "lucide-react";
-import { addFriend, shareData } from "../../../store/newtimeTableStore";
+import { addFriend, shareData, validateAndAddFriend } from "../../../store/newtimeTableStore";
 import { useState } from "react";
 import useAddFriendStore from "../../../store/useAddFriendStore";
 // import user1 from "../../../../tests/user3.json"
@@ -55,27 +55,7 @@ const CodeTab = () => {
     }
 
     try {
-      // Decompress the access code to get JSON data
-      const decompressedData = decompress(accessCode);
-
-      // Validate the decompressed data structure
-      if (
-        !decompressedData ||
-        typeof decompressedData !== "object" ||
-        !decompressedData.u || // username
-        !decompressedData.r || // registration number
-        typeof decompressedData.s !== "number" || // semester
-        !Array.isArray(decompressedData.h) || // hobbies
-        !Array.isArray(decompressedData.q) || // quote
-        !decompressedData.t || // timestamp
-        !Array.isArray(decompressedData.o)
-      ) {
-        setAddStatus({ message: "Invalid access code format", isError: true });
-        return;
-      }
-
-      // Add friend using the validated decompressed data
-      const result = await addFriend(decompressedData);
+      const result = await validateAndAddFriend(accessCode);
 
       if (result.success) {
         setAddStatus({ message: "Friend added successfully!", isError: false });

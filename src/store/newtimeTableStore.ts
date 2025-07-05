@@ -6,6 +6,7 @@ import {
   currentlyAt,
   getFreeStatusDirect,
 } from "../utils/invokeFunctions";
+import { decompress } from "../utils/compressor";
 
 export interface shareData {
   u: string; // username
@@ -276,6 +277,27 @@ export async function changeFriendData(
     console.error("Failed to change friend data:", error);
     return false;
   }
+}
+
+
+export async function validateAndAddFriend(accessCode: string) {
+  const decompressedData = decompress(accessCode);
+  // Validate the decompressed data structure
+  if (
+    !decompressedData ||
+    typeof decompressedData !== "object" ||
+    !decompressedData.u || // username
+    !decompressedData.r || // registration number
+    typeof decompressedData.s !== "number" || // semester
+    !Array.isArray(decompressedData.h) || // hobbies
+    !Array.isArray(decompressedData.q) || // quote
+    !decompressedData.t || // timestamp
+    !Array.isArray(decompressedData.o)
+  ) {
+    return { success: false, error: { message: "Invalid access code format" } };
+  }
+  // Add friend using the validated decompressed data
+  return await addFriend(decompressedData);
 }
 
 export interface FriendStatusData {

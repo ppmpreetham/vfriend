@@ -4071,8 +4071,7 @@ dependencies = [
 [[package]]
 name = "tauri-plugin-barcode-scanner"
 version = "2.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d1a1de6fb44e265236c7816a6b1941f85e8816674c7fcec9653a2f268b3ddb0b"
+source = "git+https://github.com/tauri-apps/plugins-workspace?branch=v2#ca3c3aa28afd302178270df48dc3f6df45fa373b"
 dependencies = [
  "log",
  "serde",

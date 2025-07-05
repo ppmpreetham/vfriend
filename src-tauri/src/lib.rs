@@ -19,14 +19,16 @@ pub fn run() {
           // when defining deep link schemes at runtime, you must also check `argv` here
         }));
     }
+    #[cfg(mobile)]
+    {
+        builder = builder.plugin(tauri_plugin_barcode_scanner::init());
+    }
     builder
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_store::Builder::new().build())
-        .setup(|app| {
-            #[cfg(mobile)]
-            app.handle().plugin(tauri_plugin_barcode_scanner::init());
+        .setup(|_app| {
             Ok(())
         })
         .setup(|app| {
