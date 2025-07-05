@@ -3,6 +3,7 @@ import { compress, decompress } from "../../../utils/compressor";
 import { Copy } from "lucide-react";
 import { addFriend, shareData } from "../../../store/newtimeTableStore";
 import { useState } from "react";
+import useAddFriendStore from "../../../store/useAddFriendStore";
 // import user1 from "../../../../tests/user3.json"
 
 const CodeTab = () => {
@@ -23,6 +24,7 @@ const CodeTab = () => {
 
   const [accessCode, setAccessCode] = useState("");
   const [addStatus, setAddStatus] = useState({ message: "", isError: false });
+  const { setFriendAdded } = useAddFriendStore();
 
   const getTimetableJsonString = () => {
     if (!userData) return "";
@@ -78,6 +80,7 @@ const CodeTab = () => {
       if (result.success) {
         setAddStatus({ message: "Friend added successfully!", isError: false });
         setAccessCode(""); // Clear input after successful add
+        setFriendAdded(true); // trigger refresh
       } else {
         setAddStatus({
           message:

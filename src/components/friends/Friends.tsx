@@ -4,6 +4,7 @@ import FriendPage from "./FriendPage";
 import AddFriend from "./addFriend";
 import { getFriendsData } from "../../store/newtimeTableStore";
 import { useFriendStore } from "../../store/friendStore";
+import useAddFriendStore from "../../store/useAddFriendStore";
 import { UserPlus, Search, ChevronLeft, X } from "lucide-react";
 
 interface Friend {
@@ -20,6 +21,8 @@ const Friends = () => {
 
   const [friends, setFriends] = useState<Friend[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const { friendAdded, setFriendAdded } = useAddFriendStore();
 
   // UI control functions BEFORE conditional rendering
   const filteredFriends = friends.filter((friend) => {
@@ -44,27 +47,37 @@ const Friends = () => {
     setShowAddFriendModal(!showAddFriendModal);
   };
 
-  useEffect(() => {
-    async function loadFriendsData() {
-      try {
-        setLoading(true);
-        const friendsData = await getFriendsData();
+  // Extract loadFriendsData to a reusable function
+  const loadFriendsData = async () => {
+    try {
+      setLoading(true);
+      const friendsData = await getFriendsData();
 
-        const mappedFriends: Friend[] = friendsData.map((friend) => ({
-          name: friend.u,
-          registrationNumber: friend.r,
-        }));
+      const mappedFriends: Friend[] = friendsData.map((friend) => ({
+        name: friend.u,
+        registrationNumber: friend.r,
+      }));
 
-        setFriends(mappedFriends);
-      } catch (error) {
-        console.error("Error loading friends data:", error);
-      } finally {
-        setLoading(false);
-      }
+      setFriends(mappedFriends);
+    } catch (error) {
+      console.error("Error loading friends data:", error);
+    } finally {
+      setLoading(false);
     }
+  };
 
+  // Initial load of friends data
+  useEffect(() => {
     loadFriendsData();
   }, []);
+
+  useEffect(() => {
+    if (friendAdded) {
+      loadFriendsData();
+      setFriendAdded(false);
+      setShowAddFriendModal(false); // check this
+    }
+  }, [friendAdded, setFriendAdded]);
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
