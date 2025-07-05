@@ -103,6 +103,16 @@ export async function shareCurrentUserProfile(): Promise<shareData | null> {
 
 export async function addFriend(friend: shareData) {
   try {
+    //  check if a friend already exists
+    const friends: personData[] = (await friendsStore.get("friends")) || [];
+    const existingFriendIndex = friends.findIndex((f) => f.r === friend.r);
+
+    // If exists, update instead of adding a new entry
+    if (existingFriendIndex !== -1) {
+      const updated = await changeFriendData(friend.r, friend);
+      return { success: updated };
+    }
+
     const b: Record<number, boolean[]> = {};
     const k: Record<number, boolean[]> = {};
     for (let day = 0; day < 7; day++) {
@@ -116,7 +126,6 @@ export async function addFriend(friend: shareData) {
       k,
     };
 
-    const friends: personData[] = (await friendsStore.get("friends")) || [];
     friends.push(person);
     await friendsStore.set("friends", friends);
     await friendsStore.save();
@@ -226,6 +235,46 @@ export async function getFriendsData(): Promise<personData[]> {
   } catch (error) {
     console.error("Failed to get friends data:", error);
     return [];
+  }
+}
+
+export async function changeFriendData(
+  registrationNumber: string,
+  newData: shareData
+): Promise<boolean> {
+  try {
+    const friendsData = (await friendsStore.get("friends")) as
+      | personData[]
+      | null;
+    if (!friendsData) {
+      throw new Error("No friends data found");
+    }
+
+    const friendIndex = friendsData.findIndex(
+      (f) => f.r === registrationNumber
+    );
+    if (friendIndex === -1) {
+      throw new Error(`Friend not found`);
+    }
+
+    const b: Record<number, boolean[]> = {};
+    const k: Record<number, boolean[]> = {};
+    for (let day = 0; day < 7; day++) {
+      b[day] = await buildBitmap(newData.o, day);
+      k[day] = await buildKindmap(newData.o, day);
+    }
+    friendsData[friendIndex] = {
+      ...newData,
+      b,
+      k,
+    };
+
+    await friendsStore.set("friends", friendsData);
+    await friendsStore.save();
+    return true;
+  } catch (error) {
+    console.error("Failed to change friend data:", error);
+    return false;
   }
 }
 
