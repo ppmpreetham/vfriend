@@ -1,7 +1,7 @@
 import { useShareUserProfile } from "../../../hooks/useShareUserProfile";
-import { compress, decompress } from "../../../utils/compressor";
+import { compress } from "../../../utils/compressor";
 import { Copy } from "lucide-react";
-import { addFriend, shareData, validateAndAddFriend } from "../../../store/newtimeTableStore";
+import { shareData, validateAndAddFriend } from "../../../store/newtimeTableStore";
 import { useState } from "react";
 import useAddFriendStore from "../../../store/useAddFriendStore";
 // import user1 from "../../../../tests/user3.json"
