@@ -113,10 +113,10 @@ const FriendPage = () => {
 
   return (
     <div className="w-screen h-full flex flex-col overflow-y-auto pb-8">
-      <div className="flex items-center p-4">
+      <div className="flex items-center">
         <button
-          className="flex items-center gap-2 text-primary"
           onClick={clearSelectedFriend}
+          className="flex m-2 p-2 rounded-full items-center gap-2 text-primary hover:bg-gray-800"
         >
           <ChevronLeft />
           Back to Friends

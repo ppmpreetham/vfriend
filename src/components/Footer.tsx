@@ -5,10 +5,10 @@ const Footer = () => {
   const { activeTab, setActiveTab } = useNavStore();
 
   return (
-    <div className="flex px-6 py-4 justify-between items-center">
+    <div className="flex px-6 py-2 justify-between items-center">
       <div
         onClick={() => setActiveTab("home")}
-        className="flex-1 flex justify-center my-2"
+        className="flex-1 flex justify-center my-4"
       >
         <button
           className={`p-2 rounded-full w-14 h-14 flex items-center justify-center cursor-pointer ${
@@ -27,7 +27,7 @@ const Footer = () => {
 
       <div
         onClick={() => setActiveTab("calendar")}
-        className="flex-1 flex justify-center my-2"
+        className="flex-1 flex justify-center my-4"
       >
         <button
           className={`p-2 rounded-full w-14 h-14 flex items-center justify-center cursor-pointer ${
@@ -46,7 +46,7 @@ const Footer = () => {
 
       <div
         onClick={() => setActiveTab("friends")}
-        className="flex-1 flex justify-center my-2"
+        className="flex-1 flex justify-center my-4"
       >
         <button
           className={`p-2 rounded-full w-14 h-14 flex items-center justify-center cursor-pointer ${
@@ -65,7 +65,7 @@ const Footer = () => {
 
       <div
         onClick={() => setActiveTab("profile")}
-        className="flex-1 flex justify-center my-2"
+        className="flex-1 flex justify-center my-4"
       >
         <button
           className={`p-2 rounded-full w-14 h-14 flex items-center justify-center cursor-pointer ${
