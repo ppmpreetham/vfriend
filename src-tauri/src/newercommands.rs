@@ -227,7 +227,8 @@ pub fn get_free_status(
                         } else {
                             THEORY_PERIODS[j]
                         };
-                        next_start = Some(NaiveTime::parse_from_str(next_start_str, "%H:%M").unwrap());
+                        next_start =
+                            Some(NaiveTime::parse_from_str(next_start_str, "%H:%M").unwrap());
                         break;
                     }
                 }
@@ -303,7 +304,6 @@ pub fn get_free_status(
         until: None,
     })
 }
-
 
 #[tauri::command]
 pub fn currently_at(time: &str, time_table: Vec<CompactSlot>, day: u8) -> Option<String> {
