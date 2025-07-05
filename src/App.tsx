@@ -7,6 +7,7 @@ import Friends from "./components/friends/Friends";
 import Profile from "./components/profile/Profile";
 import useNavStore from "./store/useNavStore";
 import WelcomePage from "./components/welcome/welcomePage";
+import Settings from "./components/settings/Settings";
 
 const App = () => {
   const { activeTab } = useNavStore();
@@ -20,6 +21,8 @@ const App = () => {
         return <Friends />;
       case "profile":
         return <Profile />;
+      case "settings":
+        return <Settings />;
       default:
         return <Home />;
     }

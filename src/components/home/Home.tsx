@@ -14,10 +14,11 @@ const Home = () => {
     const loadFriends = async () => {
       try {
         const now = new Date();
-        const formattedTime = `${now.getHours()
+        const formattedTime = `${now
+          .getHours()
           .toString()
           .padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
-        
+
         console.log("Current formatted time:", formattedTime);
         const friendsData = await getFreeTimeOfAllFriends(formattedTime);
         console.log("Friends data returned:", friendsData);
@@ -52,7 +53,7 @@ const Home = () => {
 
   return (
     <div className="h-full w-full overflow-y-auto scrollbar-hide">
-      <div className="p-4 flex flex-col gap-4">
+      <div className="p-4 pt-1 flex flex-col gap-4">
         <div className="relative">
           <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
             <Search className="w-4 h-4 text-gray-400" />

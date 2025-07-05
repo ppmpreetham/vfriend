@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type NavTab = "home" | "calendar" | "friends" | "profile";
+type NavTab = "home" | "calendar" | "friends" | "profile" | "settings";
 
 interface NavState {
   activeTab: NavTab;

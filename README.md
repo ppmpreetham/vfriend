@@ -122,6 +122,9 @@ To build the app for Android, you need to have the Android SDK and NDK installed
 - [x] Fix Dialog for Android (currently gives content://com.android.providers.media.documents/document/document%3A1000313997)
 - [x] Friend page Search functionality
 - [x] Friend individual page
+- [x] Settings page
+- [ ] Ability to change the time format
+- [ ] Multiple themes
 - [ ] Update Self Timetable
 - [ ] Update Friend Timetable
 - [ ] Share link to add friend functionality
@@ -129,7 +132,4 @@ To build the app for Android, you need to have the Android SDK and NDK installed
 - [ ] Deep-Link onClick functionality
 - [ ] peer-to-peer functionality
 - [ ] NFC Functionality (optional)
-- [ ] Settings page
-- [ ] Ability to change the time format
-- [ ] multiple themes
 - [ ] Calendar page
