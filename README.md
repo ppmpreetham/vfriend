@@ -101,13 +101,14 @@ To build the app for Android, you need to have the Android SDK and NDK installed
    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
    ```
-3. (Optional) Copy the `build.gradle.kts` to `gen/android/app/build.gradle.kts`:
+3. Copy the `build.gradle.kts` to `gen/android/app/build.gradle.kts`:
 
    ```bash
    cp src-tauri/gen/android/build.gradle.kts src-tauri/gen/android/app/build.gradle.kts
    ```
 
-4. Then, build the app for Android:
+4. Change the theme in `src-tauri/gen/android/app/src/main/res/values/themes.xml` for theme
+5. Then, build the app for Android:
    ```bash
    pnpm tauri android build
    ```
