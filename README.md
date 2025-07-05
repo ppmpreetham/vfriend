@@ -123,13 +123,13 @@ To build the app for Android, you need to have the Android SDK and NDK installed
 - [x] Friend page Search functionality
 - [x] Friend individual page
 - [x] Settings page
+- [x] QR Code functionality
+- [x] Share link to add friend functionality
+- [ ] Deep-Link onClick functionality
 - [ ] Ability to change the time format
 - [ ] Multiple themes
 - [ ] Update Self Timetable
 - [ ] Update Friend Timetable
-- [ ] Share link to add friend functionality
-- [ ] QR Code deeplink functionality
-- [ ] Deep-Link onClick functionality
 - [ ] peer-to-peer functionality
 - [ ] NFC Functionality (optional)
 - [ ] Calendar page

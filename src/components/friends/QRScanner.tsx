@@ -48,8 +48,6 @@ const QRScanner = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">QR Code Scanner</h2>
-
       {error && <div className="text-red-500 mb-4">{error}</div>}
 
       {result && (
@@ -61,7 +59,7 @@ const QRScanner = () => {
       )}
 
       <button
-        className="px-4 py-2 bg-primary text-white rounded"
+        className="px-4 py-2 bg-black text-white rounded"
         onClick={startScan}
         disabled={scanning}
       >

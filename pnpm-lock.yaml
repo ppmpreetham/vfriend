@@ -8,9 +8,9 @@ importers:
 
   .:
     dependencies:
-      '@inkibra/tauri-plugin-sharing':
-        specifier: ^0.2.4
-        version: 0.2.4
+      '@buildyourwebapp/tauri-plugin-sharesheet':
+        specifier: github:buildyourwebapp/tauri-plugin-sharesheet
+        version: https://codeload.github.com/buildyourwebapp/tauri-plugin-sharesheet/tar.gz/c11aa05040fd12197bc498cb4a5b6aa7f8ca1c75
       '@tailwindcss/vite':
         specifier: ^4.1.9
         version: 4.1.9(vite@6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1))
@@ -182,6 +182,11 @@ packages:
     resolution: {integrity: sha512-ETyHEk2VHHvl9b9jZP5IHPavHYk57EhanlRRuae9XCpb/j5bDCbPPMOBfCWhnl/7EDJz0jEMCi/RhccCE8r1+Q==}
     engines: {node: '>=6.9.0'}
 
+  '@buildyourwebapp/tauri-plugin-sharesheet@https://codeload.github.com/buildyourwebapp/tauri-plugin-sharesheet/tar.gz/c11aa05040fd12197bc498cb4a5b6aa7f8ca1c75':
+    resolution: {tarball: https://codeload.github.com/buildyourwebapp/tauri-plugin-sharesheet/tar.gz/c11aa05040fd12197bc498cb4a5b6aa7f8ca1c75}
+    version: 0.0.1
+    engines: {pnpm: ^9.0.0}
+
   '@esbuild/aix-ppc64@0.25.5':
     resolution: {integrity: sha512-9o3TMmpmftaCMepOdA5k/yDw8SfInyzWWTjYTFCX3kPSDJMROQTb8jg+h9Cnwnmm1vOzvxN7gIfB5V2ewpjtGA==}
     engines: {node: '>=18'}
@@ -331,9 +336,6 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
-
-  '@inkibra/tauri-plugin-sharing@0.2.4':
-    resolution: {integrity: sha512-HzrEee+YGFyUCvoIVV/SpniYJ8XbmRBZX073QeZjLe4a7vICdp4CIFEh5dIntsrOnPjqVsz9mNNQ95XOfYOkzQ==}
 
   '@isaacs/fs-minipass@4.0.1':
     resolution: {integrity: sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==}
@@ -566,6 +568,10 @@ packages:
     resolution: {integrity: sha512-u2F0VK6+anItoEvB3+rfvTO9GEh2vb00Je05OwlUe/A0lkJBgW1HckiY3f9YZa+jx6IOe4dHPh10dyp9aY3iRQ==}
     peerDependencies:
       react: ^18 || ^19
+
+  '@tauri-apps/api@2.0.0-rc.0':
+    resolution: {integrity: sha512-v454Qs3REHc3Za59U+/eSmBsdmF+3NE5+76+lFDaitVqN4ZglDHENDaMARYKGJVZuxiSkzyqG0SeG7lLQjVkPA==}
+    engines: {node: '>= 18.18', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
 
   '@tauri-apps/api@2.5.0':
     resolution: {integrity: sha512-Ldux4ip+HGAcPUmuLT8EIkk6yafl5vK0P0c0byzAKzxJh7vxelVtdPONjfgTm96PbN24yjZNESY8CKo8qniluA==}
@@ -1265,6 +1271,10 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.27.1
 
+  '@buildyourwebapp/tauri-plugin-sharesheet@https://codeload.github.com/buildyourwebapp/tauri-plugin-sharesheet/tar.gz/c11aa05040fd12197bc498cb4a5b6aa7f8ca1c75':
+    dependencies:
+      '@tauri-apps/api': 2.0.0-rc.0
+
   '@esbuild/aix-ppc64@0.25.5':
     optional: true
 
@@ -1339,10 +1349,6 @@ snapshots:
 
   '@esbuild/win32-x64@0.25.5':
     optional: true
-
-  '@inkibra/tauri-plugin-sharing@0.2.4':
-    dependencies:
-      '@tauri-apps/api': 2.5.0
 
   '@isaacs/fs-minipass@4.0.1':
     dependencies:
@@ -1512,6 +1518,8 @@ snapshots:
     dependencies:
       '@tanstack/query-core': 5.80.7
       react: 18.3.1
+
+  '@tauri-apps/api@2.0.0-rc.0': {}
 
   '@tauri-apps/api@2.5.0': {}
 

@@ -1,5 +1,5 @@
 import { Share, QrCode, Wifi, ArrowLeft, Sparkles } from "lucide-react";
-import { ShareLink } from "./ShareLink";
+import { handleShare } from "./ShareLink";
 import useAddFriendStore from "../../store/useAddFriendStore";
 import QRGiver from "./QRGiver";
 import CodeTab from "./FriendAddTypes/Access";
@@ -12,7 +12,7 @@ const ShareLinkTab = () => (
       <p>Share your profile link with friends:</p>
       <button
         className="bg-black text-white p-2 rounded mt-2"
-        onClick={() => ShareLink()}
+        onClick={async () => await handleShare()}
       >
         Generate & Share Link
       </button>

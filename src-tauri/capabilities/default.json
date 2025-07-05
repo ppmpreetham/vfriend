@@ -11,6 +11,7 @@
     "os:default",
     "deep-link:default",
     "opener:default",
+    "sharesheet:default",
     "barcode-scanner:default",
     {
       "identifier": "fs:scope",

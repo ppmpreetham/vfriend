@@ -36,7 +36,7 @@ pub fn run() {
             app.deep_link().register("vfriend")?;
             Ok(())
         })
-        .plugin(tauri_plugin_sharing::init())
+        .plugin(tauri_plugin_sharesheet::init())
         .invoke_handler(tauri::generate_handler![
             parseHTML::parseHTML,
             newercommands::build_bitmap,

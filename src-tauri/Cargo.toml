@@ -26,7 +26,7 @@ base64 = "0.22.1"
 soup = "0.5.1"
 chrono = { version = "0.4.41", features = ["serde"] }
 tauri-plugin-store = "2.3.0"
-tauri-plugin-sharing = { git = "https://github.com/inkibra/tauri-plugins", package="tauri-plugin-sharing" }
+tauri-plugin-sharesheet = { git = "https://github.com/buildyourwebapp/tauri-plugin-sharesheet" }
 tauri-plugin-dialog = "2.3.0"
 tauri-plugin-fs = "2.4.0"
 tauri-plugin-deep-link = "2.4.0"

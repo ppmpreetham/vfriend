@@ -4182,11 +4182,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "tauri-plugin-sharing"
-version = "0.1.0"
-source = "git+https://github.com/inkibra/tauri-plugins#804bccb28e5277eb89f0465b9dc61b2227782d36"
+name = "tauri-plugin-sharesheet"
+version = "0.0.1"
+source = "git+https://github.com/buildyourwebapp/tauri-plugin-sharesheet#c11aa05040fd12197bc498cb4a5b6aa7f8ca1c75"
 dependencies = [
+ "log",
  "serde",
+ "serde_json",
+ "serde_repr",
  "tauri",
  "tauri-plugin",
  "thiserror 1.0.69",
@@ -4810,7 +4813,7 @@ dependencies = [
  "tauri-plugin-fs",
  "tauri-plugin-opener",
  "tauri-plugin-os",
- "tauri-plugin-sharing",
+ "tauri-plugin-sharesheet",
  "tauri-plugin-single-instance",
  "tauri-plugin-store",
 ]
