@@ -5,10 +5,24 @@ import type { FormData } from "../OnboardingForm";
 interface HobbiesStepProps {
   formData: FormData;
   updateFormData: (updates: Partial<FormData>) => void;
+  goToNextStep?: () => void;
 }
 
-const HobbiesStep = ({ formData, updateFormData }: HobbiesStepProps) => {
+const HobbiesStep = ({ formData, updateFormData, goToNextStep }: HobbiesStepProps) => {
   const [inputValue, setInputValue] = useState("");
+  
+  // common places
+  const commonPlaces = [
+    "North Square", 
+    "Library", 
+    "Gazebo", 
+    "GymKhana", 
+    "Aavins", 
+    "Clock Court", 
+    "Hostel", 
+    "Gym", 
+    "Sports"
+  ];
 
   const addHobby = () => {
     const trimmed = inputValue.trim();
@@ -22,6 +36,15 @@ const HobbiesStep = ({ formData, updateFormData }: HobbiesStepProps) => {
     }
   };
 
+  const addCommonPlace = (place: string) => {
+    if (
+      formData.hobbies.length < 4 &&
+      !formData.hobbies.includes(place)
+    ) {
+      updateFormData({ hobbies: [...formData.hobbies, place] });
+    }
+  };
+
   const removeHobby = (index: number) => {
     const newHobbies = formData.hobbies.filter((_, i) => i !== index);
     updateFormData({ hobbies: newHobbies });
@@ -29,7 +52,11 @@ const HobbiesStep = ({ formData, updateFormData }: HobbiesStepProps) => {
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       addHobby();
+    } else if (e.key === "Enter" && formData.hobbies.length > 0 && !inputValue.trim()) {
+      // If input is empty and we have hobbies selected, try to go to next step
+      goToNextStep?.();
     }
   };
 
@@ -41,34 +68,69 @@ const HobbiesStep = ({ formData, updateFormData }: HobbiesStepProps) => {
 
       {/* Current hobbies */}
       {formData.hobbies.length > 0 && (
-        <div className="w-full max-w-sm space-y-3">
-          {formData.hobbies.map((hobby, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-3 bg-white/10 rounded-xl p-3"
+        <div className="w-full max-w-sm">
+          <div className="flex flex-wrap gap-2">
+        {formData.hobbies.map((hobby, index) => (
+          <div
+            key={index}
+            className="flex items-center gap-2 bg-primary rounded-full px-3 py-1 text-sm text-black"
+          >
+            <span>{hobby}</span>
+            <button
+          onClick={() => removeHobby(index)}
+          className="hover:bg-black/10 rounded-full p-1"
             >
-              <span className="flex-1 text-white">{hobby}</span>
-              <button
-                onClick={() => removeHobby(index)}
-                className="p-1 text-gray-400 hover:text-primary"
-              >
-                <X size={16} />
-              </button>
-            </div>
-          ))}
+          <X size={14} />
+            </button>
+          </div>
+        ))}
+          </div>
         </div>
       )}
 
-      {/* Add hobby input */}
+      {/* Common places chips */}
+      <div className="w-full max-w-sm">
+        <div className="text-gray-300 text-sm mb-2">Common places:</div>
+        <div className="flex flex-wrap gap-2">
+          {commonPlaces.map((place) => {
+            const isSelected = formData.hobbies.includes(place);
+            const isDisabled = isSelected || formData.hobbies.length >= 4;
+            
+            return (
+              <button
+              key={place}
+              onClick={() => 
+                isSelected 
+                ? removeHobby(formData.hobbies.indexOf(place)) 
+                : addCommonPlace(place)
+              }
+              disabled={!isSelected && formData.hobbies.length >= 4}
+              className={`px-3 py-1 rounded-full text-sm transition-all ${
+                isSelected
+                ? "bg-primary text-black"
+                : formData.hobbies.length >= 4
+                ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                : "bg-white/10 hover:bg-white/20 text-white"
+              }`}
+              >
+              {place}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Add custom hobby input */}
       {formData.hobbies.length < 4 && (
         <div className="w-full max-w-sm">
+          <div className="text-gray-300 text-sm mb-2">Or add your own:</div>
           <div className="flex gap-2">
             <input
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Hostel, Gazebo, etc..."
+              placeholder="Enter custom place..."
               className="flex-1 px-4 py-3 text-lg border-none rounded-xl bg-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:outline-none"
               maxLength={30}
               autoFocus={formData.hobbies.length === 0}
