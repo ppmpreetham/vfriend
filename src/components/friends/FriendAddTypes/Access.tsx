@@ -4,7 +4,6 @@ import { Copy } from "lucide-react";
 import { shareData, validateAndAddFriend } from "../../../store/newtimeTableStore";
 import { useState } from "react";
 import useAddFriendStore from "../../../store/useAddFriendStore";
-// import user1 from "../../../../tests/user3.json"
 
 const CodeTab = () => {
   const {
@@ -30,16 +29,7 @@ const CodeTab = () => {
     if (!userData) return "";
 
     try {
-      const shareableData: shareData = (({ u, r, s, h, q, t, o }) => ({
-        u,
-        r,
-        s,
-        h,
-        q,
-        t,
-        o,
-      }))(userData);
-
+      const shareableData: shareData = (({ u, r, s, h, q, t, o }) => ({u,r,s,h,q,t,o}))(userData);
       console.log("Compressing shareableData:", shareableData);
       return compress(shareableData);
     } catch (error) {
@@ -77,21 +67,6 @@ const CodeTab = () => {
       setAddStatus({ message: "Invalid access code", isError: true });
     }
   };
-
-  // const addTestFriend = async () => {
-  //   try {
-  //     const result = await addFriend(user1);
-  //     if (result.success) {
-  //       setAddStatus({ message: "Test friend added successfully!", isError: false });
-  //     } else {
-  //       setAddStatus({ message: "Failed to add test friend", isError: true });
-  //     }
-  //   }
-  //   catch (error) {
-  //     console.error("Error adding test friend:", error);
-  //     setAddStatus({ message: "Failed to add test friend", isError: true });
-  //   }
-  // }
 
   return (
     <div className="p-4 text-black flex flex-col gap-4">

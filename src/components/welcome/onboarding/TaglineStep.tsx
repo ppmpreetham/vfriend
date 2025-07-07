@@ -6,14 +6,14 @@ interface TaglineStepProps {
   formData: FormData;
   updateFormData: (updates: Partial<FormData>) => void;
   onValidationChange?: (isValid: boolean) => void;
-  onNext?: () => void; // Added prop for moving to next step
+  goToNextStep?: () => void;
 }
 
 const TaglineStep = ({
   formData,
   updateFormData,
   onValidationChange,
-  onNext,
+  goToNextStep, // Updated prop name here
 }: TaglineStepProps) => {
   const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +31,7 @@ const TaglineStep = ({
       formData.tagline.trim().length > 0
     ) {
       e.preventDefault();
-      onNext?.();
+      goToNextStep?.();
     }
   };
 

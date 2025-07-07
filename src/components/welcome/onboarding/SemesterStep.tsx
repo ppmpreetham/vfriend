@@ -26,11 +26,17 @@ const SemesterStep = ({
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && formData.semester) {
-      goToNextStep?.();
-    }
-  };
+const handleKeyPress = (e: React.KeyboardEvent) => {
+  if (
+    e.key === "Enter" && 
+    formData.semester !== undefined && 
+    formData.semester >= 1 && 
+    formData.semester <= 10
+  ) {
+    e.preventDefault();
+    goToNextStep?.();
+  }
+};
 
   return (
     <div className="flex flex-col items-center justify-center h-full space-y-8">

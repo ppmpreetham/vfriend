@@ -150,7 +150,7 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
             />
           </div>
         </div>
-        <div className="w-10" /> {/* Spacer for centering */}
+        <div className="w-10" />
       </div>
 
       {/* Title */}
@@ -165,6 +165,7 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
         <CurrentStepComponent
           formData={formData}
           updateFormData={updateFormData}
+          goToNextStep={canProceed ? handleNext : undefined}
         />
       </div>
 

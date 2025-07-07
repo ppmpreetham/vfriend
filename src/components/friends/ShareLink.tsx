@@ -23,16 +23,7 @@ export async function handleShare() {
         if (!userData) return "";
     
         try {
-          const shareableData: shareData = (({ u, r, s, h, q, t, o }) => ({
-            u,
-            r,
-            s,
-            h,
-            q,
-            t,
-            o,
-          }))(userData);
-    
+          const shareableData: shareData = (({ u,r,s,h,q,t,o}) => ({u,r,s,h,q,t,o}))(userData);
           console.log("Compressing shareableData:", shareableData);
           return compress(shareableData);
         } catch (error) {
