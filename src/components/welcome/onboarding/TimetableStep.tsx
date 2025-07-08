@@ -85,7 +85,7 @@ const TimetableStep = ({ formData, updateFormData }: TimetableStepProps) => {
           Upload your VIT timetable HTML file for Semester {formData.semester}
         </p>
         <p className="text-gray-400 text-sm">
-          This helps you find free time with friends
+          Go to VTOP &gt; Academics &gt; Time Table
         </p>
       </div>
 
