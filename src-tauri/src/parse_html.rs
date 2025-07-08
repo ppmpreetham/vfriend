@@ -31,7 +31,7 @@ fn extract_course_info(cell_text: &str) -> String {
 }
 
 #[tauri::command]
-pub fn parseHTML(html_content: String) -> Result<String, String> {
+pub fn parse_html(html_content: String) -> Result<String, String> {
     // Step 1: Create soup from provided HTML content
     let soup = Soup::new(&html_content);
 
@@ -166,7 +166,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let html = fs::read_to_string("VIT Chennai - VTOP.html")?;
 
     // Step 2: Parse HTML and get JSON
-    let json_result = parseHTML(html)?;
+    let json_result = parse_html(html)?;
 
     // Step 3: Print the result
     println!("Generated compact JSON:");

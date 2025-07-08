@@ -108,7 +108,7 @@ export async function parseHTMLTimetable(
   htmlContent: string
 ): Promise<CompactTimetable> {
   try {
-    const jsonString = await invoke<string>("parseHTML", { htmlContent });
+    const jsonString = await invoke<string>("parse_html", { htmlContent });
     const timetable = JSON.parse(jsonString) as CompactTimetable;
     console.log("Parsed timetable:", timetable);
     return timetable;

@@ -12,7 +12,7 @@ const Header = () => {
         className="flex items-center m-4 mb-3 cursor-pointer"
       >
         <img src={darkLogo} alt="Logo" className="h-10" />
-        <div className="text-3xl text-primary">riend</div>
+        <div className="text-3xl text-primary transform -translate-x-1.5 translate-y-0.5">riend</div>
       </div>
       <div className="m-4 mb-3 items-center flex">
         <button
