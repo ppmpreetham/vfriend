@@ -7,7 +7,7 @@ interface NavState {
   setActiveTab: (tab: NavTab) => void;
 }
 
-const useNavStore = create<NavState>((set) => ({
+const useNavStore = create<NavState>()((set) => ({
   activeTab: "home",
   setActiveTab: (tab) => set({ activeTab: tab }),
 }));
