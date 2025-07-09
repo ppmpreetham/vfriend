@@ -33,7 +33,10 @@ const QRScanner = () => {
 
       if (scanResult) {
         setResult(scanResult.content);
-        await validateAndAddFriend(scanResult.content);
+        const addResult = await validateAndAddFriend(scanResult.content);
+        if (!addResult.success) {
+          console.log("Failed to add friend:", addResult.error);
+        }
         console.log("QR code scanned:", scanResult.content);
       } else {
         console.log("No QR code scanned");

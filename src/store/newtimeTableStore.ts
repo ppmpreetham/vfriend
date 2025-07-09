@@ -279,9 +279,18 @@ export async function changeFriendData(
   }
 }
 
-
 export async function validateAndAddFriend(accessCode: string) {
-  const decompressedData = decompress(accessCode);
+  let decompressedData = decompress(accessCode);
+  if (typeof decompressedData === "string") {
+    try {
+      decompressedData = JSON.parse(decompressedData);
+    } catch (e) {
+      return {
+        success: false,
+        error: { message: "Invalid access code format" },
+      };
+    }
+  }
   // Validate the decompressed data structure
   if (
     !decompressedData ||
