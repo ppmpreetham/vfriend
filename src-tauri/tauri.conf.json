@@ -36,8 +36,7 @@
   "plugins": {
     "deep-link": {
       "mobile": [
-        { "host": "vfriend.preetham.top", "pathPrefix": ["/open"] },
-        { "host": "vfriend.preetham.top" }
+        { "host": "com.vitfriend.app" }
       ],
       "desktop": {
         "schemes": ["vfriend"]
