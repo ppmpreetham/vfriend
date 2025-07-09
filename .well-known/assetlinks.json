@@ -5,7 +5,7 @@
       "namespace": "android_app",
       "package_name": "top.preetham.vfriend",
       "sha256_cert_fingerprints": [
-        $CERT_FINGERPRINT
+        "0B:50:6E:B7:11:DC:9A:39:1E:4B:D1:F7:8E:E4:18:D4:C3:F9:92:34:AB:58:29:F2:D9:69:70:0C:E6:26:6F:DB"
       ]
     }
   }
