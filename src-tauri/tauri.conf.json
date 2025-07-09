@@ -1,7 +1,7 @@
 {
   "productName": "vitfriend",
   "version": "0.1.0",
-  "identifier": "com.vitfriend.app",
+  "identifier": "top.preetham.vfriend",
   "build": {
     "beforeDevCommand": "pnpm dev --host",
     "devUrl": "http://10.237.115.42:1420",

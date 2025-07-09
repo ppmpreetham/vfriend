@@ -8,20 +8,24 @@ interface HobbiesStepProps {
   goToNextStep?: () => void;
 }
 
-const HobbiesStep = ({ formData, updateFormData, goToNextStep }: HobbiesStepProps) => {
+const HobbiesStep = ({
+  formData,
+  updateFormData,
+  goToNextStep,
+}: HobbiesStepProps) => {
   const [inputValue, setInputValue] = useState("");
-  
+
   // common places
   const commonPlaces = [
-    "North Square", 
-    "Library", 
-    "Gazebo", 
-    "GymKhana", 
-    "Aavins", 
-    "Clock Court", 
-    "Hostel", 
-    "Gym", 
-    "Sports"
+    "North Square",
+    "Library",
+    "Gazebo",
+    "GymKhana",
+    "Aavins",
+    "Clock Court",
+    "Hostel",
+    "Gym",
+    "Sports",
   ];
 
   const addHobby = () => {
@@ -37,10 +41,7 @@ const HobbiesStep = ({ formData, updateFormData, goToNextStep }: HobbiesStepProp
   };
 
   const addCommonPlace = (place: string) => {
-    if (
-      formData.hobbies.length < 4 &&
-      !formData.hobbies.includes(place)
-    ) {
+    if (formData.hobbies.length < 4 && !formData.hobbies.includes(place)) {
       updateFormData({ hobbies: [...formData.hobbies, place] });
     }
   };
@@ -54,7 +55,11 @@ const HobbiesStep = ({ formData, updateFormData, goToNextStep }: HobbiesStepProp
     if (e.key === "Enter") {
       e.preventDefault();
       addHobby();
-    } else if (e.key === "Enter" && formData.hobbies.length > 0 && !inputValue.trim()) {
+    } else if (
+      e.key === "Enter" &&
+      formData.hobbies.length > 0 &&
+      !inputValue.trim()
+    ) {
       // If input is empty and we have hobbies selected, try to go to next step
       goToNextStep?.();
     }
@@ -70,20 +75,20 @@ const HobbiesStep = ({ formData, updateFormData, goToNextStep }: HobbiesStepProp
       {formData.hobbies.length > 0 && (
         <div className="w-full max-w-sm">
           <div className="flex flex-wrap gap-2">
-        {formData.hobbies.map((hobby, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-2 bg-primary rounded-full px-3 py-1 text-sm text-black"
-          >
-            <span>{hobby}</span>
-            <button
-          onClick={() => removeHobby(index)}
-          className="hover:bg-black/10 rounded-full p-1"
-            >
-          <X size={14} />
-            </button>
-          </div>
-        ))}
+            {formData.hobbies.map((hobby, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-2 bg-primary rounded-full px-3 py-1 text-sm text-black"
+              >
+                <span>{hobby}</span>
+                <button
+                  onClick={() => removeHobby(index)}
+                  className="hover:bg-black/10 rounded-full p-1"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       )}
@@ -94,26 +99,25 @@ const HobbiesStep = ({ formData, updateFormData, goToNextStep }: HobbiesStepProp
         <div className="flex flex-wrap gap-2">
           {commonPlaces.map((place) => {
             const isSelected = formData.hobbies.includes(place);
-            const isDisabled = isSelected || formData.hobbies.length >= 4;
-            
+
             return (
               <button
-              key={place}
-              onClick={() => 
-                isSelected 
-                ? removeHobby(formData.hobbies.indexOf(place)) 
-                : addCommonPlace(place)
-              }
-              disabled={!isSelected && formData.hobbies.length >= 4}
-              className={`px-3 py-1 rounded-full text-sm transition-all ${
-                isSelected
-                ? "bg-primary text-black"
-                : formData.hobbies.length >= 4
-                ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                : "bg-white/10 hover:bg-white/20 text-white"
-              }`}
+                key={place}
+                onClick={() =>
+                  isSelected
+                    ? removeHobby(formData.hobbies.indexOf(place))
+                    : addCommonPlace(place)
+                }
+                disabled={!isSelected && formData.hobbies.length >= 4}
+                className={`px-3 py-1 rounded-full text-sm transition-all ${
+                  isSelected
+                    ? "bg-primary text-black"
+                    : formData.hobbies.length >= 4
+                    ? "bg-gray-700 text-gray-500 cursor-not-allowed"
+                    : "bg-white/10 hover:bg-white/20 text-white"
+                }`}
               >
-              {place}
+                {place}
               </button>
             );
           })}
