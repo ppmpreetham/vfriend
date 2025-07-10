@@ -44,6 +44,7 @@ pub fn run() {
             newercommands::next_free_time_after,
             newercommands::get_free_status,
             newercommands::currently_at,
+            newercommands::currentbit
             // commands::check_conflicts,
             // commands::find_free_times,
             // commands::is_free_at,

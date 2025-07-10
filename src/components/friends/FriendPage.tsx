@@ -36,7 +36,7 @@ const FriendPage = () => {
   const [bitmapLoading, setBitmapLoading] = useState(true);
   const [kindmapLoading, setKindmapLoading] = useState(true);
   const [allBitmaps, setAllBitmaps] = useState<Record<number, boolean[]>>({});
-
+const [allKindmaps, setAllKindmaps] = useState<Record<number, boolean[]>>({});
   // Fetch bitmap and kindmap for the selected friend
   useEffect(() => {
     if (!selectedFriend) return;
@@ -59,6 +59,11 @@ const FriendPage = () => {
     // Set all bitmaps for the schedule grid
     if (selectedFriend.b) {
       setAllBitmaps(selectedFriend.b);
+    }
+
+    // Set all kindmaps for the schedule grid
+    if (selectedFriend.k) {
+      setAllKindmaps(selectedFriend.k);
     }
   }, [selectedFriend, currentDay]);
 
@@ -155,7 +160,7 @@ const FriendPage = () => {
           </div>
         </div>
       </div>
-      <ScheduleGrid bitmaps={allBitmaps} />
+      <ScheduleGrid bitmaps={allBitmaps} kindmaps={allKindmaps}/>
     </div>
   );
 };

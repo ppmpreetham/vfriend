@@ -40,6 +40,24 @@ export async function buildKindmap(
   });
 }
 
+export async function currentBit({
+  bitmap, kindmap,
+}: {
+  bitmap: boolean[];
+  kindmap: boolean[];
+}): Promise<number> {
+  try {    
+    const result = await invoke("currentbit", {
+      bitmap,
+      kindmap,
+    });
+    return result as number;
+  } catch (error) {
+    console.error("Error in currentBit:", error);
+    throw error;
+  }
+}
+
 /**
  * Fetches the next free time after a given current time
  */
@@ -76,7 +94,7 @@ export function getFreeStatus(params: NextFreeTimeParams) {
   });
 }
 
-interface FreeStatusResponse {
+export interface FreeStatusResponse {
   is_busy: boolean;
   from?: string;
   until?: string;

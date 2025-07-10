@@ -28,6 +28,7 @@ const Profile = () => {
   const [bitmapLoading, setBitmapLoading] = useState(true);
   const [kindmapLoading, setKindmapLoading] = useState(true);
   const [allBitmaps, setAllBitmaps] = useState<Record<number, boolean[]>>({});
+  const [allKindmaps, setAllKindmaps] = useState<Record<number, boolean[]>>({});
 
   // Use the new hook for user profile
   const userData = useUserProfile();
@@ -51,15 +52,20 @@ const Profile = () => {
 
         // Fetch all bitmaps for the schedule grid
         const bitmaps: Record<number, boolean[]> = {};
+        const kindmaps: Record<number, boolean[]> = {};
+        
         for (let day = 1; day <= 6; day++) {
           try {
             bitmaps[day] = await getUserBitmap(day);
+            kindmaps[day] = await getUserKindmap(day);
           } catch (error) {
             console.error(`Failed to get bitmap for day ${day}:`, error);
             bitmaps[day] = [];
+            kindmaps[day] = [];
           }
         }
         setAllBitmaps(bitmaps);
+        setAllKindmaps(kindmaps);
       } catch (error) {
         console.error("Error fetching bitmap/kindmap data:", error);
         setBitmapLoading(false);
@@ -220,7 +226,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <ScheduleGrid bitmaps={allBitmaps} />
+      <ScheduleGrid bitmaps={allBitmaps} kindmaps={allKindmaps} />
       <div className="flex gap-4 mx-4">
         <div
           className="bg-red-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"

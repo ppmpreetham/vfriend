@@ -73,6 +73,38 @@ const LAB_PERIODS: [(&str, &str); 12] = [
 ];
 
 #[tauri::command]
+pub fn currentbit(bitmap: [bool; 12], kindmap: [bool; 12]) -> Result<u8, String> {
+    let current_time = chrono::Local::now().time();
+
+    for i in 0..12 {
+        let (start_str, end_str) = if kindmap[i] {
+            LAB_PERIODS[i]
+        } else {
+            THEORY_PERIODS[i]
+        };
+
+        let start = NaiveTime::parse_from_str(start_str, "%H:%M")
+            .map_err(|e| format!("Start time parse error: {}", e))?;
+        let end = NaiveTime::parse_from_str(end_str, "%H:%M")
+            .map_err(|e| format!("End time parse error: {}", e))?;
+
+        if current_time >= start && current_time < end && bitmap[i] {
+            return Ok((i + 1) as u8); // 1-based period index
+        }
+    }
+
+    // Optional: special lunch detection
+    let lunch_start = NaiveTime::parse_from_str("13:25", "%H:%M").unwrap();
+    let lunch_end = NaiveTime::parse_from_str("14:00", "%H:%M").unwrap();
+    if current_time >= lunch_start && current_time < lunch_end {
+        return Ok(13); // Special code for lunch
+    }
+
+    Ok(0) // 0 = no active period
+}
+
+
+#[tauri::command]
 pub fn next_free_time_after(
     bitmap: [bool; 12],  // Remove the & reference
     kindmap: [bool; 12], // Remove the & reference
