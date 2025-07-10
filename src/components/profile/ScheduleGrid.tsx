@@ -57,7 +57,7 @@ const ScheduleGrid: React.FC<ScheduleGridProps> = ({ bitmaps, kindmaps }) => {
               return (
                 <div
                   key={`cell-${rowIndex}-${colIndex}`}
-                  className={`rounded-sm aspect-square h-6 ${
+                  className={`rounded-sm aspect-square h-6 hover:bg-gray-800 ${
                     isCurrent
                       ? "bg-white"
                       : hasClass

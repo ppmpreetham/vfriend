@@ -24,7 +24,8 @@ export interface personData extends shareData {
 }
 
 export interface userData extends personData {
-  theme: string; // theme preference
+  theme: "Dark" | "Light"; // theme preference
+  timeFormat?: 12 | 24; // time format preference
   welcome?: boolean; // welcome screen flag
 }
 
@@ -50,7 +51,8 @@ export async function initializeUserStore({ u, r, s, h, q, t, o }: shareData) {
       b, // bitmap for each day of the week
       k, // kindmap for each day of the week
       o, // original schedule
-      theme: "dark",
+      theme: "Dark",
+      timeFormat: 12, // default to 12 hour format
       welcome: true, // set welcome flag to true
     });
     await userStore.save();
