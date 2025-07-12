@@ -1,0 +1,93 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - releases
+
+jobs:
+  release:
+    name: Build and publish Android package
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Extract version from package.json
+        id: version
+        run: echo "VERSION=$(jq -r .version src-tauri/tauri.conf.json)" >> $GITHUB_OUTPUTE
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rust-std
+          targets: aarch64-linux-android,armv7-linux-androideabi
+
+      - name: Install Android NDK and SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Tauri prerequisites
+        run: |
+          rustup target add aarch64-linux-android armv7-linux-androideabi
+
+      - name: Install Tauri
+        run: |
+          pnpm install -g @tauri-apps/cli
+
+      - name: Init Tauri Build
+        run: |
+          pnpm tauri android init
+
+      - name: Copy Manifest
+        run: |
+          rm src-tauri/gen/android/app/src/main/AndroidManifest.xml
+          rm src-tauri/gen/android/app/build.gradle.kts
+          cp android/AndroidManifest.xml src-tauri/gen/android/app/src/main/AndroidManifest.xml
+          cp android/build.gradle.kts src-tauri/gen/android/app/build.gradle.kts
+
+      - name: Copy Themes
+        run: |
+          rm -rf src-tauri/gen/android/app/src/main/res/values
+          rm -rf src-tauri/gen/android/app/src/main/res/values-night
+          cp android/values -r src-tauri/gen/android/app/src/main/res/values
+          cp android/values-night -r src-tauri/gen/android/app/src/main/res/values-night
+
+      - name: setup Android signing
+        run: |
+          cd src-tauri/gen/android
+          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" > keystore.properties
+          echo "password=${{ secrets.ANDROID_KEY_PASSWORD }}" >> keystore.properties
+          base64 -d <<< "${{ secrets.ANDROID_KEY_BASE64 }}" > $RUNNER_TEMP/keystore.jks
+          echo "storeFile=$RUNNER_TEMP/keystore.jks" >> keystore.properties
+
+      - name: Build
+        run: |
+          pnpm tauri android build
+
+      - name: Upload APK to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release v${{ steps.version.outputs.VERSION }}
+          tag_name: v${{ steps.version.outputs.VERSION }}
+          files: |
+            src-tauri\gen\android\app\build\outputs\apk\universal\release\app-universal-release.apk
