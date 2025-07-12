@@ -6,16 +6,20 @@ import {
   checkPermissions,
 } from "@tauri-apps/plugin-barcode-scanner";
 import { validateAndAddFriend } from "../../store/newtimeTableStore";
+import useAddFriendStore from "../../store/useAddFriendStore";
 
 const QRScanner = () => {
   const [scanning, setScanning] = useState(false);
   const [result, setResult] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [addStatus, setAddStatus] = useState({ message: "", isError: false });
+  const { setFriendAdded } = useAddFriendStore();
 
   const startScan = async () => {
     try {
       setScanning(true);
       setError(null);
+      setAddStatus({ message: "", isError: false });
 
       // Check for camera permissions
       let permissionStatus = await checkPermissions();
@@ -34,9 +38,25 @@ const QRScanner = () => {
       if (scanResult) {
         setResult(scanResult.content);
         const addResult = await validateAndAddFriend(scanResult.content);
-        if (!addResult.success) {
-          console.log("Failed to add friend:", addResult.error);
+
+        if (addResult.success) {
+          setAddStatus({
+            message: "Friend added successfully!",
+            isError: false,
+          });
+          setFriendAdded(true);
+        } else {
+          setAddStatus({
+            message:
+              addResult.error &&
+              typeof addResult.error === "object" &&
+              "message" in addResult.error
+                ? `Failed: ${String(addResult.error.message)}`
+                : "Failed to add friend",
+            isError: true,
+          });
         }
+
         console.log("QR code scanned:", scanResult.content);
       } else {
         console.log("No QR code scanned");
@@ -53,10 +73,22 @@ const QRScanner = () => {
     <div className="p-4">
       {error && <div className="text-red-500 mb-4">{error}</div>}
 
-      {result && (
+      {addStatus.message && (
+        <div
+          className={`mb-4 p-3 ${
+            addStatus.isError
+              ? "bg-red-100 text-red-700"
+              : "bg-green-100 text-green-700"
+          } rounded`}
+        >
+          {addStatus.message}
+        </div>
+      )}
+
+      {result && !addStatus.isError && (
         <div className="mb-4 p-3 bg-gray-100 rounded">
           <p>
-            <strong>Scanned QR Code</strong>
+            <strong>Scanned QR Code successfully</strong>
           </p>
         </div>
       )}

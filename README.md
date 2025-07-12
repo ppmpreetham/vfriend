@@ -126,11 +126,15 @@ To build the app for Android, you need to have the Android SDK and NDK installed
 - [x] Settings page
 - [x] QR Code functionality
 - [x] Share link to add friend functionality
-- [ ] Ability to change the time format
-- [ ] Multiple themes
+- [x] Ability to change the time format
+- [x] Multiple themes
+- [x] Deep-Link onClick functionality
+- [ ] GitHub Actions Automation
+- [ ]
+- [ ] useNavigation for back button, refer to https://github.com/tauri-apps/tauri/issues/8142
+- [ ] Add Friend via Deep-Link
 - [ ] Update Self Timetable
 - [ ] Update Friend Timetable
-- [ ] Deep-Link onClick functionality
 - [ ] peer-to-peer functionality
 - [ ] NFC Functionality (optional)
 - [ ] Calendar page
