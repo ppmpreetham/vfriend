@@ -226,7 +226,7 @@ const Profile = () => {
             <div className="text-3xl">
               {bitmapLoading || kindmapLoading || nextFreeLoading
                 ? "Loading..."
-                : nextFreeTime || "Not available"}
+                : nextFreeTime || "FREE DAY"}
             </div>
           </div>
         </div>

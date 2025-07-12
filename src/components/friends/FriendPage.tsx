@@ -22,15 +22,15 @@ const FriendPage = () => {
   } = useFriendData(selectedFriendRegNumber || "");
 
   const getTimetableJsonString = () => {
-      if (!selectedFriend) return "";
-  
-      try {
-        return compress(JSON.stringify(selectedFriend));
-      } catch (error) {
-        console.error("Error converting timetable to JSON:", error);
-        return "";
-      }
-    };
+    if (!selectedFriend) return "";
+
+    try {
+      return compress(JSON.stringify(selectedFriend));
+    } catch (error) {
+      console.error("Error converting timetable to JSON:", error);
+      return "";
+    }
+  };
 
   // Get current time in HH:MM format
   const { currentTime, currentDay } = useMemo(() => {
@@ -49,7 +49,7 @@ const FriendPage = () => {
   const [bitmapLoading, setBitmapLoading] = useState(true);
   const [kindmapLoading, setKindmapLoading] = useState(true);
   const [allBitmaps, setAllBitmaps] = useState<Record<number, boolean[]>>({});
-const [allKindmaps, setAllKindmaps] = useState<Record<number, boolean[]>>({});
+  const [allKindmaps, setAllKindmaps] = useState<Record<number, boolean[]>>({});
   // Fetch bitmap and kindmap for the selected friend
   useEffect(() => {
     if (!selectedFriend) return;
@@ -113,7 +113,7 @@ const [allKindmaps, setAllKindmaps] = useState<Record<number, boolean[]>>({});
     return `${hour12}:${formattedMinutes} ${ampm}`;
   }, [nextFreeTimeRaw]);
 
-  if (friendLoading || bitmapLoading || kindmapLoading) {
+  if (friendLoading) {
     return (
       <div className="w-screen h-full flex items-center justify-center">
         <div className="text-2xl">Loading friend profile...</div>
@@ -162,10 +162,10 @@ const [allKindmaps, setAllKindmaps] = useState<Record<number, boolean[]>>({});
         <div className="mr-4 w-1/2 flex flex-col gap-2">
           <div className="bg-white text-black flex flex-col w-full flex-2 rounded-xl justify-center">
             <QRCodeGenerator
-            url={getTimetableJsonString()}
-            size={300}
-            errorCorrectionLevel="M"
-          />
+              url={getTimetableJsonString()}
+              size={300}
+              errorCorrectionLevel="M"
+            />
           </div>
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
             <div className="text-xl">NEXT FREE</div>
@@ -177,7 +177,7 @@ const [allKindmaps, setAllKindmaps] = useState<Record<number, boolean[]>>({});
           </div>
         </div>
       </div>
-      <ScheduleGrid bitmaps={allBitmaps} kindmaps={allKindmaps}/>
+      <ScheduleGrid bitmaps={allBitmaps} kindmaps={allKindmaps} />
     </div>
   );
 };

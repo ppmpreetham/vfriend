@@ -4,7 +4,7 @@
   "identifier": "com.vitfriend.app",
   "build": {
     "beforeDevCommand": "pnpm dev --host",
-    "devUrl": "http://10.81.58.42:1420",
+    "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "pnpm build",
     "frontendDist": "../dist",
     "removeUnusedCommands": true
@@ -35,9 +35,7 @@
   },
   "plugins": {
     "deep-link": {
-      "mobile": [
-        { "host": "vfriend.preetham.top" }
-      ],
+      "mobile": [{ "host": "vfriend.preetham.top" }],
       "desktop": {
         "schemes": ["vfriend"]
       },
