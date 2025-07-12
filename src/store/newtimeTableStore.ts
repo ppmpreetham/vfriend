@@ -24,7 +24,7 @@ export interface personData extends shareData {
 }
 
 export interface userData extends personData {
-  theme: "Dark" | "Light"; // theme preference
+  theme: "dark" | "light"; // theme preference
   timeFormat?: 12 | 24; // time format preference
   welcome?: boolean; // welcome screen flag
 }
@@ -51,7 +51,7 @@ export async function initializeUserStore({ u, r, s, h, q, t, o }: shareData) {
       b, // bitmap for each day of the week
       k, // kindmap for each day of the week
       o, // original schedule
-      theme: "Dark",
+      theme: "dark",
       timeFormat: 12, // default to 12 hour format
       welcome: true, // set welcome flag to true
     });
@@ -319,6 +319,28 @@ export interface FriendStatusData {
   until: string;
 }
 
+function trimSeconds(timeStr: string | null | undefined): string {
+  if (!timeStr || typeof timeStr !== "string") return "";
+
+  const [hhStr, mmStr] = timeStr.split(":");
+  if (!hhStr || !mmStr) return "";
+
+  const hour = parseInt(hhStr, 10);
+  const minute = mmStr.padStart(2, "0");
+
+  const timeFormat = localStorage.getItem("timeFormat");
+
+  if (timeFormat === "12") {
+    const suffix = hour >= 12 ? "PM" : "AM";
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${minute} ${suffix}`;
+  }
+
+  // default to 24-hour
+  return `${hhStr.padStart(2, "0")}:${minute}`;
+}
+
+
 export async function getFreeTimeOfAllFriends(
   currentTime: string
 ): Promise<FriendStatusData[]> {
@@ -379,8 +401,8 @@ export async function getFreeTimeOfAllFriends(
             username: name,
             available: !status.data.is_busy,
             location: location,
-            time: status.data.from || "",
-            until: status.data.until || "",
+            time: trimSeconds(status.data.from) || "",
+            until: trimSeconds(status.data.until) || "",
           });
         }
       } catch (error) {

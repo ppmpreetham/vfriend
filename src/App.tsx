@@ -14,12 +14,26 @@ import { useEffect } from "react";
 const App = () => {
   const { activeTab } = useNavStore();
   const { data: userData } = useUserProfile();
-  console.log("User Data:", userData);
-    useEffect(() => {
-    if (userData?.theme) {
-      document.documentElement.classList.toggle("dark", userData.theme === "Dark");
+  
+  // theme
+  useEffect(() => {
+    const localStorageTheme = localStorage.getItem("theme");
+    const systemSettingDark = window.matchMedia("(prefers-color-scheme: dark)");
+    let theme = "light";
+    if (localStorageTheme) {
+      theme = localStorageTheme;
+    } else if (userData?.theme) {
+      theme = userData.theme;
+      // sync to localStorage
+      localStorage.setItem("theme", theme);
+    } else if (systemSettingDark.matches) {
+      theme = "dark";
     }
-  }, [userData?.theme]);
+    
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [userData?.theme, activeTab]);
+  
   const renderContent = () => {
     switch (activeTab) {
       case "home":

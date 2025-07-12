@@ -19,7 +19,7 @@ const FriendCardHome = ({
             ? `Currently at ${location}${time ? ` until ${time}` : ""}`
             : until === ""
             ? `Free for the rest of the day`
-            : until === "19:25:00"
+            : until === "19:25:00" || until === "7:25 PM"
             ? `Free till tomorrow`
             : time && time.includes("Lunch")
             ? `On lunch break till ${until}`

@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 
 const Settings = () => {
   const { activeTab } = useNavStore();
-  const [currentTheme, setCurrentTheme] = useState("Dark");
+  const [currentTheme, setCurrentTheme] = useState("dark");
   const [timeFormat, setTimeFormat] = useState(12);
 
   useEffect(() => {
@@ -15,9 +15,9 @@ const Settings = () => {
     const systemSettingDark = window.matchMedia("(prefers-color-scheme: dark)");
     
     const initialTheme = calculateThemeSetting(localStorageTheme, systemSettingDark);
-    setCurrentTheme(initialTheme === "dark" ? "Dark" : "Light");
+    setCurrentTheme(initialTheme);
     
-    updateThemeOnDocument(initialTheme === "dark" ? "Dark" : "Light");
+    updateThemeOnDocument(initialTheme);
     
     const savedTimeFormat = localStorage.getItem("timeFormat");
     if (savedTimeFormat) {
@@ -40,15 +40,15 @@ const Settings = () => {
   };
 
   const updateThemeOnDocument = (theme: string) => {
-    const isDark = theme === "Dark";
+    const isDark = theme === "dark";
     document.documentElement.classList.toggle("dark", isDark);
-    document.documentElement.setAttribute("data-theme", theme.toLowerCase());
+    document.documentElement.setAttribute("data-theme", theme);
   };
 
   const toggleTheme = async () => {
     try {
-      const newTheme = currentTheme === "Dark" ? "Light" : "Dark";
-      localStorage.setItem("theme", newTheme.toLowerCase());
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+      localStorage.setItem("theme", newTheme);
       updateThemeOnDocument(newTheme);
       setCurrentTheme(newTheme);
     } catch (error) {
@@ -79,7 +79,7 @@ const Settings = () => {
           onClick={toggleTheme}
         >
           <span>Theme</span> 
-          <span>{currentTheme}</span>
+          <span>{currentTheme.charAt(0).toUpperCase() + currentTheme.slice(1)}</span>
         </button>
         
         <button 

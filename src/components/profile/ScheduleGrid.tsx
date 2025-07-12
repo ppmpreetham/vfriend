@@ -9,7 +9,7 @@ type ScheduleGridProps = {
 const ScheduleGrid: React.FC<ScheduleGridProps> = ({ bitmaps, kindmaps }) => {
   const currentDay = new Date().getDay(); // 0 = Sunday
   const [currentClass, setCurrentClass] = useState<number | null>(null);
-  const adjustedDay = currentDay === 0 ? 6 : currentDay - 1;
+  const adjustedDay = currentDay === 0 ? 6 : currentDay + 1;
 
   useEffect(() => {
     const fetchBitStatus = async () => {
@@ -59,7 +59,7 @@ const ScheduleGrid: React.FC<ScheduleGridProps> = ({ bitmaps, kindmaps }) => {
                   key={`cell-${rowIndex}-${colIndex}`}
                   className={`rounded-sm aspect-square h-6 hover:bg-background3 ${
                     isCurrent
-                      ? "bg-white"
+                      ? "bg-foreground"
                       : hasClass
                       ? "bg-primary"
                       : "border border-primary"
