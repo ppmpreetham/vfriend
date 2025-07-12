@@ -58,11 +58,11 @@ const QRGiver = () => {
       <div className="container mx-auto p-4">
         <h1 className="text-2xl font-bold mb-6 text-center">SCAN THIS QR</h1>
 
-        <div className=" mx-auto">
+        <div className="w-fit h-fit mx-auto">
           <QRCodeGenerator
             url={getTimetableJsonString()}
             size={300}
-            errorCorrectionLevel="M"
+            errorCorrectionLevel="Q"
           />
 
           <div className="mt-6 p-4 rounded-lg">

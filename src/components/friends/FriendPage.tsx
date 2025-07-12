@@ -4,6 +4,8 @@ import ScheduleGrid from "../profile/ScheduleGrid";
 import { nextFreeTime as useNextFreeTime } from "../../utils/invokeFunctions";
 import { useFriendStore } from "../../store/friendStore";
 import { useFriendData } from "../../hooks/useFriendData";
+import QRCodeGenerator from "./QRCodeGenerator";
+import { compress } from "../../utils/compressor";
 
 const FriendPage = () => {
   const selectedFriendRegNumber = useFriendStore(
@@ -18,6 +20,17 @@ const FriendPage = () => {
     isLoading: friendLoading,
     error: friendError,
   } = useFriendData(selectedFriendRegNumber || "");
+
+  const getTimetableJsonString = () => {
+      if (!selectedFriend) return "";
+  
+      try {
+        return compress(JSON.stringify(selectedFriend));
+      } catch (error) {
+        console.error("Error converting timetable to JSON:", error);
+        return "";
+      }
+    };
 
   // Get current time in HH:MM format
   const { currentTime, currentDay } = useMemo(() => {
@@ -147,8 +160,12 @@ const [allKindmaps, setAllKindmaps] = useState<Record<number, boolean[]>>({});
           </div>
         </div>
         <div className="mr-4 w-1/2 flex flex-col gap-2">
-          <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl justify-center">
-            <div>{selectedFriend.q || "No tagline set"}</div>
+          <div className="bg-white text-black flex flex-col w-full flex-2 rounded-xl justify-center">
+            <QRCodeGenerator
+            url={getTimetableJsonString()}
+            size={300}
+            errorCorrectionLevel="M"
+          />
           </div>
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
             <div className="text-xl">NEXT FREE</div>

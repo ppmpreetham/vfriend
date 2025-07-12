@@ -100,7 +100,7 @@ const Home = () => {
         ))
       ) : (
         <div className="text-center text-gray-400 my-8">
-          No friends match your search criteria
+          {friends.length === 0 ? "Add Friends to get Started" : "No friends match your search criteria"}
         </div>
       )}
     </div>

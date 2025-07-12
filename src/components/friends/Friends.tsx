@@ -185,7 +185,7 @@ const Friends = () => {
 
           {filteredFriends.length === 0 && searchQuery !== "" && (
             <div className="text-center p-4 text-gray-500">
-              No friends match your search.
+              {friends.length === 0 ? "No friends added yet." : "No friends match your search."}
             </div>
           )}
         </>

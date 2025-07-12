@@ -56,7 +56,7 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   console.log(handleUrlChange)
 
   return (
-    <div className="qr-code-generator p-4 max-w-md mx-auto">
+    <div className="qr-code-generator w-full mx-auto">
       {error && (
         <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
           {error}
@@ -71,7 +71,7 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
       )}
 
       {qrCodeImage && !isGenerating && (
-        <div className="mb-4">
+        <div className="">
           <img
             src={qrCodeImage}
             alt="Generated QR Code"
