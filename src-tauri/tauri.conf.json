@@ -1,6 +1,6 @@
 {
   "productName": "vitfriend",
-  "version": "0.1.0",
+  "version": "0.5.1",
   "identifier": "com.vitfriend.app",
   "build": {
     "beforeDevCommand": "pnpm dev --host",
