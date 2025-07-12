@@ -4,6 +4,7 @@ import { openUrl } from "@tauri-apps/plugin-opener";
 // import { useUserProfile } from "../../hooks/useUserProfile";
 // import { userStore } from "../../store/newtimeTableStore";
 import { useState, useEffect } from "react";
+import { resetAllStores, viewAllStores } from "../../store/newtimeTableStore";
 
 const Settings = () => {
   const { activeTab } = useNavStore();
@@ -13,12 +14,15 @@ const Settings = () => {
   useEffect(() => {
     const localStorageTheme = localStorage.getItem("theme");
     const systemSettingDark = window.matchMedia("(prefers-color-scheme: dark)");
-    
-    const initialTheme = calculateThemeSetting(localStorageTheme, systemSettingDark);
+
+    const initialTheme = calculateThemeSetting(
+      localStorageTheme,
+      systemSettingDark
+    );
     setCurrentTheme(initialTheme);
-    
+
     updateThemeOnDocument(initialTheme);
-    
+
     const savedTimeFormat = localStorage.getItem("timeFormat");
     if (savedTimeFormat) {
       setTimeFormat(parseInt(savedTimeFormat));
@@ -26,16 +30,19 @@ const Settings = () => {
   }, []);
 
   if (activeTab !== "settings") return null;
-  
-  const calculateThemeSetting = (localStorageTheme: string | null, systemSettingDark: MediaQueryList) => {
+
+  const calculateThemeSetting = (
+    localStorageTheme: string | null,
+    systemSettingDark: MediaQueryList
+  ) => {
     if (localStorageTheme !== null) {
       return localStorageTheme;
     }
-    
+
     if (systemSettingDark.matches) {
       return "dark";
     }
-    
+
     return "light";
   };
 
@@ -59,9 +66,9 @@ const Settings = () => {
   const toggleTimeFormat = async () => {
     try {
       const newTimeFormat = timeFormat === 12 ? 24 : 12;
-      
+
       localStorage.setItem("timeFormat", newTimeFormat.toString());
-      
+
       setTimeFormat(newTimeFormat);
     } catch (error) {
       console.error("Failed to update time format:", error);
@@ -78,18 +85,20 @@ const Settings = () => {
           className={`w-full text-start p-4 bg-background3 hover:bg-gray-700 rounded-md cursor-pointer flex justify-between items-center`}
           onClick={toggleTheme}
         >
-          <span>Theme</span> 
-          <span>{currentTheme.charAt(0).toUpperCase() + currentTheme.slice(1)}</span>
+          <span>Theme</span>
+          <span>
+            {currentTheme.charAt(0).toUpperCase() + currentTheme.slice(1)}
+          </span>
         </button>
-        
-        <button 
+
+        <button
           className={`w-full text-start p-4 bg-background3 hover:bg-gray-700 rounded-md cursor-pointer flex justify-between items-center`}
           onClick={toggleTimeFormat}
         >
           <span>Time Format</span>
           <span>{timeFormat} Hour</span>
         </button>
-        
+
         <button
           className="flex flex-row items-center w-full text-start p-4 bg-primary text-black rounded-md cursor-pointer"
           onClick={async (_) => {
@@ -99,6 +108,24 @@ const Settings = () => {
           <Star className="w-6 h-6 mr-2" />
           <div>STAR US ON GITHUB</div>
         </button>
+        <div className="flex gap-4 mx-4">
+          <div
+            className="bg-red-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"
+            onClick={() => {
+              resetAllStores();
+            }}
+          >
+            Reset everything
+          </div>
+          <div
+            className="bg-green-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"
+            onClick={() => {
+              viewAllStores();
+            }}
+          >
+            VIEW STORES
+          </div>
+        </div>
       </div>
     </div>
   );

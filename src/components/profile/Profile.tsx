@@ -226,30 +226,12 @@ const Profile = () => {
             <div className="text-3xl">
               {bitmapLoading || kindmapLoading || nextFreeLoading
                 ? "Loading..."
-                : nextFreeTime || "Not available"}
+                : nextFreeTime || "FREE DAY"}
             </div>
           </div>
         </div>
       </div>
       <ScheduleGrid bitmaps={allBitmaps} kindmaps={allKindmaps} />
-      <div className="flex gap-4 mx-4">
-        <div
-          className="bg-red-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"
-          onClick={() => {
-            resetAllStores();
-          }}
-        >
-          Reset everything
-        </div>
-        <div
-          className="bg-green-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"
-          onClick={() => {
-            viewAllStores();
-          }}
-        >
-          VIEW STORES
-        </div>
-      </div>
     </div>
   );
 };
