@@ -10,11 +10,13 @@ import WelcomePage from "./components/welcome/welcomePage";
 import Settings from "./components/settings/Settings";
 import { useUserProfile } from "./hooks/useUserProfile";
 import { useEffect } from "react";
+import { useDeepLink } from "./hooks/useDeepLink";
 
 const App = () => {
   const { activeTab } = useNavStore();
   const { data: userData } = useUserProfile();
-
+  const deepLinkResult = useDeepLink();
+  console.log(deepLinkResult);
   // theme
   useEffect(() => {
     const localStorageTheme = localStorage.getItem("theme");

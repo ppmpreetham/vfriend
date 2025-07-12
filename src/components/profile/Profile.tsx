@@ -9,7 +9,6 @@ import {
   getUserBitmap,
   getUserKindmap,
 } from "../../store/newtimeTableStore";
-import QRCodeGenerator from "../friends/QRCodeGenerator";
 
 const Profile = () => {
   // Get current time in HH:MM format
@@ -54,7 +53,7 @@ const Profile = () => {
         // Fetch all bitmaps for the schedule grid
         const bitmaps: Record<number, boolean[]> = {};
         const kindmaps: Record<number, boolean[]> = {};
-        
+
         for (let day = 1; day <= 6; day++) {
           try {
             bitmaps[day] = await getUserBitmap(day);
@@ -200,12 +199,16 @@ const Profile = () => {
       <div className="flex w-full gap-2 uppercase">
         <div className="ml-4 w-1/2 flex flex-col gap-2">
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
-            <div className="text-[clamp(1.25rem,7vw,1.875rem)]">{userData.data?.u || "UNKNOWN"}</div>
+            <div className="text-[clamp(1.25rem,7vw,1.875rem)]">
+              {userData.data?.u || "UNKNOWN"}
+            </div>
             <div>{userData ? userData.data?.r : "UNKNOWN"}</div>
             <div>SEM {userData.data?.s}</div>
           </div>
           <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl gap-4">
-            <div className="text-[clamp(1.25rem,1vw,1.875rem)]">I'll be at...</div>
+            <div className="text-[clamp(1.25rem,1vw,1.875rem)]">
+              I'll be at...
+            </div>
             <ul className="list-disc pl-5">
               {userData.data?.h?.map((hobby, index) => (
                 <li key={index}>{hobby}</li>

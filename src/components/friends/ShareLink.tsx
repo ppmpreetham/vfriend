@@ -37,7 +37,7 @@ async function shareUserData(userData: shareData | null) {
 
   try {
     await shareText(
-      `hey, umm, i've been using the vfriend app which lets me check other's time tables. you can download it via https://vfriend.preetham.top/ and here's my access code: ${getTimetableJsonString()}`
+      `Hey, umm,👉🏻👈🏻... I've been using the vfriend app which lets me check other's time tables. you can add me via https://vfriend.preetham.top/${getTimetableJsonString()}`
       // {
       //   title: "VFriend",
       //   thumbnailUri: "https://example.com/thumbnail.jpg",
