@@ -1,24 +1,28 @@
 import { Share, QrCode, Wifi, ArrowLeft, Sparkles } from "lucide-react";
-import { handleShare } from "./ShareLink";
+import { useShare } from "./ShareLink";
 import useAddFriendStore from "../../store/useAddFriendStore";
 import QRGiver from "./QRGiver";
 import CodeTab from "./FriendAddTypes/Access";
 import QRScanner from "./QRScanner";
 
-const ShareLinkTab = () => (
-  <div className="p-4">
-    <h3 className="text-xl font-bold text-black mb-4">Share Link</h3>
-    <div className="text-black">
-      <p>Share your profile link with friends:</p>
-      <button
-        className="bg-black text-foreground p-2 rounded mt-2"
-        onClick={async () => await handleShare()}
-      >
-        Generate & Share Link
-      </button>
+const ShareLinkTab = () => {
+  const { handleShare } = useShare();
+
+  return (
+    <div className="p-4">
+      <h3 className="text-xl font-bold text-black mb-4">Share Link</h3>
+      <div className="text-black">
+        <p>Share your profile link with friends:</p>
+        <button
+          className="bg-black text-foreground p-2 rounded mt-2"
+          onClick={handleShare}
+        >
+          Generate & Share Link
+        </button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const QRCodeTab = () => (
   <div className="p-4">
