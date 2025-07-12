@@ -1,17 +1,36 @@
 @import "tailwindcss";
 @import "tailwind-scrollbar-hide/v4";
 
-@theme {
-  --color-primary: #ebff57;
+@theme inline {
   --font-space: "Space Grotesk", sans-serif;
+
+  --color-background: var(--theme-color-background);
+  --color-background2: var(--theme-color-background2);
+  --color-background3: var(--theme-color-background3);
+  --color-foreground: var(--theme-color-foreground);
+  --color-primary: var(--theme-color-primary);
+  --color-secondary: #1e293b;
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
+@layer base{
+
+  [data-theme="dark"] {
+    --theme-color-background: oklch(13% 0.028 261.692);
+  --theme-color-background2: #101828;
+  --theme-color-background3: #1e2939;
+  --theme-color-foreground: #fff;
+  --theme-color-primary: #ebff57;
+}
+
+[data-theme="light"] {
+  --theme-color-background: #ffffff;
+  --theme-color-background2: #bebebe;
+  --theme-color-background3: #bebebe;
+  --theme-color-foreground: #000000;
+  --theme-color-primary: #00df82;
+}
+}
+
 
 @font-face {
   font-family: "Space Grotesk";

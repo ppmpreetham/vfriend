@@ -11,7 +11,7 @@ const ShareLinkTab = () => (
     <div className="text-black">
       <p>Share your profile link with friends:</p>
       <button
-        className="bg-black text-white p-2 rounded mt-2"
+        className="bg-black text-foreground p-2 rounded mt-2"
         onClick={async () => await handleShare()}
       >
         Generate & Share Link
@@ -48,28 +48,28 @@ const MainTab = () => {
       <div className="text-4xl text-black">ADD FRIEND</div>
       <div className="grid grid-cols-2 gap-4 mt-4 text-black">
         <button
-          className="bg-black text-white p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
+          className="bg-black text-foreground p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
           onClick={() => setActiveTab("share")}
         >
           <Share size={24} />
           <div>SHARE LINK</div>
         </button>
         <button
-          className="bg-black text-white p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
+          className="bg-black text-foreground p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
           onClick={() => setActiveTab("qr")}
         >
           <QrCode size={24} />
           <div>QR CODE</div>
         </button>
         <button
-          className="bg-black text-white p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
+          className="bg-black text-foreground p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
           onClick={() => setActiveTab("code")}
         >
           <Sparkles size={24} />
           <div>ACCESS CODE</div>
         </button>
         <button
-          className="bg-black text-white p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
+          className="bg-black text-foreground p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
           onClick={() => setActiveTab("p2p")}
         >
           <Wifi size={24} />

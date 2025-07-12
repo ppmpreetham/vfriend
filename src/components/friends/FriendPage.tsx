@@ -134,7 +134,7 @@ const [allKindmaps, setAllKindmaps] = useState<Record<number, boolean[]>>({});
       <div className="flex items-center">
         <button
           onClick={clearSelectedFriend}
-          className="flex m-2 p-2 rounded-full items-center gap-2 text-primary hover:bg-gray-800"
+          className="flex m-2 p-2 rounded-full items-center gap-2 text-primary hover:bg-background3"
         >
           <ChevronLeft />
           Back to Friends

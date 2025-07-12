@@ -60,7 +60,7 @@ const Home = () => {
           </div>
           <input
             type="search"
-            className="block w-full p-2 ps-10 text-sm rounded-lg bg-gray-800 border border-gray-700 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+            className="block w-full p-2 ps-10 text-sm rounded-lg bg-background3 border border-gray-700 placeholder-gray-400 text-foreground focus:ring-blue-500 focus:border-blue-500"
             placeholder="Search friends by name or location..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -69,7 +69,7 @@ const Home = () => {
 
         <div className="flex justify-end">
           <label className="inline-flex items-center cursor-pointer">
-            <span className="mr-3 text-sm font-medium text-white">
+            <span className="mr-3 text-sm font-medium text-foreground">
               Show Available Only
             </span>
             <div className="relative">

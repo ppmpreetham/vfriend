@@ -46,7 +46,7 @@ const ScheduleGrid: React.FC<ScheduleGridProps> = ({ bitmaps, kindmaps }) => {
   }, [bitmaps]);
 
   return (
-    <div className="m-0 bg-black text-white rounded-xl p-4">
+    <div className="m-0 text-foreground rounded-xl p-4">
       {scheduleMatrix.map((dayRow, rowIndex) => {
         const isTodayRow = adjustedDay === (rowIndex === 6 ? 0 : rowIndex + 1);
 
@@ -57,7 +57,7 @@ const ScheduleGrid: React.FC<ScheduleGridProps> = ({ bitmaps, kindmaps }) => {
               return (
                 <div
                   key={`cell-${rowIndex}-${colIndex}`}
-                  className={`rounded-sm aspect-square h-6 hover:bg-gray-800 ${
+                  className={`rounded-sm aspect-square h-6 hover:bg-background3 ${
                     isCurrent
                       ? "bg-white"
                       : hasClass

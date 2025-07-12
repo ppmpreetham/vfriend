@@ -114,7 +114,7 @@ const HobbiesStep = ({
                     ? "bg-primary text-black"
                     : formData.hobbies.length >= 4
                     ? "bg-gray-700 text-gray-500 cursor-not-allowed"
-                    : "bg-white/10 hover:bg-white/20 text-white"
+                    : "bg-white/10 hover:bg-white/20 text-foreground"
                 }`}
               >
                 {place}
@@ -135,7 +135,7 @@ const HobbiesStep = ({
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Enter custom place..."
-              className="flex-1 px-4 py-3 text-lg border-none rounded-xl bg-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:outline-none"
+              className="flex-1 px-4 py-3 text-lg border-none rounded-xl bg-white/10 text-foreground placeholder-gray-400 focus:ring-2 focus:ring-primary focus:outline-none"
               maxLength={30}
               autoFocus={formData.hobbies.length === 0}
             />

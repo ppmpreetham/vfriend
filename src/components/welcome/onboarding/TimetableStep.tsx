@@ -54,9 +54,9 @@ const TimetableStep = ({ formData, updateFormData }: TimetableStepProps) => {
         }`}
       >
         {formData.timetableUploaded ? (
-          <CheckCircle size={32} className="text-white" />
+          <CheckCircle size={32} className="text-foreground" />
         ) : (
-          <Upload size={32} className="text-white" />
+          <Upload size={32} className="text-foreground" />
         )}
       </div>
 

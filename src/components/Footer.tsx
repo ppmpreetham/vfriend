@@ -70,12 +70,13 @@ const Footer = () => {
       >
         <button
           className={`p-2 rounded-full w-14 h-14 flex items-center justify-center cursor-pointer ${
-            activeTab === "home" ? "" : "hover:bg-gray-700"
+            activeTab === "home" ? "bg-primary" : "hover:bg-gray-700"
           }`}
           aria-label="Home"
+          style={activeTab === "home" ? { color: "black" } : { color: "var(--theme-color-foreground)" }}
         >
           <Home
-            color={activeTab === "home" ? "black" : "white"}
+            color="currentColor"
             className="pointer-events-none z-30"
           />
         </button>
@@ -88,12 +89,13 @@ const Footer = () => {
       >
         <button
           className={`p-2 rounded-full w-14 h-14 flex items-center justify-center cursor-pointer ${
-            activeTab === "calendar" ? "" : "hover:bg-gray-700"
+            activeTab === "calendar" ? "bg-primary" : "hover:bg-gray-700"
           }`}
           aria-label="Calendar"
+          style={activeTab === "calendar" ? { color: "black" } : { color: "var(--theme-color-foreground)" }}
         >
           <Calendar
-            color={activeTab === "calendar" ? "black" : "white"}
+            color="currentColor"
             className="pointer-events-none z-30"
           />
         </button>
@@ -106,12 +108,13 @@ const Footer = () => {
       >
         <button
           className={`p-2 rounded-full w-14 h-14 flex items-center justify-center cursor-pointer ${
-            activeTab === "friends" ? "" : "hover:bg-gray-700"
+            activeTab === "friends" ? "bg-primary" : "hover:bg-gray-700"
           }`}
           aria-label="Friends"
+          style={activeTab === "friends" ? { color: "black" } : { color: "var(--theme-color-foreground)" }}
         >
           <Users
-            color={activeTab === "friends" ? "black" : "white"}
+            color="currentColor"
             className="pointer-events-none z-30"
           />
         </button>
@@ -124,12 +127,13 @@ const Footer = () => {
       >
         <button
           className={`p-2 rounded-full w-14 h-14 flex items-center justify-center cursor-pointer ${
-            activeTab === "profile" ? "" : "hover:bg-gray-700"
+            activeTab === "profile" ? "bg-primary" : "hover:bg-gray-700"
           }`}
           aria-label="Profile"
+          style={activeTab === "profile" ? { color: "black" } : { color: "var(--theme-color-foreground)" }}
         >
           <User
-            color={activeTab === "profile" ? "black" : "white"}
+            color="currentColor"
             className="pointer-events-none z-30"
           />
         </button>
@@ -137,5 +141,6 @@ const Footer = () => {
     </div>
   );
 };
+
 
 export default Footer;

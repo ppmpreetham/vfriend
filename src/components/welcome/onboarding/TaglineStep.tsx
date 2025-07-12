@@ -47,7 +47,7 @@ const TaglineStep = ({
           onChange={(e) => updateFormData({ tagline: e.target.value })}
           onKeyPress={handleKeyPress}
           placeholder="Write something about yourself..."
-          className={`w-full px-4 py-4 text-lg text-center border-none rounded-xl bg-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:outline-none resize-none h-32 ${
+          className={`w-full px-4 py-4 text-lg text-center border-none rounded-xl bg-white/10 text-foreground placeholder-gray-400 focus:ring-2 focus:ring-primary focus:outline-none resize-none h-32 ${
             error && !formData.tagline ? "ring-2 ring-red-500" : ""
           }`}
           maxLength={100}

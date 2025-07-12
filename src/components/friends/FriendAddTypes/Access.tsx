@@ -79,12 +79,12 @@ const CodeTab = () => {
           type="text"
           name="access_code"
           id="access_code"
-          className="bg-black text-white p-2 rounded w-full"
+          className="bg-black text-foreground p-2 rounded w-full"
           value={accessCode}
           onChange={(e) => setAccessCode(e.target.value)}
         ></input>
         <button
-          className="bg-black text-white rounded p-2 cursor-pointer"
+          className="bg-black text-foreground rounded p-2 cursor-pointer"
           onClick={handleAddFriend}
         >
           ADD Friend
@@ -102,7 +102,7 @@ const CodeTab = () => {
 
       <div>
         <button
-          className="mt-2 p-4 text-sm bg-black rounded text-white flex flex-row gap-4 justify-center items-center w-full cursor-pointer"
+          className="mt-2 p-4 text-sm bg-black rounded text-foreground flex flex-row gap-4 justify-center items-center w-full cursor-pointer"
           onClick={() =>
             navigator.clipboard.writeText(getTimetableJsonString())
           }
@@ -111,7 +111,7 @@ const CodeTab = () => {
           <Copy size={24} />
         </button>
       </div>
-      {/* <div className="bg-black text-white p-4 rounded text-center cursor-pointer"
+      {/* <div className="bg-black text-foreground p-4 rounded text-center cursor-pointer"
         onClick={addTestFriend}>
         ADD TEST FRIEND
       </div> */}

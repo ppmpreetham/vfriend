@@ -132,12 +132,12 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
           className={`p-2 rounded-full ${
             currentStep === 0
               ? "text-gray-600 cursor-not-allowed"
-              : "text-white hover:bg-white/10"
+              : "text-foreground hover:bg-white/10"
           }`}
         >
           <ChevronLeft size={24} />
         </button>
-        <div className="text-white text-center">
+        <div className="text-foreground text-center">
           <div className="text-sm opacity-75">
             Step {currentStep + 1} of {steps.length}
           </div>
@@ -155,7 +155,7 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
 
       {/* Title */}
       <div className="px-6 mb-8">
-        <h1 className="text-3xl font-bold text-white text-center">
+        <h1 className="text-3xl font-bold text-foreground text-center">
           {currentStepData.title}
         </h1>
       </div>
@@ -177,7 +177,7 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
             disabled={!canProceed || isLoading}
             className={`w-full py-4 rounded-xl font-semibold text-lg transition-all ${
               canProceed && !isLoading
-                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                ? "bg-blue-600 hover:bg-blue-700 text-foreground"
                 : "bg-gray-600 text-gray-400 cursor-not-allowed"
             }`}
           >

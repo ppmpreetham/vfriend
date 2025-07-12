@@ -11,7 +11,7 @@ const FriendCardFriend = ({ name, registrationNumber }: FriendPageFriend) => {
 
   return (
     <div
-      className="flex flex-row p-6 m-4 justify-between items-center bg-gray-900 rounded-xl cursor-pointer"
+      className="flex flex-row p-6 m-4 justify-between items-center bg-background2 rounded-xl cursor-pointer"
       onClick={handleClick}
     >
       <div className="flex flex-col">

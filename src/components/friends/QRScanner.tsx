@@ -62,7 +62,7 @@ const QRScanner = () => {
       )}
 
       <button
-        className="px-4 py-2 bg-black text-white rounded"
+        className="px-4 py-2 bg-black text-foreground rounded"
         onClick={startScan}
         disabled={scanning}
       >

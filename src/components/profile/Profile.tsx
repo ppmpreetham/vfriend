@@ -9,6 +9,7 @@ import {
   getUserBitmap,
   getUserKindmap,
 } from "../../store/newtimeTableStore";
+import QRCodeGenerator from "../friends/QRCodeGenerator";
 
 const Profile = () => {
   // Get current time in HH:MM format
@@ -199,12 +200,12 @@ const Profile = () => {
       <div className="flex w-full gap-2 uppercase">
         <div className="ml-4 w-1/2 flex flex-col gap-2">
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
-            <div className="text-3xl">{userData.data?.u || "UNKNOWN"}</div>
+            <div className="text-[clamp(1.25rem,7vw,1.875rem)]">{userData.data?.u || "UNKNOWN"}</div>
             <div>{userData ? userData.data?.r : "UNKNOWN"}</div>
             <div>SEM {userData.data?.s}</div>
           </div>
           <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl gap-4">
-            <div className="text-[clamp(1.25rem,1vh,1.875rem)]">I'll be at...</div>
+            <div className="text-[clamp(1.25rem,1vw,1.875rem)]">I'll be at...</div>
             <ul className="list-disc pl-5">
               {userData.data?.h?.map((hobby, index) => (
                 <li key={index}>{hobby}</li>
@@ -214,6 +215,7 @@ const Profile = () => {
         </div>
         <div className="mr-4 w-1/2 flex flex-col gap-2">
           <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl justify-center">
+            <div>MOST FREE</div>
             <div>{userData.data?.q || "No tagline set"}</div>
           </div>
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">

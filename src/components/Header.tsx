@@ -18,12 +18,12 @@ const Header = () => {
         <button
           onClick={() => setActiveTab("settings")}
           className={`p-2 rounded-full flex items-center justify-center cursor-pointer ${
-            activeTab === "settings" ? "bg-primary bg-opacity-20" : ""
+            activeTab === "settings" ? "bg-primary bg-opacity-20 text-black" : ""
           }`}
           aria-label="Settings"
         >
           <Settings
-            color={activeTab === "settings" ? "black" : "white"}
+            color={"currentColor"}
             size={24}
             className="pointer-events-none"
           />

@@ -53,7 +53,7 @@ const handleKeyPress = (e: React.KeyboardEvent) => {
           onChange={handleChange}
           onKeyPress={handleKeyPress}
           placeholder="Enter your semester (1-10)"
-          className="w-full px-4 py-4 text-lg text-center border-none rounded-xl bg-white/10 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          className="w-full px-4 py-4 text-lg text-center border-none rounded-xl bg-white/10 text-foreground placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           autoFocus
         />
         {error && (

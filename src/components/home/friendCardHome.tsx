@@ -11,7 +11,7 @@ const FriendCardHome = ({
 }: FriendCardProps) => {
   console.log(until);
   return (
-    <div className="flex p-4 bg-gray-900 rounded-xl m-4 flex-row items-center justify-between text-white select-none">
+    <div className="flex p-4 bg-background2 rounded-xl m-4 flex-row items-center justify-between text-foreground select-none">
       <div className="flex flex-col">
         <div className="text-xl">{name}</div>
         <div>

@@ -8,9 +8,18 @@ import Profile from "./components/profile/Profile";
 import useNavStore from "./store/useNavStore";
 import WelcomePage from "./components/welcome/welcomePage";
 import Settings from "./components/settings/Settings";
+import { useUserProfile } from "./hooks/useUserProfile";
+import { useEffect } from "react";
 
 const App = () => {
   const { activeTab } = useNavStore();
+  const { data: userData } = useUserProfile();
+  console.log("User Data:", userData);
+    useEffect(() => {
+    if (userData?.theme) {
+      document.documentElement.classList.toggle("dark", userData.theme === "Dark");
+    }
+  }, [userData?.theme]);
   const renderContent = () => {
     switch (activeTab) {
       case "home":
@@ -30,7 +39,8 @@ const App = () => {
 
   return (
     <WelcomePage>
-      <div className="w-screen h-screen flex flex-col justify-between bg-gray-950 text-white font-space">
+      <div
+      className="w-screen h-screen flex flex-col justify-between bg-background text-foreground font-space">
         <Header />
         <main className="flex-1 overflow-hidden">{renderContent()}</main>
         <Footer />
