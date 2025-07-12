@@ -46,18 +46,6 @@
                 <data android:host="vfriend.preetham.top" />
                 
                 
-                <data android:pathPrefix="/open" />
-                
-            </intent-filter>
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" />
-                <data android:scheme="http" />
-                <data android:host="vfriend.preetham.top" />
-                
-                
                 
                 
             </intent-filter>

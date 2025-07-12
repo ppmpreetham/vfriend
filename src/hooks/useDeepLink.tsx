@@ -1,7 +1,6 @@
 import { onOpenUrl } from "@tauri-apps/plugin-deep-link";
 import { useEffect, useState } from "react";
 import { validateAndAddFriend } from "../store/newtimeTableStore";
-import { platform } from "@tauri-apps/plugin-os";
 
 interface AddFriendResult {
   success: boolean;
@@ -23,8 +22,6 @@ export const useDeepLink = () => {
 
   useEffect(() => {
     const handleUrl = async (urls: string[]) => {
-      const os = await platform();
-      console.log(os);
       const url = urls[0];
       console.log("Received deep link URL:", url);
 

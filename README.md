@@ -95,13 +95,13 @@ To build the app for Android, you need to have the Android SDK and NDK installed
    ```bash
    pnpm tauri android init
    ```
-2. Change these permissions for file access:
-   Include the following permissions to the `manifest` tag in the `gen/android/app/src/main/AndroidManifest.xml` file:
-   ```xml
-   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+2. Copy the `android/AndroidManifest.xml` by removing `gen/android/app/src/main/AndroidManifest.xml`:
+
+   ```bash
+    cp src-tauri/gen/android/app/src/main/AndroidManifest.xml src-tauri/gen/android/app/src/main/AndroidManifest.xml
    ```
-3. Copy the `build.gradle.kts` to `gen/android/app/build.gradle.kts`:
+
+3. Copy the `android/build.gradle.kts` by removing `gen/android/app/build.gradle.kts`:
 
    ```bash
    cp src-tauri/gen/android/build.gradle.kts src-tauri/gen/android/app/build.gradle.kts
