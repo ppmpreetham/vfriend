@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { initializeUserStore } from "../../store/newtimeTableStore";
 import NameStep from "./onboarding/NameStep";
@@ -118,12 +118,35 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
     }
   };
 
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+  useEffect(() => {
+    const handleFocus = () => setIsKeyboardOpen(true);
+    const handleBlur = () => setIsKeyboardOpen(false);
+
+    document.querySelectorAll("input, textarea").forEach((element) => {
+      element.addEventListener("focus", handleFocus);
+      element.addEventListener("blur", handleBlur);
+    });
+
+    return () => {
+      document.querySelectorAll("input, textarea").forEach((element) => {
+        element.removeEventListener("focus", handleFocus);
+        element.removeEventListener("blur", handleBlur);
+      });
+    };
+  }, [currentStep]);
+
   const isLoading = isInitializing;
   const canProceed = currentStepData.canProceed();
   const isLastStep = currentStep === steps.length - 1;
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-gray-950">
+    <div
+      className={`w-screen flex flex-col bg-gray-950 ${
+        isKeyboardOpen ? "min-h-screen" : "h-screen"
+      }`}
+    >
       {/* Header with progress */}
       <div className="flex items-center justify-between p-6 pt-12">
         <button
@@ -160,8 +183,7 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
         </h1>
       </div>
 
-      {/* Step Content */}
-      <div className="flex-1 px-6">
+      <div className="flex-1 px-6 overflow-y-auto">
         <CurrentStepComponent
           formData={formData}
           updateFormData={updateFormData}
@@ -169,8 +191,7 @@ const OnboardingForm = ({ onComplete }: OnboardingFormProps) => {
         />
       </div>
 
-      {/* Navigation */}
-      <div className="p-6 pb-8">
+      <div className="p-6 sticky bottom-0 bg-gray-950">
         {isLastStep ? (
           <button
             onClick={handleComplete}

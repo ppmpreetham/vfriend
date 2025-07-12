@@ -14,7 +14,7 @@ import { useEffect } from "react";
 const App = () => {
   const { activeTab } = useNavStore();
   const { data: userData } = useUserProfile();
-  
+
   // theme
   useEffect(() => {
     const localStorageTheme = localStorage.getItem("theme");
@@ -29,11 +29,11 @@ const App = () => {
     } else if (systemSettingDark.matches) {
       theme = "dark";
     }
-    
+
     document.documentElement.classList.toggle("dark", theme === "dark");
     document.documentElement.setAttribute("data-theme", theme);
   }, [userData?.theme, activeTab]);
-  
+
   const renderContent = () => {
     switch (activeTab) {
       case "home":
@@ -52,14 +52,15 @@ const App = () => {
   };
 
   return (
-    <WelcomePage>
-      <div
-      className="w-screen h-screen flex flex-col justify-between bg-background text-foreground font-space">
-        <Header />
-        <main className="flex-1 overflow-hidden">{renderContent()}</main>
-        <Footer />
-      </div>
-    </WelcomePage>
+    <div className="bg-background h-fit">
+      <WelcomePage>
+        <div className="w-screen h-screen flex flex-col justify-between bg-background text-foreground font-space">
+          <Header />
+          <main className="flex-1 overflow-hidden">{renderContent()}</main>
+          <Footer />
+        </div>
+      </WelcomePage>
+    </div>
   );
 };
 
