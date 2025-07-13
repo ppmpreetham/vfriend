@@ -168,9 +168,10 @@ export async function resetAllStores() {
 export async function getUserBitmap(day: number): Promise<boolean[]> {
   try {
     const userData = (await userStore.get("userData")) as userData | null;
-    if (!userData || !userData.b || !userData.b[day]) {
+    if (!userData || !userData.b || !userData.b[day - 1]) {
       throw new Error(`No bitmap found for day ${day}`);
     }
+    console.log(day);
     return userData.b[day];
   } catch (error) {
     console.error("Failed to get user bitmap:", error);
@@ -206,7 +207,7 @@ export async function getFriendBitmap(
     if (!friend || !friend.b || !friend.b[day]) {
       throw new Error(`No bitmap found for friend ${username} on day ${day}`);
     }
-    return friend.b[day];
+    return friend.b[day - 1];
   } catch (error) {
     console.error("Failed to get friend bitmap:", error);
     throw error;
@@ -216,10 +217,10 @@ export async function getFriendBitmap(
 export async function getUserKindmap(day: number): Promise<boolean[]> {
   try {
     const userData = (await userStore.get("userData")) as userData | null;
-    if (!userData || !userData.k || !userData.k[day]) {
+    if (!userData || !userData.k || !userData.k[day - 1]) {
       throw new Error(`No kindmap found for day ${day}`);
     }
-    return userData.k[day];
+    return userData.k[day - 1];
   } catch (error) {
     console.error("Failed to get user kindmap:", error);
     throw error;
@@ -339,7 +340,6 @@ function trimSeconds(timeStr: string | null | undefined): string {
   // default to 24-hour
   return `${hhStr.padStart(2, "0")}:${minute}`;
 }
-
 
 export async function getFreeTimeOfAllFriends(
   currentTime: string
