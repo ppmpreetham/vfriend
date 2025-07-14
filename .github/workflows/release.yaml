@@ -96,6 +96,10 @@ jobs:
           cp android/AndroidManifest.xml src-tauri/gen/android/app/src/main/AndroidManifest.xml
           cp android/build.gradle.kts src-tauri/gen/android/app/build.gradle.kts
 
+      - name: Copy Icons
+        run: |
+          pnpm tauri icon './README/app_icon.png'
+
       - name: Copy Themes
         run: |
           rm -rf src-tauri/gen/android/app/src/main/res/values
