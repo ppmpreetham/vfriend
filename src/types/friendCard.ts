@@ -5,6 +5,7 @@ export interface FriendCardProps {
   time: string;
   distance?: string;
   until?: string;
+  isLunch: boolean;
 }
 
 export interface FriendPageFriend {
