@@ -41,12 +41,13 @@ export async function buildKindmap(
 }
 
 export async function currentBit({
-  bitmap, kindmap,
+  bitmap,
+  kindmap,
 }: {
   bitmap: boolean[];
   kindmap: boolean[];
 }): Promise<number> {
-  try {    
+  try {
     const result = await invoke("currentbit", {
       bitmap,
       kindmap,
@@ -98,6 +99,7 @@ export interface FreeStatusResponse {
   is_busy: boolean;
   from?: string;
   until?: string;
+  is_lunch?: boolean;
 }
 
 export async function getFreeStatusDirect({
@@ -139,7 +141,7 @@ export async function parseHTMLTimetable(
 export async function currentlyAt(
   time: string,
   timeTable: CompactSlot[],
-  day: number,
+  day: number
 ): Promise<string | null> {
   try {
     const result = await invoke<string | null>("currently_at", {

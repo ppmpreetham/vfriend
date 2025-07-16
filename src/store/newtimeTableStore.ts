@@ -318,6 +318,7 @@ export interface FriendStatusData {
   location: string;
   time: string;
   until: string;
+  isLunch?: boolean;
 }
 
 function trimSeconds(timeStr: string | null | undefined): string {
@@ -403,6 +404,7 @@ export async function getFreeTimeOfAllFriends(
             location: location,
             time: trimSeconds(status.data.from) || "",
             until: trimSeconds(status.data.until) || "",
+            isLunch: status.data.is_lunch || false,
           });
         }
       } catch (error) {

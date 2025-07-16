@@ -8,6 +8,7 @@ const FriendCardHome = ({
   distance,
   time,
   until,
+  isLunch,
 }: FriendCardProps) => {
   console.log(until);
   return (
@@ -21,6 +22,8 @@ const FriendCardHome = ({
             ? `Free for the rest of the day`
             : until === "19:25:00" || until === "7:25 PM"
             ? `Free till tomorrow`
+            : isLunch
+            ? `On lunch break till ${until}`
             : time && time.includes("Lunch")
             ? `On lunch break till ${until}`
             : time === "RIGHT NOW"
@@ -43,7 +46,7 @@ const FriendCardHome = ({
           ></span>
           <span
             className={`relative inline-flex rounded-full h-3 w-3 ${
-              available ? "bg-green-500" : "bg-red-500"
+              available ? "bg-primary" : "bg-red-500"
             }`}
           ></span>
         </span>

@@ -205,11 +205,12 @@ pub fn next_free_time_after(
 //     println!("Next free time: {}", result);
 // }
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 pub struct FreeStatus {
-    pub is_busy: bool,            // true = busy, false = free
-    pub from: NaiveTime,          // if free: current time or start of next free period
-    pub until: Option<NaiveTime>, // end of free period if free; next free time if busy
+    pub is_busy: bool,
+    pub from: NaiveTime,
+    pub until: Option<NaiveTime>,
+    pub is_lunch: bool, // New field to identify lunch periods
 }
 
 #[tauri::command]
@@ -218,6 +219,18 @@ pub fn get_free_status(
     kindmap: [bool; 12],
     current_time: NaiveTime,
 ) -> Option<FreeStatus> {
+    // Check for lunch period first to give it priority
+    let lunch_start = NaiveTime::parse_from_str("13:25", "%H:%M").unwrap();
+    let lunch_end = NaiveTime::parse_from_str("14:00", "%H:%M").unwrap();
+    if current_time >= lunch_start && current_time < lunch_end {
+        return Some(FreeStatus {
+            is_busy: false,
+            from: current_time,
+            until: Some(lunch_end),
+            is_lunch: true, // Mark as lunch period
+        });
+    }
+
     // Check if current_time is within any period
     for i in 0..12 {
         let (start_str, end_str) = if kindmap[i] {
@@ -248,6 +261,7 @@ pub fn get_free_status(
                     is_busy: false,
                     from: current_time,
                     until: Some(last_end),
+                    is_lunch: false,
                 });
             } else {
                 // currently busy → find next free period
@@ -269,6 +283,7 @@ pub fn get_free_status(
                     is_busy: true,
                     from: end,
                     until: next_start,
+                    is_lunch: false,
                 });
             }
         }
@@ -303,6 +318,7 @@ pub fn get_free_status(
                 is_busy: false,
                 from: start,
                 until: Some(last_end),
+                is_lunch: false,
             });
         }
     }
@@ -315,17 +331,7 @@ pub fn get_free_status(
             is_busy: false,
             from: current_time,
             until: None,
-        });
-    }
-
-    // Check for lunch period
-    let lunch_start = NaiveTime::parse_from_str("13:25", "%H:%M").unwrap();
-    let lunch_end = NaiveTime::parse_from_str("14:00", "%H:%M").unwrap();
-    if current_time >= lunch_start && current_time < lunch_end {
-        return Some(FreeStatus {
-            is_busy: false,
-            from: current_time,
-            until: Some(lunch_end),
+            is_lunch: false,
         });
     }
 
@@ -334,6 +340,7 @@ pub fn get_free_status(
         is_busy: true,
         from: current_time,
         until: None,
+        is_lunch: false,
     })
 }
 
