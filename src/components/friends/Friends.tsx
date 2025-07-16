@@ -167,29 +167,33 @@ const Friends = () => {
         )}
       </div>
 
-      {loading ? (
-        <div className="text-center p-4">Loading friends...</div>
-      ) : friends.length === 0 ? (
-        <div className="text-center p-4 text-gray-500">
-          No friends added yet. Add your first friend!
-        </div>
-      ) : (
-        <>
-          {filteredFriends.map((friend, index) => (
-            <FriendCardFriend
-              key={index}
-              name={friend.name}
-              registrationNumber={friend.registrationNumber}
-            />
-          ))}
+      <div className="overflow-y-auto h-[calc(100vh-100px)] px-4">
+        {loading ? (
+          <div className="text-center p-4">Loading friends...</div>
+        ) : friends.length === 0 ? (
+          <div className="text-center p-4 text-gray-500">
+            No friends added yet. Add your first friend!
+          </div>
+        ) : (
+          <>
+            {filteredFriends.map((friend, index) => (
+              <FriendCardFriend
+                key={index}
+                name={friend.name}
+                registrationNumber={friend.registrationNumber}
+              />
+            ))}
 
-          {filteredFriends.length === 0 && searchQuery !== "" && (
-            <div className="text-center p-4 text-gray-500">
-              {friends.length === 0 ? "No friends added yet." : "No friends match your search."}
-            </div>
-          )}
-        </>
-      )}
+            {filteredFriends.length === 0 && searchQuery !== "" && (
+              <div className="text-center p-4 text-gray-500">
+                {friends.length === 0
+                  ? "No friends added yet."
+                  : "No friends match your search."}
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
