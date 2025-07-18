@@ -26,7 +26,7 @@ export default function Home() {
         {/* Image */}
         <div className="md:w-1/2 flex justify-center md:justify-end mt-6 md:mt-0">
           <Image
-            src={"nextjs-github-pages/home.png"}
+            src={"/home.png"}
             alt="VIT Friend App"
             width={500}
             height={400}
