@@ -28,5 +28,5 @@ body {
 
 @font-face {
   font-family: "Space Grotesk";
-  src: url("/SpaceGrotesk-VariableFont_wght.ttf");
+  src: url("nextjs-github-pages/SpaceGrotesk-VariableFont_wght.ttf");
 }
