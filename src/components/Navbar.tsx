@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from "preact/hooks";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+import MagneticButton from "./MagneticButton";
 
 const menus = [
   { path: "/about", label: "→About" },
@@ -82,7 +83,7 @@ const Navbar = () => {
     <div ref={container} className="font-space">
       {/* Topbar */}
       <div className="fixed top-0 left-0 w-full z-40 p-6 flex justify-between items-center">
-        <a href="/" className="text-4xl font-bold text-black">
+        <a href="/" className="text-4xl font-bold text-white">
           VFriend
         </a>
         <div className="space-x-4">
@@ -123,14 +124,16 @@ const Navbar = () => {
             border-t border-l border-black opacity-0"
           >
             {menus.map((item, index) => (
-              <a
-                key={index}
-                href={item.path}
-                onClick={toggleMenu}
-                className="flex items-center justify-center hover:bg-black hover:text-white text-black font-bold text-4xl md:text-6xl transition-transform text-center leading-none border-b border-r border-black"
-              >
-                {item.label}
-              </a>
+              <MagneticButton className="flex items-center justify-center hover:bg-black hover:text-white text-black font-bold text-4xl md:text-6xl transition-transform text-center leading-none border-b border-r border-black">
+                <a
+                  key={index}
+                  href={item.path}
+                  onClick={toggleMenu}
+                  className=""
+                >
+                  {item.label}
+                </a>
+              </MagneticButton>
             ))}
           </div>
           {/* Footer */}
