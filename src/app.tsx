@@ -6,7 +6,9 @@ import gsap from "gsap";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import ScheduleList from "./phone/ScheduleList";
+import ScheduleList from "./components/mainpage/ScheduleList";
+import FlowingMenu from "./components/FlowMenu";
+import NoTTs from "./components/mainpage/NoTTs";
 
 gsap.registerPlugin(useGSAP, ScrollSmoother, ScrollTrigger);
 
@@ -42,6 +44,7 @@ export default function App() {
   return (
     <div id="smooth-wrapper" ref={main}>
       <Navbar />
+
       <div id="smooth-content">
         <div className="min-h-screen w-full font-space text-white flex flex-col items-center justify-center p-4 overflow-x-hidden">
           <HeroElements />
@@ -70,7 +73,38 @@ export default function App() {
           </div>
         </div>
         {timeline && <ScheduleList timeline={timeline} />}
+        <NoTTs />
         <div className="h-screen"> </div>
+        <FlowingMenu
+          items={[
+            {
+              link: "#",
+              text: "About",
+              image:
+                "https://media.istockphoto.com/id/1201699594/vector/information-icon.jpg?s=612x612&w=0&k=20&c=0Nh1zH8uhuqp84FhC8RkJtopaq5Ni2zplAtq1q8o4zM=",
+            },
+
+            {
+              link: "#",
+              text: "Privacy",
+              image:
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3Ihx53jvI-Lgsa_RwlXpr7Ry-xR8e_Eb4RA&s",
+            },
+
+            {
+              link: "#",
+              text: "Tutorial",
+              image:
+                "https://www.freeiconspng.com/thumbs/question-mark-icon/black-question-mark-icon-clip-art-10.png",
+            },
+
+            {
+              link: "#",
+              text: "More Apps",
+              image: "https://cdn-icons-png.flaticon.com/512/3357/3357272.png",
+            },
+          ]}
+        />
       </div>
     </div>
   );

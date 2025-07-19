@@ -83,8 +83,11 @@ const Navbar = ({}) => {
     <div ref={container} className="font-space">
       {/* Topbar */}
       <div className="fixed top-0 left-0 w-full z-40 p-6 flex justify-between items-center">
-        <a href="/" className="text-4xl font-bold text-white">
-          VFriend
+        <a
+          href="/"
+          className="text-4xl font-bold mix-blend-difference text-primary z-10"
+        >
+          <span className="font-against">VF</span>riend
         </a>
         <div className="space-x-4 cursor-pointer">
           <button

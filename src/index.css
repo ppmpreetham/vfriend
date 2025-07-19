@@ -6,11 +6,68 @@
 }
 
 @theme inline {
+  /* Font and color variables */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-against: "Against", serif;
   --font-space: "Space Grotesk", sans-serif;
   --color-primary: #ebff57;
+
+  /* === Animation Tokens === */
+  --animate-marquee: marquee 15s linear infinite;
+  --animate-shine: shine 5s linear infinite;
+  --animate-gradient: gradient 8s linear infinite;
+
+  /* === Keyframes === */
+  @keyframes marquee {
+    from {
+      transform: translateX(0%);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes shine {
+    0% {
+      background-position: 100%;
+    }
+    100% {
+      background-position: -100%;
+    }
+  }
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+}
+
+@layer utilities {
+  /* Custom translate utility */
+  .translate-101 {
+    --tw-translate-x: 101%;
+  }
+
+  /* Animation utilities */
+  .animate-marquee {
+    animation: var(--animate-marquee);
+  }
+
+  .animate-shine {
+    animation: var(--animate-shine);
+  }
+
+  .animate-gradient {
+    animation: var(--animate-gradient);
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,7 +80,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Space Grotesk", sans-serif;
+  font-family: var(--font-space);
 }
 
 @font-face {

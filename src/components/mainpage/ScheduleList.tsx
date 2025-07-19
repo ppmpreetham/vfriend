@@ -1,6 +1,8 @@
 import { useState, useRef } from "preact/hooks";
 import { table } from "./timetable";
 import { useGSAP } from "@gsap/react";
+import ShinyText from "../ShinyText";
+import GradientText from "../GradientText";
 
 const ScheduleList = ({ timeline }: { timeline: gsap.core.Timeline }) => {
   const [TimeTable] = useState<boolean[][]>(table);
@@ -37,7 +39,7 @@ const ScheduleList = ({ timeline }: { timeline: gsap.core.Timeline }) => {
         ease: "power2.out",
         scrollTrigger: {
           trigger: textRef.current,
-          start: "top center",
+          start: "top 70%",
           end: "bottom center",
           scrub: true,
           //   markers: true,
@@ -97,10 +99,12 @@ const ScheduleList = ({ timeline }: { timeline: gsap.core.Timeline }) => {
         })}
       </div>
       <div className="text-center" ref={textRef} style={{ opacity: 0 }}>
-        <h2 className="text-3xl md:text-5xl lg:text-9xl">YOUR TIMETABLE</h2>
+        <div className="text-3xl md:text-5xl lg:text-9xl z-0">
+          YOUR TIMETABLE
+        </div>
         <div className="lg:text-5xl">
           Shown in a way like{" "}
-          <span className="px-2 bg-primary text-black rounded-xl">never</span>{" "}
+          <span className="px-2 bg-primary text-black rounded-xl">Never</span>{" "}
           before
         </div>
       </div>
