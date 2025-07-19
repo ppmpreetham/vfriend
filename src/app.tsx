@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import ScheduleList from "./phone/ScheduleList";
 
 gsap.registerPlugin(useGSAP, ScrollSmoother, ScrollTrigger);
 
@@ -26,11 +27,11 @@ export default function App() {
 
       const timeline = gsap.timeline({
         scrollTrigger: {
-          trigger: "body",
+          trigger: main.current,
           start: "top top",
           end: "bottom bottom",
           scrub: true,
-          // markers: true
+          // markers: true,
         },
       });
       setTimeline(timeline);
@@ -40,10 +41,10 @@ export default function App() {
   );
   return (
     <div id="smooth-wrapper" ref={main}>
+      <Navbar />
       <div id="smooth-content">
-        <div className="min-h-screen w-full font-space bg-black text-white flex flex-col items-center justify-center p-4 overflow-x-hidden">
-          <Navbar />
-          <HeroElements timeline={timeline} />
+        <div className="min-h-screen w-full font-space text-white flex flex-col items-center justify-center p-4 overflow-x-hidden">
+          <HeroElements />
           <div className="flex flex-col md:flex-row items-center max-w-5xl gap-8 md:gap-12 w-full justify-center">
             <div className="flex flex-col items-center text-center gap-4 md:gap-6 md:w-1/2">
               <h1 className="text-3xl md:text-5xl font-bold text-primary tracking-tight">
@@ -68,6 +69,7 @@ export default function App() {
             </div>
           </div>
         </div>
+        {timeline && <ScheduleList timeline={timeline} />}
         <div className="h-screen"> </div>
       </div>
     </div>

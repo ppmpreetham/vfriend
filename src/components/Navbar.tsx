@@ -12,7 +12,7 @@ const menus = [
   { path: "/more", label: "More Apps" },
 ] as const satisfies Array<{ path: string; label: string }>;
 
-const Navbar = () => {
+const Navbar = ({}) => {
   const container = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const tl = useRef<gsap.core.Timeline>();
@@ -141,9 +141,6 @@ const Navbar = () => {
             <div className="border-r border-black pr-4">
               ©2025 PREETHAM PEMMASANI
             </div>
-            <a href="#" className="underline pl-4">
-              LEGAL NOTICE
-            </a>
           </div>
         </div>
       </div>

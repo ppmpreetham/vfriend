@@ -54,15 +54,8 @@ const desktopPositions = [
   { top: "85.06787330316742vh", left: "53.03030303030303vw" },
 ];
 
-const HeroElements = ({ timeline }) => {
+const HeroElements = () => {
   const [iconPositions, setIconPositions] = useState([]);
-
-  useGSAP(
-    () => {
-      // timeline && timeline.to();
-    },
-    { scope: timeline }
-  );
 
   useEffect(() => {
     const updatePositions = () => {
@@ -88,6 +81,7 @@ const HeroElements = ({ timeline }) => {
             <img
               key={index}
               src={icon}
+              data-lag={t + Math.random() * (1 - t)}
               data-speed={t + Math.random() * (1 - t)}
               unselectable="on"
               alt={`Icon ${index + 1}`}
