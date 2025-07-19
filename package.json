@@ -1,29 +1,23 @@
 {
   "name": "vfriend",
-  "version": "0.1.0",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
+    "@tailwindcss/vite": "^4.1.11",
     "gsap": "^3.13.0",
-    "next": "15.4.1",
-    "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "preact": "^10.26.9",
+    "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.4.1",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "@preact/preset-vite": "^2.10.2",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4"
   }
 }

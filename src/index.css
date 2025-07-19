@@ -8,8 +8,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-against: "Against", serif;
   --font-space: "Space Grotesk", sans-serif;
   --color-primary: #ebff57;
 }
@@ -29,4 +28,9 @@ body {
 @font-face {
   font-family: "Space Grotesk";
   src: url("/SpaceGrotesk-VariableFont_wght.ttf");
+}
+
+@font-face {
+  font-family: "Against";
+  src: url("/against regular.otf") format("opentype");
 }

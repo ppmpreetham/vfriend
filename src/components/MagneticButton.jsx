@@ -66,7 +66,7 @@ const MagneticButton = ({
   return (
     <button
       ref={buttonRef}
-      className={`magnetic-button ${className || ""}`}
+      className={`cursor-pointer magnetic-button ${className || ""}`}
       {...props}
     >
       {children}
