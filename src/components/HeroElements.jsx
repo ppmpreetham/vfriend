@@ -1,5 +1,6 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useState, useRef } from "preact/hooks";
 import { shuffle } from "gsap/all";
+import { useGSAP } from "@gsap/react";
 
 import a from "/icons/1.svg";
 import b from "/icons/2.svg";
@@ -53,8 +54,15 @@ const desktopPositions = [
   { top: "85.06787330316742vh", left: "53.03030303030303vw" },
 ];
 
-const HeroElements = () => {
+const HeroElements = ({ timeline }) => {
   const [iconPositions, setIconPositions] = useState([]);
+
+  useGSAP(
+    () => {
+      // timeline && timeline.to();
+    },
+    { scope: timeline }
+  );
 
   useEffect(() => {
     const updatePositions = () => {
@@ -70,8 +78,9 @@ const HeroElements = () => {
     };
   }, []);
 
+  const t = 0.8; // linear INTERPOLATION
   return (
-    <div className="fixes w-screen h-screen fixed z-0">
+    <div className="w-screen h-screen absolute z-0">
       {shuffle([a, b, c, d, e, f, g, h, i, j, k, l, m, n, o]).map(
         (icon, index) => {
           const position = iconPositions[index];
@@ -79,8 +88,10 @@ const HeroElements = () => {
             <img
               key={index}
               src={icon}
+              data-speed={t + Math.random() * (1 - t)}
+              unselectable="on"
               alt={`Icon ${index + 1}`}
-              className="absolute w-16 h-16 md:w-24 md:h-24"
+              className="absolute w-16 h-16 md:w-24 md:h-24 pointer-events-none"
               style={{
                 top: position?.top,
                 left: position?.left,

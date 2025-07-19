@@ -86,7 +86,7 @@ const Navbar = () => {
         <a href="/" className="text-4xl font-bold text-white">
           VFriend
         </a>
-        <div className="space-x-4">
+        <div className="space-x-4 cursor-pointer">
           <button
             onClick={toggleMenu}
             className="bg-black text-white px-3 py-1 rounded"
