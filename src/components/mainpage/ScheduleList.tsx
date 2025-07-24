@@ -6,6 +6,7 @@ import GradientText from "../GradientText";
 
 const ScheduleList = ({ timeline }: { timeline: gsap.core.Timeline }) => {
   const [TimeTable] = useState<boolean[][]>(table);
+
   const currentDay = 3;
   const gridRef = useRef<HTMLDivElement>(null);
   const gridWrapRef = useRef<HTMLDivElement>(null);
@@ -71,6 +72,7 @@ const ScheduleList = ({ timeline }: { timeline: gsap.core.Timeline }) => {
         {TimeTable.map((dayRow, rowIndex) => {
           const dayNumber = rowIndex + 1;
           const isTodayRow = currentDay === dayNumber;
+
           return (
             <div
               key={`day-${rowIndex}`}
@@ -78,6 +80,7 @@ const ScheduleList = ({ timeline }: { timeline: gsap.core.Timeline }) => {
             >
               {dayRow.map((hasClass, colIndex) => {
                 const isCurrent = isTodayRow && colIndex === 3;
+                const [showMessage, setShowMessage] = useState(false);
                 return (
                   <div
                     key={`cell-${rowIndex}-${colIndex}`}
@@ -89,8 +92,18 @@ const ScheduleList = ({ timeline }: { timeline: gsap.core.Timeline }) => {
                     }`}
                   >
                     {isCurrent && (
-                      <div className="w-3/4 h-3/4 bg-black rounded-full"></div>
-                    )}
+                      <div
+                        className="w-3/4 h-3/4 bg-black rounded-full relative"
+                        onMouseEnter={() => setShowMessage(true)}
+                        onMouseLeave={() => setShowMessage(false)}
+                      >
+                        {showMessage && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-primary text-black text-center text-xl cursor-pointer">
+                            Represents your current day
+                          </div>
+                        )}
+                      </div>
+                    )}{" "}
                   </div>
                 );
               })}

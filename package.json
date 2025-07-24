@@ -15,6 +15,7 @@
     "gsap": "^3.13.0",
     "preact": "^10.26.9",
     "preact-reconciler": "^0.2.3",
+    "react-scan": "^0.4.3",
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {

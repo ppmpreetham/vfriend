@@ -9,6 +9,7 @@ import { useGSAP } from "@gsap/react";
 import ScheduleList from "./components/mainpage/ScheduleList";
 import FlowingMenu from "./components/FlowMenu";
 import NoTTs from "./components/mainpage/NoTTs";
+import ScrollDown from "./components/ScrollDown";
 
 gsap.registerPlugin(useGSAP, ScrollSmoother, ScrollTrigger);
 
@@ -44,7 +45,13 @@ export default function App() {
   return (
     <div id="smooth-wrapper" ref={main}>
       <Navbar />
-
+      <div
+        className="absolute bottom-6 left-1/2 transform -translate-x-1/2"
+        data-speed={1}
+        data-lag={0.4}
+      >
+        <ScrollDown />
+      </div>
       <div id="smooth-content">
         <div className="min-h-screen w-full font-space text-white flex flex-col items-center justify-center p-4 overflow-x-hidden">
           <HeroElements />
