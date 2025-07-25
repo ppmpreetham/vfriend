@@ -103,13 +103,13 @@ const RotatingSquares = () => {
         </div>
       </div>
       <div
-        className="flex items-center justify-center absolute inset-0 notts z-50"
+        className="flex items-center justify-center absolute inset-0 notts z-40"
         style={{ opacity: 0 }}
       >
         <NoTTs />
       </div>
       <div
-        className="flex items-center justify-center funstuff"
+        className="flex items-center justify-center funstuff mix-blend-screen"
         style={{ opacity: 0 }}
       >
         <div

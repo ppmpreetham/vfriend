@@ -10,6 +10,7 @@ import ScheduleList from "./components/mainpage/ScheduleList";
 import FlowingMenu from "./components/FlowMenu";
 import ScrollDown from "./components/ScrollDown";
 import RotatingSquares from "./components/mainpage/RotatingSquares";
+import Chat from "./components/mainpage/Chat";
 
 gsap.registerPlugin(useGSAP, ScrollSmoother, ScrollTrigger);
 
@@ -81,6 +82,7 @@ export default function App() {
         </div>
         {timeline && <ScheduleList timeline={timeline} />}
         <RotatingSquares />
+        <Chat />
         <FlowingMenu
           items={[
             {

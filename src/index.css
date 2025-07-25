@@ -14,7 +14,7 @@
   --color-primary: #ebff57;
 
   /* === Animation Tokens === */
-  --animate-marquee: marquee 15s linear infinite;
+  --animate-marquee: marquee 5s linear infinite;
   --animate-shine: shine 5s linear infinite;
   --animate-gradient: gradient 8s linear infinite;
   --animate-scrolldown: scrolldown-anim 1.5s infinite;
