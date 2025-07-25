@@ -8,8 +8,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import ScheduleList from "./components/mainpage/ScheduleList";
 import FlowingMenu from "./components/FlowMenu";
-import NoTTs from "./components/mainpage/NoTTs";
 import ScrollDown from "./components/ScrollDown";
+import RotatingSquares from "./components/mainpage/RotatingSquares";
 
 gsap.registerPlugin(useGSAP, ScrollSmoother, ScrollTrigger);
 
@@ -80,8 +80,7 @@ export default function App() {
           </div>
         </div>
         {timeline && <ScheduleList timeline={timeline} />}
-        <NoTTs />
-        <div className="h-screen"> </div>
+        <RotatingSquares />
         <FlowingMenu
           items={[
             {
