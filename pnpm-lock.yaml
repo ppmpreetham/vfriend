@@ -17,6 +17,9 @@ importers:
       '@types/three':
         specifier: ^0.178.1
         version: 0.178.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       gsap:
         specifier: ^3.13.0
         version: 3.13.0
@@ -29,6 +32,9 @@ importers:
       react-scan:
         specifier: ^0.4.3
         version: 0.4.3(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(rollup@4.45.1)
+      tailwind-merge:
+        specifier: ^3.3.1
+        version: 3.3.1
       tailwindcss:
         specifier: ^4.1.11
         version: 4.1.11
@@ -629,6 +635,10 @@ packages:
     resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
     engines: {node: '>=18'}
 
+  clsx@2.1.1:
+    resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
+    engines: {node: '>=6'}
+
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
@@ -957,6 +967,9 @@ packages:
   stack-trace@1.0.0-pre2:
     resolution: {integrity: sha512-2ztBJRek8IVofG9DBJqdy2N5kulaacX30Nz7xmkYF6ale9WBVmIy6mFBchvGX7Vx/MyjBhx+Rcxqrj+dbOnQ6A==}
     engines: {node: '>=16'}
+
+  tailwind-merge@3.3.1:
+    resolution: {integrity: sha512-gBXpgUm/3rp1lMZZrM/w7D8GKqshif0zAymAhbCyIt8KMe+0v9DQ7cdYLR4FHH/cKpdTXb+A/tKKU3eolfsI+g==}
 
   tailwindcss@4.1.11:
     resolution: {integrity: sha512-2E9TBm6MDD/xKYe+dvJZAmg3yxIEDNRc0jwlNyDg/4Fil2QcSLjFKGVff0lAf1jjeaArlG/M75Ey/EYr/OJtBA==}
@@ -1552,6 +1565,8 @@ snapshots:
 
   chownr@3.0.0: {}
 
+  clsx@2.1.1: {}
+
   convert-source-map@2.0.0: {}
 
   css-select@5.2.2:
@@ -1856,6 +1871,8 @@ snapshots:
   source-map@0.7.4: {}
 
   stack-trace@1.0.0-pre2: {}
+
+  tailwind-merge@3.3.1: {}
 
   tailwindcss@4.1.11: {}
 

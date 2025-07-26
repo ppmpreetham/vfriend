@@ -12,6 +12,7 @@ import ScrollDown from "./components/ScrollDown";
 import RotatingSquares from "./components/mainpage/RotatingSquares";
 import Chat from "./components/mainpage/Chat";
 import Footer from "./components/mainpage/DownloadApp";
+import CustomCursor from "./components/CustomCursor";
 
 gsap.registerPlugin(useGSAP, ScrollSmoother, ScrollTrigger);
 
@@ -19,6 +20,8 @@ export default function App() {
   const [timeline, setTimeline] = useState<gsap.core.Timeline | null>(null);
   const main = useRef<HTMLDivElement>(null);
   const smoother = useRef<ScrollSmoother | null>(null);
+
+  const isDesktop = window.innerHeight <= window.innerWidth;
 
   useGSAP(
     () => {
@@ -45,7 +48,8 @@ export default function App() {
     { scope: main }
   );
   return (
-    <div id="smooth-wrapper" ref={main}>
+    <div id="smooth-wrapper" className="cursor-auto md:cursor-none" ref={main}>
+      {isDesktop && <CustomCursor />}
       <Navbar />
       <div
         className="absolute bottom-6 left-1/2 transform -translate-x-1/2"
