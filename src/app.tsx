@@ -11,6 +11,7 @@ import FlowingMenu from "./components/FlowMenu";
 import ScrollDown from "./components/ScrollDown";
 import RotatingSquares from "./components/mainpage/RotatingSquares";
 import Chat from "./components/mainpage/Chat";
+import Footer from "./components/mainpage/DownloadApp";
 
 gsap.registerPlugin(useGSAP, ScrollSmoother, ScrollTrigger);
 
@@ -113,6 +114,7 @@ export default function App() {
             },
           ]}
         />
+        <Footer />
       </div>
     </div>
   );

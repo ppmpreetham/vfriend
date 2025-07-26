@@ -143,7 +143,7 @@ const PixelTransition: React.FC<PixelTransitionProps> = ({
     >
       <div style={{ paddingTop: aspectRatio }} />
 
-      <div className="absolute inset-0 w-full h-full">{firstContent}</div>
+      <div className="absolute inset-0 w-full h-fit">{firstContent}</div>
 
       <div
         ref={activeRef}

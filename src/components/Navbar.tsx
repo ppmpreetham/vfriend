@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from "preact/hooks";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import MagneticButton from "./MagneticButton";
+import Close from "./Close";
 
 const menus = [
   { path: "/about", label: "→About" },
@@ -19,14 +20,12 @@ const Navbar = ({}) => {
 
   useGSAP(
     () => {
-      // Create a single timeline for both opening and closing
       const menuTimeline = gsap.timeline({
         paused: true,
         onComplete: () => console.log("Menu fully opened"),
         onReverseComplete: () => console.log("Menu fully closed"),
       });
 
-      // Opening sequence
       menuTimeline
         .to(".fullpage-menu", { display: "flex", duration: 0 })
         .fromTo(
@@ -60,13 +59,10 @@ const Navbar = ({}) => {
     if (!tl.current) return;
 
     if (isOpen) {
-      // Play animation forward to open
       tl.current.play();
     } else {
-      // Play animation in reverse to close
       tl.current.reverse();
 
-      // Ensure the menu is hidden when animation completes
       if (tl.current.progress() === 0) {
         gsap.set(".fullpage-menu", { display: "none" });
       }
@@ -74,45 +70,30 @@ const Navbar = ({}) => {
   }, [isOpen]);
 
   const toggleMenu = () => {
-    // Allow toggling only if no animation is in progress or nearly complete
     if (tl.current?.isActive() && tl.current.progress() < 0.9) return;
+    console.log("Toggling menu, isOpen:", !isOpen);
     setIsOpen((prev) => !prev);
   };
 
   return (
-    <div ref={container} className="font-space">
+    <div ref={container} className="font-space z-50">
       {/* Topbar */}
-      <div className="fixed top-0 left-0 w-full z-40 p-6 flex justify-between items-center">
+      <div className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center">
         <a
           href="/"
           className="text-4xl font-bold mix-blend-difference text-primary z-10"
         >
           <span className="font-against">VF</span>riend
         </a>
-        <div className="space-x-4 cursor-pointer">
-          <button
-            onClick={toggleMenu}
-            className="bg-black text-white px-3 py-1 rounded"
-          >
-            {isOpen ? "" : "Menu"}
-          </button>
+        <div className="z-[60] cursor-pointer">
+          <Close isOpen={isOpen} toggleOpen={toggleMenu} />
         </div>
       </div>
 
       {/* Fullscreen Menu */}
-      <div className="fullpage-menu fixed inset-0 z-50 hidden flex-col">
+      <div className="fullpage-menu fixed inset-0 z-40 hidden flex-col">
         {/* Background */}
         <div className="menu-bg absolute inset-0 bg-primary clip-path-[polygon(0_0,0_0,0_100%,0_100%)] transition-all duration-700"></div>
-
-        {/* Close button */}
-        <div className="absolute top-6 right-6 z-50 mix-blend-difference cursor-pointer">
-          <button
-            onClick={toggleMenu}
-            className="text-white text-3xl font-bold cursor-pointer"
-          >
-            {isOpen ? "✕" : ""}
-          </button>
-        </div>
 
         {/* Grid Menu */}
         <div className="h-screen flex flex-col">
