@@ -13,6 +13,7 @@ import RotatingSquares from "./components/mainpage/RotatingSquares";
 import Chat from "./components/mainpage/Chat";
 import Footer from "./components/mainpage/DownloadApp";
 import CustomCursor from "./components/CustomCursor";
+import Profile from "./components/Profile";
 
 gsap.registerPlugin(useGSAP, ScrollSmoother, ScrollTrigger);
 
@@ -88,6 +89,7 @@ export default function App() {
         {timeline && <ScheduleList timeline={timeline} />}
         <RotatingSquares />
         <Chat />
+        <Profile />
         <FlowingMenu
           items={[
             {

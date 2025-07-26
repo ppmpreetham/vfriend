@@ -1,6 +1,4 @@
-import React from "react";
 import PixelChanger from "../PixelChanger";
-import { ThreeDCard } from "./ThreeDeeCard";
 
 const Chat = () => {
   return (
