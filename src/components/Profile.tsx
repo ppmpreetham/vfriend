@@ -1,11 +1,19 @@
 import ScheduleGrid from "./ScheduleGrid";
 import { CardBody, CardContainer, CardItem } from "./3DCard";
+import clsx from "clsx";
 
 const Profile = () => {
+  const isMobile = window.innerHeight >= window.innerWidth;
+
   return (
     <div className="flex-col md:flex-row flex items-center justify-center w-full h-screen md:gap-70">
       <CardContainer className="inter-var h-fit" containerClassName="h-screen">
-        <CardBody className="h-fit [transform-style:preserve-3d] [&>*]:[transform-style:preserve-3d] hover:border-2 hover:border-primary rounded-2xl py-2">
+        <CardBody
+          className={clsx(
+            "h-fit [transform-style:preserve-3d] [&>*]:[transform-style:preserve-3d] hover:border-2 hover:border-primary rounded-2xl py-2",
+            isMobile && "w-screen"
+          )}
+        >
           <div className="flex h-fit w-full gap-2 uppercase">
             <CardItem
               translateZ={25}
@@ -44,14 +52,18 @@ const Profile = () => {
           </div>
           <CardItem translateZ={60} className="mx-4 mt-2">
             <div className="text-4xl">TIME TABLE</div>
-            <div className="px-2 rounded-xl text-center">
+            <div className="rounded-xl text-center">
               <ScheduleGrid />
             </div>
           </CardItem>
         </CardBody>
       </CardContainer>
-      <div>
-        <h4 className="text-9xl">INTUITIVE UI</h4>
+      <div className="flex flex-col -translate-y-20 md:translate-y-0">
+        <h4 className="text-5xl lg:text-9xl">
+          INTUITIVE{" "}
+          <span className="px-2 bg-primary text-black rounded-2xl">UI</span>
+        </h4>
+        <p className="text-4xl mt-4 md:mt-0">Just look at that!</p>
       </div>
     </div>
   );
