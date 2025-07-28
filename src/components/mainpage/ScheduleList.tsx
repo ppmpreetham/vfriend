@@ -112,10 +112,10 @@ const ScheduleList = ({ timeline }: { timeline: gsap.core.Timeline }) => {
         })}
       </div>
       <div className="text-center" ref={textRef} style={{ opacity: 0 }}>
-        <div className="text-3xl md:text-5xl lg:text-9xl z-0">
+        <div className="text-[3.5rem] lg:text-9xl z-0 px-2 leading-none">
           YOUR TIMETABLE
         </div>
-        <div className="lg:text-5xl">
+        <div className="text-[1.75rem] lg:text-5xl leading-9">
           Shown in a way like{" "}
           <span className="px-2 bg-primary text-black rounded-xl">Never</span>{" "}
           before

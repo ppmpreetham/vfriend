@@ -95,7 +95,7 @@ const Navbar = ({}) => {
       {/* Topbar */}
       <div className="fixed top-0 left-0 w-full z-40 p-6 flex justify-between items-center">
         <Title open={false} />
-        <div className="z-40 cursor-pointer">
+        <div className="z-[40] cursor-pointer">
           <Close isOpen={isOpen} toggleOpen={toggleMenu} />
         </div>
       </div>
@@ -106,7 +106,7 @@ const Navbar = ({}) => {
         <div className="menu-bg absolute inset-0 bg-primary clip-path-[polygon(0_0,0_0,0_100%,0_100%)] transition-all duration-700"></div>
 
         {/* Grid Menu */}
-        <div className="h-screen flex flex-col">
+        <div className="h-screen flex flex-col border border-t">
           <div className="fixed top-0 left-0 w-full z-[100] p-6 flex justify-between items-center">
             <Title open={true} />
             <div className="z-[101] cursor-pointer">
@@ -115,7 +115,7 @@ const Navbar = ({}) => {
           </div>
           <div
             className="menu-grid relative z-10 w-full h-full grid lg:grid-cols-2 lg:grid-rows-3 md:grid-cols-2 md:grid-rows-3 grid-cols-1 grid-rows-6
-            border-t border-l border-black opacity-0"
+            border-t border-l border-black opacity-0 pt-16"
           >
             {menus.map((item, index) => (
               <MagneticButton className="flex items-center justify-center hover:bg-black hover:text-white text-black font-bold text-4xl md:text-6xl transition-transform text-center leading-none border-b border-r border-black">

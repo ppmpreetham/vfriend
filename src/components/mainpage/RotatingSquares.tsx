@@ -82,8 +82,9 @@ const RotatingSquares = () => {
   return (
     <div className="flex items-center justify-center w-full text-white containerr h-screen">
       <div className="flex items-center justify-center absolute inset-0">
-        <div className="text-3xl md:text-5xl lg:text-7xl z-0 pb-2 text-center textty">
-          DON'T F
+        <div className="text-6xl md:text-6xl lg:text-7xl z-0 pb-2 text-center textty px-2">
+          DON'T
+          <br />F
           <span
             className="
           text-primary
