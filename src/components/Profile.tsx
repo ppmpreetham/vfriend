@@ -6,7 +6,7 @@ const Profile = () => {
   const isMobile = window.innerHeight >= window.innerWidth;
 
   return (
-    <div className="flex-col md:flex-row flex items-center justify-center w-full h-screen md:gap-70">
+    <div className="flex-col md:flex-row flex items-center justify-center w-full h-screen md:gap-70 md:px-16">
       <CardContainer className="inter-var h-fit" containerClassName="h-screen">
         <CardBody
           className={clsx(
@@ -59,11 +59,11 @@ const Profile = () => {
         </CardBody>
       </CardContainer>
       <div className="flex flex-col -translate-y-20 md:translate-y-0">
-        <h4 className="text-5xl lg:text-9xl">
+        <h4 className="text-5xl lg:text-9xl md:px-6">
           INTUITIVE{" "}
           <span className="px-2 bg-primary text-black rounded-2xl">UI</span>
         </h4>
-        <p className="text-4xl mt-4 md:mt-0">Just look at that!</p>
+        <p className="text-4xl mt-4 md:mt-6 px-6">Just look at that!</p>
       </div>
     </div>
   );
