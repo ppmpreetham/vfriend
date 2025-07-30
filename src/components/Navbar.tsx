@@ -13,6 +13,21 @@ const menus = [
   { path: "/more", label: "More Apps" },
 ] as const satisfies Array<{ path: string; label: string }>;
 
+const Title = ({ open }: { open: boolean }) => {
+  return (
+    <>
+      <a
+        href="/"
+        className={`text-4xl font-bold mix-blend-difference text-${
+          open ? "black" : "primary"
+        } z-${open ? "50" : "40"}`}
+      >
+        <span className="font-against">VF</span>riend
+      </a>
+    </>
+  );
+};
+
 const Navbar = ({}) => {
   const container = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -78,29 +93,24 @@ const Navbar = ({}) => {
   return (
     <div ref={container} className="font-space z-50">
       {/* Topbar */}
-      <div className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center">
-        <a
-          href="/"
-          className="text-4xl font-bold mix-blend-difference text-primary z-10"
-        >
-          <span className="font-against">VF</span>riend
-        </a>
-        <div className="z-[60] cursor-pointer">
+      <div className="fixed top-0 left-0 w-full z-40 p-6 flex justify-between items-center">
+        <Title open={false} />
+        <div className="z-40 cursor-pointer">
           <Close isOpen={isOpen} toggleOpen={toggleMenu} />
         </div>
       </div>
 
       {/* Fullscreen Menu */}
-      <div className="fullpage-menu fixed inset-0 z-40 hidden flex-col">
+      <div className="fullpage-menu fixed inset-0 z-50 hidden flex-col">
         {/* Background */}
         <div className="menu-bg absolute inset-0 bg-primary clip-path-[polygon(0_0,0_0,0_100%,0_100%)] transition-all duration-700"></div>
 
         {/* Grid Menu */}
         <div className="h-screen flex flex-col">
-          <div className="relative z-20 flex flex-row items-center text-black p-4">
-            <div className="text-5xl flex flex-row tracking-tighter items-center justify-center gap-0">
-              <span className="text-4xl font-against">VF</span>
-              <h2>riend</h2>
+          <div className="fixed top-0 left-0 w-full z-[100] p-6 flex justify-between items-center">
+            <Title open={true} />
+            <div className="z-[101] cursor-pointer">
+              <Close isOpen={isOpen} toggleOpen={toggleMenu} />
             </div>
           </div>
           <div
