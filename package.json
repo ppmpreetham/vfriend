@@ -11,6 +11,7 @@
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@tailwindcss/vite": "^4.1.11",
+    "@types/node": "^24.1.0",
     "@types/three": "^0.178.1",
     "clsx": "^2.1.1",
     "gsap": "^3.13.0",

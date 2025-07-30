@@ -1,7 +1,7 @@
 import MagneticButton from "./components/MagneticButton";
 import Navbar from "./components/Navbar";
 import HeroElements from "./components/HeroElements";
-import { useRef, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import gsap from "gsap";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -14,6 +14,7 @@ import Chat from "./components/mainpage/Chat";
 import Footer from "./components/mainpage/DownloadApp";
 import CustomCursor from "./components/CustomCursor";
 import Profile from "./components/Profile";
+import CubePage from "./components/mainpage/CubePage";
 
 gsap.registerPlugin(useGSAP, ScrollSmoother, ScrollTrigger);
 
@@ -22,9 +23,22 @@ export default function App() {
   const main = useRef<HTMLDivElement>(null);
   const smoother = useRef<ScrollSmoother | null>(null);
 
-  const isDesktop = window.innerHeight <= window.innerWidth;
+  const [isDesktop, setIsDesktop] = useState(
+    window.innerHeight <= window.innerWidth
+  );
 
   const [isBigCursor, setIsBigCursor] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerHeight <= window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useGSAP(
     () => {
@@ -46,10 +60,10 @@ export default function App() {
         },
       });
       setTimeline(timeline);
-      // timeline.to();
     },
     { scope: main }
   );
+
   return (
     <div id="smooth-wrapper" className="cursor-auto md:cursor-none" ref={main}>
       {isDesktop && <CustomCursor />}
@@ -92,8 +106,9 @@ export default function App() {
         </div>
         {timeline && <ScheduleList timeline={timeline} />}
         <RotatingSquares />
-        <Chat />
         <Profile />
+        <CubePage isDesktop={isDesktop} />
+        <Chat />
         <FlowingMenu
           items={[
             {
