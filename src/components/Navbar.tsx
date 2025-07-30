@@ -131,8 +131,8 @@ const Navbar = ({}) => {
             ))}
           </div>
           {/* Footer */}
-          <div className="relative w-full text-center text-sm text-white z-50 mix-blend-difference m-6 flex flex-row gap-4 h-fit">
-            <div className="border-r border-black pr-4">
+          <div className="relative w-full text-center text-sm text-white z-50 mix-blend-difference m-6 flex flex-row gap-4 h-fit justify-center">
+            <div className="border-r border-black pr-10">
               ©2025 PREETHAM PEMMASANI
             </div>
           </div>

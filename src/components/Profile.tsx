@@ -59,11 +59,11 @@ const Profile = () => {
         </CardBody>
       </CardContainer>
       <div className="flex flex-col -translate-y-20 md:translate-y-0">
-        <h4 className="text-5xl lg:text-9xl md:px-6">
+        <h4 className="text-5xl lg:text-8xl md:px-6 pt-10 md:pt-0">
           INTUITIVE{" "}
           <span className="px-2 bg-primary text-black rounded-2xl">UI</span>
         </h4>
-        <p className="text-4xl mt-4 md:mt-6 px-6">Just look at that!</p>
+        <p className="text-4xl mt-4 md:mt-6 md:px-6">Just look at that!</p>
       </div>
     </div>
   );
