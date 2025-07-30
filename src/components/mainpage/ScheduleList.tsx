@@ -1,8 +1,6 @@
 import { useState, useRef } from "preact/hooks";
 import { table } from "./timetable";
 import { useGSAP } from "@gsap/react";
-import ShinyText from "../ShinyText";
-import GradientText from "../GradientText";
 
 const ScheduleList = ({ timeline }: { timeline: gsap.core.Timeline }) => {
   const [TimeTable] = useState<boolean[][]>(table);

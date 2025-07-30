@@ -11,7 +11,7 @@ const menus = [
   { path: "/faqs", label: "FAQs" },
   { path: "/donate", label: "Donate" },
   { path: "/more", label: "More Apps" },
-] as const satisfies Array<{ path: string; label: string }>;
+] as const;
 
 const Title = ({ open }: { open: boolean }) => {
   return (
@@ -118,13 +118,11 @@ const Navbar = ({}) => {
             border-t border-l border-black opacity-0 pt-16"
           >
             {menus.map((item, index) => (
-              <MagneticButton className="flex items-center justify-center hover:bg-black hover:text-white text-black font-bold text-4xl md:text-6xl transition-transform text-center leading-none border-b border-r border-black">
-                <a
-                  key={index}
-                  href={item.path}
-                  onClick={toggleMenu}
-                  className=""
-                >
+              <MagneticButton
+                key={index}
+                className="flex items-center justify-center hover:bg-black hover:text-white text-black font-bold text-4xl md:text-6xl transition-transform text-center leading-none border-b border-r border-black"
+              >
+                <a href={item.path} onClick={toggleMenu} className="">
                   {item.label}
                 </a>
               </MagneticButton>

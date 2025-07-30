@@ -9,7 +9,7 @@ const MagneticButton = ({
   strength = 500,
   ...props
 }) => {
-  const buttonRef = useRef(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const isMobileRef = useRef(false);
 
   useGSAP(() => {
@@ -25,7 +25,7 @@ const MagneticButton = ({
 
     let bounds;
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: { clientX: any; clientY: any }) => {
       bounds = button.getBoundingClientRect();
       const mouseX = e.clientX;
       const mouseY = e.clientY;

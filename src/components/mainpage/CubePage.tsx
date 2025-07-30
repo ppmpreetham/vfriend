@@ -12,7 +12,7 @@ const CubePage = ({ isDesktop }: { isDesktop: boolean }) => {
         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
         href="https://github.com/ppmpreetham/vfriend/releases/download/v0.5.3/app-universal-release.apk"
       >
-        <MagneticButton className="bg-black text-primary hover:text-black hover:bg-primary  mix-blend-difference p-6 rounded-xl text-5xl md:text-lg lg:text-7xl font-medium z-50 glow-on-hover">
+        <MagneticButton className="z-10 bg-black text-primary hover:text-black hover:bg-primary  mix-blend-difference p-6 rounded-xl text-5xl md:text-lg lg:text-7xl font-medium">
           Download VFriend
         </MagneticButton>
       </a>

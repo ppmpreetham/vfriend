@@ -24,7 +24,9 @@ const Chat = () => {
         gridSize={24}
         animationStepDuration={0.4}
       />
-      <div className="text-4xl lg:text-7xl">No more busy texting</div>
+      <div className="text-4xl lg:text-7xl text-center">
+        No more busy texting
+      </div>
     </div>
   );
 };

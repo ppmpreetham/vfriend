@@ -27,8 +27,6 @@ export default function App() {
     window.innerHeight <= window.innerWidth
   );
 
-  const [isBigCursor, setIsBigCursor] = useState(false);
-
   useEffect(() => {
     const handleResize = () => {
       setIsDesktop(window.innerHeight <= window.innerWidth);
@@ -46,8 +44,7 @@ export default function App() {
       smoother.current = ScrollSmoother.create({
         smooth: 2,
         effects: true,
-        // smoothTouch: 0.1,
-        // ignoreMobileResize: true,
+        ignoreMobileResize: true,
       });
 
       const timeline = gsap.timeline({
@@ -56,7 +53,6 @@ export default function App() {
           start: "top top",
           end: "bottom bottom",
           scrub: true,
-          // markers: true,
         },
       });
       setTimeline(timeline);
@@ -94,8 +90,6 @@ export default function App() {
               <a
                 href="https://github.com/ppmpreetham/vfriend/releases/download/v0.5.3/app-universal-release.apk"
                 className="cursor-pointer z-10"
-                onMouseEnter={() => setIsBigCursor(true)}
-                onMouseLeave={() => setIsBigCursor(false)}
               >
                 <MagneticButton className="text-black bg-primary py-2.5 md:py-3 px-5 md:px-6 rounded-xl text-base md:text-lg font-medium mt-2">
                   Download VFriend

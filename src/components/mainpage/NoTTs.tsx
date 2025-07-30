@@ -1,4 +1,4 @@
-const NoTTs = ({ timeline }: { timeline: gsap.core.Timeline }) => {
+const NoTTs = () => {
   return (
     <div className="flex flex-col items-center justify-center w-full h-screen gap-4 bg-black text-white">
       <div className="text-center">
