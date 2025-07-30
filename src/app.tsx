@@ -97,7 +97,7 @@ export default function App() {
                 onMouseEnter={() => setIsBigCursor(true)}
                 onMouseLeave={() => setIsBigCursor(false)}
               >
-                <MagneticButton className="bg-primary text-black py-2.5 md:py-3 px-5 md:px-6 rounded-xl text-base md:text-lg font-medium mt-2">
+                <MagneticButton className="text-black bg-primary py-2.5 md:py-3 px-5 md:px-6 rounded-xl text-base md:text-lg font-medium mt-2">
                   Download VFriend
                 </MagneticButton>
               </a>
