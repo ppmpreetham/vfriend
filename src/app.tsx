@@ -107,8 +107,8 @@ export default function App() {
         {timeline && <ScheduleList timeline={timeline} />}
         <RotatingSquares />
         <Profile />
-        <CubePage isDesktop={isDesktop} />
         <Chat />
+        <CubePage isDesktop={isDesktop} />
         <FlowingMenu
           items={[
             {
