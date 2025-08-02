@@ -1,8 +1,9 @@
 @import "tailwindcss";
+@import "tailwind-scrollbar-hide/v4";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000;
+  --foreground: #ededed;
 }
 
 @theme inline {
@@ -68,13 +69,6 @@
 
   .animate-gradient {
     animation: var(--animate-gradient);
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #000;
-    --foreground: #ededed;
   }
 }
 

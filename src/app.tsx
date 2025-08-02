@@ -61,7 +61,11 @@ export default function App() {
   );
 
   return (
-    <div id="smooth-wrapper" className="cursor-auto md:cursor-none" ref={main}>
+    <div
+      id="smooth-wrapper"
+      className="cursor-auto md:cursor-none overflow-x-hidden"
+      ref={main}
+    >
       {isDesktop && <CustomCursor />}
       <Navbar />
       <div
