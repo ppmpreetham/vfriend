@@ -5,7 +5,7 @@ const CubePage = ({ isDesktop }: { isDesktop: boolean }) => {
   return (
     <div
       className={
-        "w-screen h-screen flex flex-col items-center justify-center relative my-6"
+        "w-screen h-screen flex flex-col items-center justify-center relative sm:my-12 md:my-6"
       }
     >
       <a

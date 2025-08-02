@@ -38,6 +38,9 @@ export default function App() {
     };
   }, []);
 
+  if (!isDesktop) {
+    ScrollTrigger.normalizeScroll(true);
+  }
   useGSAP(
     () => {
       if (!main.current) return;
