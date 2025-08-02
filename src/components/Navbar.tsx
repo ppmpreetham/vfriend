@@ -37,12 +37,15 @@ const Navbar = ({}) => {
     () => {
       const menuTimeline = gsap.timeline({
         paused: true,
-        onComplete: () => console.log("Menu fully opened"),
-        onReverseComplete: () => console.log("Menu fully closed"),
+        // Hide the menu ONLY after the reverse animation is complete.
+        onReverseComplete: () => {
+          gsap.set(".fullpage-menu", { display: "none" });
+        },
       });
 
       menuTimeline
-        .to(".fullpage-menu", { display: "flex", duration: 0 })
+        // Use .set() for instant changes. This runs when the timeline plays.
+        .set(".fullpage-menu", { display: "flex" })
         .fromTo(
           ".menu-bg",
           { clipPath: "polygon(0 0, 0 0, 0 100%, 0 100%)" },
@@ -70,23 +73,16 @@ const Navbar = ({}) => {
     { scope: container }
   );
 
+  // This simplified useEffect correctly handles playing and reversing the animation.
   useEffect(() => {
-    if (!tl.current) return;
-
-    if (isOpen) {
-      tl.current.play();
-    } else {
-      tl.current.reverse();
-
-      if (tl.current.progress() === 0) {
-        gsap.set(".fullpage-menu", { display: "none" });
-      }
+    if (tl.current) {
+      isOpen ? tl.current.play() : tl.current.reverse();
     }
   }, [isOpen]);
 
   const toggleMenu = () => {
+    // Prevent spam-clicking while the animation is in its early stages
     if (tl.current?.isActive() && tl.current.progress() < 0.9) return;
-    console.log("Toggling menu, isOpen:", !isOpen);
     setIsOpen((prev) => !prev);
   };
 
@@ -100,10 +96,10 @@ const Navbar = ({}) => {
         </div>
       </div>
 
-      {/* Fullscreen Menu */}
+      {/* Fullscreen Menu - starts hidden */}
       <div className="fullpage-menu fixed inset-0 z-50 hidden flex-col">
         {/* Background */}
-        <div className="menu-bg absolute inset-0 bg-primary clip-path-[polygon(0_0,0_0,0_100%,0_100%)] transition-all duration-700"></div>
+        <div className="menu-bg absolute inset-0 bg-primary clip-path-[polygon(0_0,0_0,0_100%,0_100%)]"></div>
 
         {/* Grid Menu */}
         <div className="h-screen flex flex-col border border-t">
