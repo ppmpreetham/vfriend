@@ -9,7 +9,7 @@ const menus = [
   { path: "/privacy", label: "Privacy" },
   { path: "/tutorial", label: "Tutorial" },
   { path: "/faqs", label: "FAQs" },
-  { path: "/donate", label: "Donate" },
+  { path: "https://www.buymeacoffee.com/preetham", label: "Donate" },
   { path: "/more", label: "More Apps" },
 ];
 

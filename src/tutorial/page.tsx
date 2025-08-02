@@ -65,28 +65,28 @@ export default function About() {
         <FlowingMenu
           items={[
             {
-              link: "#",
+              link: "/about",
               text: "About",
               image:
                 "https://media.istockphoto.com/id/1201699594/vector/information-icon.jpg?s=612x612&w=0&k=20&c=0Nh1zH8uhuqp84FhC8RkJtopaq5Ni2zplAtq1q8o4zM=",
             },
 
             {
-              link: "#",
+              link: "/privacy",
               text: "Privacy",
               image:
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3Ihx53jvI-Lgsa_RwlXpr7Ry-xR8e_Eb4RA&s",
             },
 
             {
-              link: "#",
+              link: "/tutorial",
               text: "Tutorial",
               image:
                 "https://www.freeiconspng.com/thumbs/question-mark-icon/black-question-mark-icon-clip-art-10.png",
             },
 
             {
-              link: "#",
+              link: "/more",
               text: "More Apps",
               image: "https://cdn-icons-png.flaticon.com/512/3357/3357272.png",
             },
