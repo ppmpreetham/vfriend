@@ -1,6 +1,4 @@
-import MagneticButton from "../components/MagneticButton";
 import Navbar from "../components/Navbar";
-import HeroElements from "../components/HeroElements";
 import { useEffect, useRef, useState } from "preact/hooks";
 import gsap from "gsap";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
@@ -16,7 +14,7 @@ import CubePage from "../components/mainpage/CubePage";
 gsap.registerPlugin(useGSAP, ScrollSmoother, ScrollTrigger);
 
 export default function About() {
-  const [timeline, setTimeline] = useState<gsap.core.Timeline | null>(null);
+  const [_timeline, setTimeline] = useState<gsap.core.Timeline | null>(null);
   const main = useRef<HTMLDivElement>(null);
   const smoother = useRef<ScrollSmoother | null>(null);
 
