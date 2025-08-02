@@ -1,15 +1,15 @@
-name: Deploy Preact App to GitHub Pages
+name: Deploy Preact Site to GitHub Pages
 
 on:
   push:
-    branches: gh-pages
+    branches: [website]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout source code
         uses: actions/checkout@v4
 
       - name: Setup pnpm
@@ -27,18 +27,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build project
+      - name: Build app
         run: pnpm run build
 
       - name: Copy static extras
         run: |
           cp -r .well-known dist/
-          cp CNAME dist/
-          cp .nojekyll dist/
+          echo 'vfriend.preetham.top' > dist/CNAME
+          touch dist/.nojekyll
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
           publish_branch: gh-pages
+          publish_dir: ./dist
+          force_orphan: true
