@@ -37,14 +37,12 @@ const Navbar = ({}) => {
     () => {
       const menuTimeline = gsap.timeline({
         paused: true,
-        // Hide the menu ONLY after the reverse animation is complete.
         onReverseComplete: () => {
           gsap.set(".fullpage-menu", { display: "none" });
         },
       });
 
       menuTimeline
-        // Use .set() for instant changes. This runs when the timeline plays.
         .set(".fullpage-menu", { display: "flex" })
         .fromTo(
           ".menu-bg",
@@ -55,7 +53,20 @@ const Navbar = ({}) => {
             ease: "expo.inOut",
           }
         )
-        .to(".menu-grid", { duration: 0.6, opacity: 1, ease: "expo.inOut" })
+        .to(
+          ".hamburger-bar",
+          {
+            backgroundColor: "black",
+            duration: 0.1,
+            ease: "none",
+          },
+          0.7
+        )
+        .to(
+          ".menu-grid",
+          { duration: 0.6, opacity: 1, ease: "expo.inOut" },
+          "-=0.2"
+        )
         .fromTo(
           ".menu-grid a",
           { y: 40, opacity: 0 },
@@ -73,7 +84,6 @@ const Navbar = ({}) => {
     { scope: container }
   );
 
-  // This simplified useEffect correctly handles playing and reversing the animation.
   useEffect(() => {
     if (tl.current) {
       isOpen ? tl.current.play() : tl.current.reverse();
@@ -81,7 +91,6 @@ const Navbar = ({}) => {
   }, [isOpen]);
 
   const toggleMenu = () => {
-    // Prevent spam-clicking while the animation is in its early stages
     if (tl.current?.isActive() && tl.current.progress() < 0.9) return;
     setIsOpen((prev) => !prev);
   };
@@ -96,7 +105,7 @@ const Navbar = ({}) => {
         </div>
       </div>
 
-      {/* Fullscreen Menu - starts hidden */}
+      {/* Fullscreen Menu */}
       <div className="fullpage-menu fixed inset-0 z-50 hidden flex-col">
         {/* Background */}
         <div className="menu-bg absolute inset-0 bg-primary clip-path-[polygon(0_0,0_0,0_100%,0_100%)]"></div>

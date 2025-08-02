@@ -32,11 +32,9 @@ const Close: FunctionalComponent<CloseProps> = ({ isOpen, toggleOpen }) => {
       {spanStyles.map(({ base, open }, i) => (
         <span
           key={i}
-          className={`block absolute 
-            ${isOpen ? "bg-black" : "bg-white"} 
-            transition-all duration-[250ms] ease-in-out rounded-${
-              i % 2 ? "r" : "l"
-            }-[4.5px] ${isOpen ? open : base} h-[9px] w-[30px]`}
+          className={`hamburger-bar block absolute bg-white transition-all duration-[250ms] ease-in-out rounded-${
+            i % 2 ? "r" : "l"
+          }-[4.5px] ${isOpen ? open : base} h-[9px] w-[30px]`}
         />
       ))}
     </div>
