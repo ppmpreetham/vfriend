@@ -10,6 +10,8 @@ import FlowingMenu from "../components/FlowMenu";
 import ScrollDown from "../components/ScrollDown";
 import Footer from "../components/mainpage/DownloadApp";
 import CustomCursor from "../components/CustomCursor";
+import DescriptionText from "./text";
+import CubePage from "../components/mainpage/CubePage";
 
 gsap.registerPlugin(useGSAP, ScrollSmoother, ScrollTrigger);
 
@@ -56,7 +58,11 @@ export default function About() {
   );
 
   return (
-    <div id="smooth-wrapper" className="cursor-auto md:cursor-none" ref={main}>
+    <div
+      id="smooth-wrapper"
+      className="cursor-auto md:cursor-none overflow-x-hidden"
+      ref={main}
+    >
       {isDesktop && <CustomCursor />}
       <Navbar />
       <div
@@ -67,6 +73,10 @@ export default function About() {
         <ScrollDown />
       </div>
       <div id="smooth-content">
+        <div className="h-20"></div>
+        <DescriptionText />
+        <CubePage isDesktop={isDesktop} />
+
         <FlowingMenu
           items={[
             {
