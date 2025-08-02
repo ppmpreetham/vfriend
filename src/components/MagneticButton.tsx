@@ -1,14 +1,21 @@
-"use client";
-import { useRef } from "react";
+import { type ComponentChildren } from "preact";
+import { useRef } from "preact/compat";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+
+type MagneticButtonProps = {
+  className?: string;
+  children?: ComponentChildren;
+  strength?: number;
+  [key: string]: any;
+};
 
 const MagneticButton = ({
   className = "",
   children = "Join the Collective",
   strength = 500,
   ...props
-}) => {
+}: MagneticButtonProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const isMobileRef = useRef(false);
 
@@ -25,7 +32,7 @@ const MagneticButton = ({
 
     let bounds;
 
-    const handleMouseMove = (e: { clientX: any; clientY: any }) => {
+    const handleMouseMove = (e: { clientX: number; clientY: number }) => {
       bounds = button.getBoundingClientRect();
       const mouseX = e.clientX;
       const mouseY = e.clientY;

@@ -5,9 +5,7 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
-    "jsx": "react",
-    "jsxFactory": "h",
-    "jsxFragmentFactory": "Fragment",
-    "types": ["node", "jsx"]
+    "jsx": "react-jsx",
+    "types": ["node"]
   }
 }

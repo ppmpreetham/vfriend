@@ -11,7 +11,7 @@ const menus = [
   { path: "/faqs", label: "FAQs" },
   { path: "/donate", label: "Donate" },
   { path: "/more", label: "More Apps" },
-] as const;
+];
 
 const Title = ({ open }: { open: boolean }) => {
   return (

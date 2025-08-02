@@ -25,7 +25,7 @@ const RotatingSquares = () => {
       scrollTrigger: {
         trigger: ".containerr",
         start: "top top",
-        end: "bottom+=500vh center",
+        end: "bottom+=1500vh center",
         scrub: 1,
         pin: ".containerr",
       },
