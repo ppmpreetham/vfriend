@@ -96,9 +96,9 @@ const Navbar = ({}) => {
   };
 
   return (
-    <div ref={container} className="font-space z-50">
+    <div ref={container} className="w-screen font-space z-50">
       {/* Topbar */}
-      <div className="fixed top-0 left-0 w-full z-40 p-6 flex justify-between items-center">
+      <div className="fixed top-0 left-0 w-screen z-40 p-6 flex justify-between items-center">
         <Title open={false} />
         <div className="z-[40] cursor-pointer">
           <Close isOpen={isOpen} toggleOpen={toggleMenu} />
