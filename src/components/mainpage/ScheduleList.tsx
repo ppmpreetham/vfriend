@@ -62,6 +62,9 @@ const ScheduleList = ({ timeline }: { timeline: gsap.core.Timeline }) => {
     <div
       ref={gridWrapRef}
       className="flex flex-col items-center justify-center w-full"
+      style={{
+        willChange: "transform, opacity",
+      }}
     >
       <div
         className="m-0 text-foreground rounded-xl p-4 flex justify-center items-center flex-col"

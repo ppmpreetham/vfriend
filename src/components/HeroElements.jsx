@@ -85,7 +85,7 @@ const HeroElements = () => {
               data-speed={t + Math.random() * (1 - t)}
               unselectable="on"
               alt={`Icon ${index + 1}`}
-              className="absolute w-16 h-16 md:w-24 md:h-24 pointer-events-non hover:filter-none hover:text-primary"
+              className="absolute w-16 h-16 md:w-24 md:h-24 pointer-events-none hover:filter-none hover:text-primary"
               style={{
                 top: position?.top,
                 left: position?.left,
