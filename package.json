@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
+    "@radix-ui/react-hover-card": "^1.1.14",
     "@tailwindcss/vite": "^4.1.11",
     "@types/node": "^24.1.0",
     "@types/three": "^0.178.1",
@@ -18,6 +19,7 @@
     "preact": "^10.26.9",
     "preact-compat": "^3.19.0",
     "preact-reconciler": "^0.2.3",
+    "qss": "^3.0.0",
     "react-router": "^7.7.1",
     "react-router-dom": "^7.7.1",
     "react-scan": "^0.4.3",

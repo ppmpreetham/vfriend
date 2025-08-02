@@ -8,6 +8,7 @@ import FlowingMenu from "../components/FlowMenu";
 import Footer from "../components/mainpage/DownloadApp";
 import CustomCursor from "../components/CustomCursor";
 import CubePage from "../components/mainpage/CubePage";
+import PrivacyPage from "./PrivacyPage";
 
 gsap.registerPlugin(useGSAP, ScrollSmoother, ScrollTrigger);
 
@@ -57,8 +58,8 @@ export default function About() {
       ></div>
       <div id="smooth-content">
         <div className="h-20"></div>
+        <PrivacyPage />
         <CubePage isDesktop={isDesktop} />
-
         <FlowingMenu
           items={[
             {
