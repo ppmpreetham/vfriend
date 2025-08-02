@@ -65,7 +65,7 @@ export default function App() {
       {isDesktop && <CustomCursor />}
       <Navbar />
       <div
-        className="absolute bottom-6 left-1/2 transform -translate-x-1/2"
+        className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-black text-white"
         data-speed={1}
         data-lag={0.4}
       >
