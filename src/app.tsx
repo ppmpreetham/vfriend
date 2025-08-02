@@ -66,13 +66,13 @@ export default function App() {
   return (
     <div
       id="smooth-wrapper"
-      className="cursor-auto md:cursor-none overflow-x-hidden"
+      className="cursor-auto md:cursor-none overflow-x-hidden scrollbar-hide"
       ref={main}
     >
       {isDesktop && <CustomCursor />}
       <Navbar />
       <div
-        className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-black text-white"
+        className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-black text-white scrollbar-hide"
         data-speed={1}
         data-lag={0.4}
       >

@@ -5,11 +5,10 @@ import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import FlowingMenu from "../components/FlowMenu";
-import ScrollDown from "../components/ScrollDown";
 import Footer from "../components/mainpage/DownloadApp";
 import CustomCursor from "../components/CustomCursor";
-import DescriptionText from "./text";
 import CubePage from "../components/mainpage/CubePage";
+import Tutorialtext from "./Tutorialtext";
 
 gsap.registerPlugin(useGSAP, ScrollSmoother, ScrollTrigger);
 
@@ -59,9 +58,10 @@ export default function About() {
       ></div>
       <div id="smooth-content">
         <div className="h-20"></div>
-        <DescriptionText />
-        <CubePage isDesktop={isDesktop} />
 
+        <Tutorialtext isDesktop={isDesktop} />
+
+        <CubePage isDesktop={isDesktop} />
         <FlowingMenu
           items={[
             {

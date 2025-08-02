@@ -2,11 +2,16 @@ import { render } from "preact";
 import "./index.css";
 import App from "./app.tsx";
 import About from "./about/page.tsx";
+import Tutorial from "./tutorial/page.tsx";
+import Privacy from "./privacy/page.tsx";
+
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 const paths = [
   { path: "/", component: App },
   { path: "/about", component: About },
+  { path: "/tutorial", component: Tutorial },
+  { path: "/privacy", component: Privacy },
 ] as const;
 
 const Main = () => (
