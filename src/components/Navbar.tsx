@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "preact/hooks";
+import { useRef, useState } from "preact/hooks";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Link, useNavigate } from "react-router-dom";
