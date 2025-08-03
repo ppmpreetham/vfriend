@@ -5,7 +5,7 @@ import About from "./about/page.tsx";
 import Tutorial from "./tutorial/page.tsx";
 import Privacy from "./privacy/page.tsx";
 
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 
 const paths = [
   { path: "/", component: App },
@@ -16,6 +16,7 @@ const paths = [
 
 const Main = () => (
   <Router>
+    {" "}
     <Routes>
       {paths.map(({ path, component: Component }) => (
         <Route key={path} path={path} element={<Component />} />
@@ -23,4 +24,5 @@ const Main = () => (
     </Routes>
   </Router>
 );
+
 render(<Main />, document.getElementById("app")!);
