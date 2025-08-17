@@ -6,6 +6,7 @@ import Tutorial from "./tutorial/page.tsx";
 import Privacy from "./privacy/page.tsx";
 
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import { ScrollToTop } from "./lib/utils.ts";
 
 const paths = [
   { path: "/", component: App },
@@ -17,6 +18,7 @@ const paths = [
 const Main = () => (
   <Router>
     {" "}
+    <ScrollToTop />
     <Routes>
       {paths.map(({ path, component: Component }) => (
         <Route key={path} path={path} element={<Component />} />
