@@ -12,6 +12,6 @@ const resolve = {
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [preact(), tailwindcss()],
+  plugins: [preact({ prerender: { enabled: true } }), tailwindcss()],
   resolve,
 });
