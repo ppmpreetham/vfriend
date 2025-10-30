@@ -78,6 +78,21 @@ export function nextFreeTime(params: NextFreeTimeParams) {
 }
 
 /**
+ * Direct invoke version of nextFreeTime that doesn't use React Query
+ */
+export const nextFreeTimeDirect = async ({
+  bitmap,
+  currentTime,
+  kindmap,
+}: NextFreeTimeParams): Promise<string | null> => {
+  return invoke<string | null>("next_free_time_after", {
+    bitmap,
+    currentTime,
+    kindmap,
+  });
+};
+
+/**
  * Fetches the status of the user's schedule
  */
 export function getFreeStatus(params: NextFreeTimeParams) {
@@ -141,13 +156,15 @@ export async function parseHTMLTimetable(
 export async function currentlyAt(
   time: string,
   timeTable: CompactSlot[],
-  day: number
+  day: number,
+  isEndTime: boolean = false
 ): Promise<string | null> {
   try {
     const result = await invoke<string | null>("currently_at", {
       time,
       timeTable,
       day,
+      isEndTime,
     });
     return result;
   } catch (error) {

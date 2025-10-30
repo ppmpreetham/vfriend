@@ -43,6 +43,7 @@ pub fn run() {
             newercommands::build_kindmap,
             newercommands::next_free_time_after,
             newercommands::get_free_status,
+            newercommands::new_get_free_status,
             newercommands::currently_at,
             newercommands::currentbit
             // commands::check_conflicts,
