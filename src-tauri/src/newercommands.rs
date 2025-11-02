@@ -230,66 +230,99 @@ pub fn get_free_status(
             is_lunch: true, // Mark as lunch period
         });
     }
-
-    // Check if current_time is within any period
-    for i in 0..12 {
-        let (start_str, end_str) = if kindmap[i] {
-            LAB_PERIODS[i]
-        } else {
-            THEORY_PERIODS[i]
-        };
-        let start = NaiveTime::parse_from_str(start_str, "%H:%M").unwrap();
-        let end = NaiveTime::parse_from_str(end_str, "%H:%M").unwrap();
-
-        if current_time >= start && current_time < end {
-            if !bitmap[i] {
-                // currently free → find longest contiguous free block
-                let mut last_end = end;
-                for j in i + 1..12 {
-                    if bitmap[j] {
-                        break;
-                    }
-                    let (_, next_end_str) = if kindmap[j] {
-                        LAB_PERIODS[j]
-                    } else {
-                        THEORY_PERIODS[j]
-                    };
-                    last_end = NaiveTime::parse_from_str(next_end_str, "%H:%M").unwrap();
-                }
-
+    
+    // Get the next free time
+    let next_free_time_str = next_free_time_after(bitmap, kindmap, current_time);
+    
+    // Determine if currently free or busy
+    if next_free_time_str == "YOU ARE FREE" {
+        // User is currently free, find when they'll next be busy
+        
+        // Check if in a period
+        for i in 0..12 {
+            let (start_str, end_str) = if kindmap[i] {
+                LAB_PERIODS[i]
+            } else {
+                THEORY_PERIODS[i]
+            };
+            let start = NaiveTime::parse_from_str(start_str, "%H:%M").unwrap();
+            let end = NaiveTime::parse_from_str(end_str, "%H:%M").unwrap();
+            
+            if current_time >= start && current_time < end && !bitmap[i] {
+                // We're in a free period, find when it ends
                 return Some(FreeStatus {
                     is_busy: false,
                     from: current_time,
-                    until: Some(last_end),
+                    until: Some(end),
                     is_lunch: false,
                 });
-            } else {
-                // currently busy → find next free period
-                let mut next_start = None;
-                for j in i + 1..12 {
-                    if !bitmap[j] {
-                        let (next_start_str, _) = if kindmap[j] {
-                            LAB_PERIODS[j]
-                        } else {
-                            THEORY_PERIODS[j]
-                        };
-                        next_start =
-                            Some(NaiveTime::parse_from_str(next_start_str, "%H:%M").unwrap());
-                        break;
-                    }
-                }
-
+            }
+        }
+        
+        // If not in a specific period, free until end of day
+        return Some(FreeStatus {
+            is_busy: false,
+            from: current_time,
+            until: None,
+            is_lunch: false,
+        });
+    } else if next_free_time_str == "NO FREE TIME AVAILABLE" {
+        // No more free time today
+        return Some(FreeStatus {
+            is_busy: true,
+            from: current_time,
+            until: None,
+            is_lunch: false,
+        });
+    } else {
+        // User is busy, will be free at the time specified
+        match NaiveTime::parse_from_str(&next_free_time_str, "%H:%M") {
+            Ok(time) => {
                 return Some(FreeStatus {
                     is_busy: true,
-                    from: end,
-                    until: next_start,
+                    from: current_time,
+                    until: Some(time),
+                    is_lunch: time == lunch_start, // If next free time is lunch start
+                });
+            },
+            Err(_) => {
+                // Parse error - fall back to default
+                return Some(FreeStatus {
+                    is_busy: true,
+                    from: current_time,
+                    until: None,
                     is_lunch: false,
                 });
             }
         }
     }
+}
 
-    // Before day starts: look for first free period
+#[tauri::command]
+pub fn new_get_free_status(
+    bitmap: [bool; 12],
+    kindmap: [bool; 12],
+    current_time: NaiveTime,
+) -> Option<FreeStatus> {
+    // Check for lunch period first
+    let lunch_start = NaiveTime::parse_from_str("13:25", "%H:%M").unwrap();
+    let lunch_end = NaiveTime::parse_from_str("14:00", "%H:%M").unwrap();
+    
+    // If we're in lunch period, we're already free
+    if current_time >= lunch_start && current_time < lunch_end {
+        return Some(FreeStatus {
+            is_busy: false,
+            from: current_time,
+            until: Some(lunch_end),
+            is_lunch: true,
+        });
+    }
+    
+    // Check if we're in any class period
+    let mut in_period = false;
+    let mut current_period_index = 0;
+    let mut current_period_end = NaiveTime::from_hms(0, 0, 0);
+    
     for i in 0..12 {
         let (start_str, end_str) = if kindmap[i] {
             LAB_PERIODS[i]
@@ -298,11 +331,21 @@ pub fn get_free_status(
         };
         let start = NaiveTime::parse_from_str(start_str, "%H:%M").unwrap();
         let end = NaiveTime::parse_from_str(end_str, "%H:%M").unwrap();
-
-        if current_time < start && !bitmap[i] {
-            // look for contiguous free blocks from this point
-            let mut last_end = end;
-            for j in i + 1..12 {
+        
+        if current_time >= start && current_time < end {
+            in_period = true;
+            current_period_index = i;
+            current_period_end = end;
+            break;
+        }
+    }
+    
+    if in_period {
+        // We are in a class period
+        if !bitmap[current_period_index] {
+            // Currently in a FREE period - find how long we're free
+            let mut last_end = current_period_end;
+            for j in (current_period_index + 1)..12 {
                 if bitmap[j] {
                     break;
                 }
@@ -313,29 +356,109 @@ pub fn get_free_status(
                 };
                 last_end = NaiveTime::parse_from_str(next_end_str, "%H:%M").unwrap();
             }
-
+            
             return Some(FreeStatus {
                 is_busy: false,
-                from: start,
+                from: current_time,
                 until: Some(last_end),
+                is_lunch: false,
+            });
+        } else {
+            // Currently in a BUSY period - find when we'll next be free
+            
+            // Check if lunch is next after this period
+            if current_period_end <= lunch_start && lunch_start > current_time {
+                return Some(FreeStatus {
+                    is_busy: true,
+                    from: current_time,
+                    until: Some(lunch_start),
+                    is_lunch: false,
+                });
+            }
+            
+            // Look for next free period
+            for j in (current_period_index + 1)..12 {
+                if !bitmap[j] {
+                    let (next_start_str, _) = if kindmap[j] {
+                        LAB_PERIODS[j]
+                    } else {
+                        THEORY_PERIODS[j]
+                    };
+                    let next_free = NaiveTime::parse_from_str(next_start_str, "%H:%M").unwrap();
+                    
+                    // But if lunch comes first, return that
+                    if next_free > lunch_start && current_period_end < lunch_start && current_time < lunch_start {
+                        return Some(FreeStatus {
+                            is_busy: true,
+                            from: current_time,
+                            until: Some(lunch_start),
+                            is_lunch: false,
+                        });
+                    }
+                    
+                    return Some(FreeStatus {
+                        is_busy: true,
+                        from: current_time,
+                        until: Some(next_free),
+                        is_lunch: false,
+                    });
+                }
+            }
+            
+            // No more free periods today
+            return Some(FreeStatus {
+                is_busy: true,
+                from: current_time,
+                until: None,
+                is_lunch: false,
+            });
+        }
+    } else {
+        // We're not in any class period - either before day starts, after it ends, or between periods
+        
+        // Before day starts or between periods - find next free slot
+        for i in 0..12 {
+            let (start_str, _) = if kindmap[i] {
+                LAB_PERIODS[i]
+            } else {
+                THEORY_PERIODS[i]
+            };
+            let start = NaiveTime::parse_from_str(start_str, "%H:%M").unwrap();
+            
+            if current_time < start && !bitmap[i] {
+                // Found the next free period
+                return Some(FreeStatus {
+                    is_busy: false,
+                    from: start,
+                    until: None, // We'll determine the duration when they're actually in the period
+                    is_lunch: false,
+                });
+            }
+        }
+        
+        // If no free periods are found and we're before lunch
+        if current_time < lunch_start {
+            return Some(FreeStatus {
+                is_busy: false,
+                from: lunch_start,
+                until: Some(lunch_end),
+                is_lunch: true,
+            });
+        }
+        
+        // After all classes, user is free
+        let latest_period_end = NaiveTime::parse_from_str("19:25", "%H:%M").unwrap();
+        if current_time >= latest_period_end {
+            return Some(FreeStatus {
+                is_busy: false,
+                from: current_time,
+                until: None,
                 is_lunch: false,
             });
         }
     }
-
-    // Check if current time is after all periods (day is over)
-    let latest_period_end = NaiveTime::parse_from_str("19:25", "%H:%M").unwrap();
-    if current_time >= latest_period_end {
-        // After all classes, user is free until next day
-        return Some(FreeStatus {
-            is_busy: false,
-            from: current_time,
-            until: None,
-            is_lunch: false,
-        });
-    }
-
-    // No periods matched; day may be over or completely busy
+    
+    // Default fallback
     Some(FreeStatus {
         is_busy: true,
         from: current_time,
@@ -345,7 +468,7 @@ pub fn get_free_status(
 }
 
 #[tauri::command]
-pub fn currently_at(time: &str, time_table: Vec<CompactSlot>, day: u8) -> Option<String> {
+pub fn currently_at(time: &str, time_table: Vec<CompactSlot>, day: u8, is_end_time: bool) -> Option<String> {
     // Parse the current time
     let current_time = match NaiveTime::parse_from_str(time, "%H:%M") {
         Ok(t) => t,
@@ -355,26 +478,87 @@ pub fn currently_at(time: &str, time_table: Vec<CompactSlot>, day: u8) -> Option
     // Find which period the current time belongs to
     let mut current_period = None;
 
-    // Check against both theory and lab periods to find the current period
-    for i in 0..12 {
-        // Check theory periods
-        let (theory_start, theory_end) = THEORY_PERIODS[i];
-        let theory_start_time = NaiveTime::parse_from_str(theory_start, "%H:%M").unwrap();
-        let theory_end_time = NaiveTime::parse_from_str(theory_end, "%H:%M").unwrap();
+    if !is_end_time {
+        // Original logic for start time - find period containing this time
+        for i in 0..12 {
+            // Check theory periods
+            let (theory_start, theory_end) = THEORY_PERIODS[i];
+            let theory_start_time = NaiveTime::parse_from_str(theory_start, "%H:%M").unwrap();
+            let theory_end_time = NaiveTime::parse_from_str(theory_end, "%H:%M").unwrap();
 
-        if current_time >= theory_start_time && current_time < theory_end_time {
-            current_period = Some(i as u8 + 1);
-            break;
+            if current_time >= theory_start_time && current_time < theory_end_time {
+                current_period = Some(i as u8 + 1);
+                break;
+            }
+
+            // Check lab periods
+            let (lab_start, lab_end) = LAB_PERIODS[i];
+            let lab_start_time = NaiveTime::parse_from_str(lab_start, "%H:%M").unwrap();
+            let lab_end_time = NaiveTime::parse_from_str(lab_end, "%H:%M").unwrap();
+
+            if current_time >= lab_start_time && current_time < lab_end_time {
+                current_period = Some(i as u8 + 1);
+                break;
+            }
         }
-
-        // Check lab periods
-        let (lab_start, lab_end) = LAB_PERIODS[i];
-        let lab_start_time = NaiveTime::parse_from_str(lab_start, "%H:%M").unwrap();
-        let lab_end_time = NaiveTime::parse_from_str(lab_end, "%H:%M").unwrap();
-
-        if current_time >= lab_start_time && current_time < lab_end_time {
-            current_period = Some(i as u8 + 1);
-            break;
+    } else {
+        // New logic for end time - find the period that ENDS at this time
+        for i in 0..12 {
+            // Check theory periods
+            let (_, theory_end) = THEORY_PERIODS[i];
+            let theory_end_time = NaiveTime::parse_from_str(theory_end, "%H:%M").unwrap();
+            
+            if current_time == theory_end_time {
+                // Found the period that ends at this time
+                // Look for the NEXT period (not this one)
+                if i < 11 {  // Check if there's a next period
+                    current_period = Some((i + 1) as u8 + 1);
+                    break;
+                }
+            }
+            
+            // Check lab periods
+            let (_, lab_end) = LAB_PERIODS[i];
+            let lab_end_time = NaiveTime::parse_from_str(lab_end, "%H:%M").unwrap();
+            
+            if current_time == lab_end_time {
+                // Found the period that ends at this time
+                // Look for the NEXT period (not this one)
+                if i < 11 {  // Check if there's a next period
+                    current_period = Some((i + 1) as u8 + 1);
+                    break;
+                }
+            }
+        }
+        
+        // If no exact match for end time, find the next period that would start after this time
+        if current_period.is_none() {
+            let mut next_period_index = None;
+            let mut next_period_time = NaiveTime::from_hms(23, 59, 59); // Initialize with end of day
+            
+            for i in 0..12 {
+                let (theory_start, _) = THEORY_PERIODS[i];
+                let theory_start_time = NaiveTime::parse_from_str(theory_start, "%H:%M").unwrap();
+                
+                // Find the closest period that starts after current_time
+                if current_time < theory_start_time && theory_start_time < next_period_time {
+                    next_period_time = theory_start_time;
+                    next_period_index = Some(i);
+                }
+                
+                let (lab_start, _) = LAB_PERIODS[i];
+                let lab_start_time = NaiveTime::parse_from_str(lab_start, "%H:%M").unwrap();
+                
+                // Find the closest period that starts after current_time
+                if current_time < lab_start_time && lab_start_time < next_period_time {
+                    next_period_time = lab_start_time;
+                    next_period_index = Some(i);
+                }
+            }
+            
+            if let Some(idx) = next_period_index {
+                current_period = Some(idx as u8 + 1);
+            }
         }
     }
 
@@ -387,11 +571,8 @@ pub fn currently_at(time: &str, time_table: Vec<CompactSlot>, day: u8) -> Option
     // Look for a matching slot in the time_table with the same day and period
     for slot in time_table {
         if slot.d == day && slot.p == period {
-            // Extract the location from the f field (part after the first hyphen)
-            if let Some(first_hyphen) = slot.f.find('-') {
-                let after_first_hyphen = &slot.f[first_hyphen + 1..];
-                return Some(after_first_hyphen.to_string());
-            }
+            // Return the full course information
+            return Some(slot.f.clone());
         }
     }
 

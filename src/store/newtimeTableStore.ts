@@ -42,18 +42,18 @@ export async function initializeUserStore({ u, r, s, h, q, t, o }: shareData) {
     }
 
     await userStore.set("userData", {
-      u, // username
-      r, // registration number
-      s, // semester
-      h, // hobbies
-      q, // quote
-      t, // timestamp
-      b, // bitmap for each day of the week
-      k, // kindmap for each day of the week
-      o, // original schedule
+      u,
+      r,
+      s,
+      h,
+      q,
+      t,
+      b,
+      k,
+      o,
       theme: "dark",
-      timeFormat: 12, // default to 12 hour format
-      welcome: true, // set welcome flag to true
+      timeFormat: 12,
+      welcome: true,
     });
     await userStore.save();
 
@@ -68,7 +68,6 @@ export async function initializeFriendsStore() {
   try {
     await friendsStore.set("friends", []);
     await friendsStore.save();
-
     return { success: true };
   } catch (error) {
     console.error("Failed to initialize friends store:", error);
@@ -95,7 +94,6 @@ export async function shareCurrentUserProfile(): Promise<shareData | null> {
     if (!userData) {
       throw new Error("User data not found");
     }
-
     const { u, r, s, h, q, t, o } = userData;
     return { u, r, s, h, q, t, o };
   } catch (error) {
@@ -106,11 +104,9 @@ export async function shareCurrentUserProfile(): Promise<shareData | null> {
 
 export async function addFriend(friend: shareData) {
   try {
-    //  check if a friend already exists
     const friends: personData[] = (await friendsStore.get("friends")) || [];
     const existingFriendIndex = friends.findIndex((f) => f.r === friend.r);
 
-    // If exists, update instead of adding a new entry
     if (existingFriendIndex !== -1) {
       const updated = await changeFriendData(friend.r, friend);
       return { success: updated };
@@ -123,11 +119,7 @@ export async function addFriend(friend: shareData) {
       k[day] = await buildKindmap(friend.o, day);
     }
 
-    const person: personData = {
-      ...friend,
-      b,
-      k,
-    };
+    const person: personData = { ...friend, b, k };
 
     friends.push(person);
     await friendsStore.set("friends", friends);
@@ -143,7 +135,6 @@ export async function viewAllStores() {
   try {
     const userData = await userStore.get("userData");
     const friendsData = await friendsStore.get("friends");
-
     console.log("User Data:", userData);
     console.log("Friends Data:", friendsData);
   } catch (error) {
@@ -155,23 +146,21 @@ export async function resetAllStores() {
   try {
     await userStore.set("userData", null);
     await userStore.save();
-
     await friendsStore.set("friends", []);
     await friendsStore.save();
-
     console.log("All stores have been reset.");
   } catch (error) {
     console.error("Failed to reset all stores:", error);
   }
 }
 
+// CORRECTED: Consistently uses 0-indexed 'day' parameter
 export async function getUserBitmap(day: number): Promise<boolean[]> {
   try {
     const userData = (await userStore.get("userData")) as userData | null;
-    if (!userData || !userData.b || !userData.b[day - 1]) {
+    if (!userData || !userData.b || !userData.b[day]) {
       throw new Error(`No bitmap found for day ${day}`);
     }
-    console.log(day);
     return userData.b[day];
   } catch (error) {
     console.error("Failed to get user bitmap:", error);
@@ -192,6 +181,7 @@ export async function getUserTimetable(): Promise<CompactSlot[]> {
   }
 }
 
+// CORRECTED: Consistently uses 0-indexed 'day' parameter
 export async function getFriendBitmap(
   username: string,
   day: number
@@ -207,20 +197,21 @@ export async function getFriendBitmap(
     if (!friend || !friend.b || !friend.b[day]) {
       throw new Error(`No bitmap found for friend ${username} on day ${day}`);
     }
-    return friend.b[day - 1];
+    return friend.b[day];
   } catch (error) {
     console.error("Failed to get friend bitmap:", error);
     throw error;
   }
 }
 
+// CORRECTED: Consistently uses 0-indexed 'day' parameter
 export async function getUserKindmap(day: number): Promise<boolean[]> {
   try {
     const userData = (await userStore.get("userData")) as userData | null;
-    if (!userData || !userData.k || !userData.k[day - 1]) {
+    if (!userData || !userData.k || !userData.k[day]) {
       throw new Error(`No kindmap found for day ${day}`);
     }
-    return userData.k[day - 1];
+    return userData.k[day];
   } catch (error) {
     console.error("Failed to get user kindmap:", error);
     throw error;
@@ -267,11 +258,7 @@ export async function changeFriendData(
       b[day] = await buildBitmap(newData.o, day);
       k[day] = await buildKindmap(newData.o, day);
     }
-    friendsData[friendIndex] = {
-      ...newData,
-      b,
-      k,
-    };
+    friendsData[friendIndex] = { ...newData, b, k };
 
     await friendsStore.set("friends", friendsData);
     await friendsStore.save();
@@ -294,21 +281,19 @@ export async function validateAndAddFriend(accessCode: string) {
       };
     }
   }
-  // Validate the decompressed data structure
   if (
     !decompressedData ||
     typeof decompressedData !== "object" ||
-    !decompressedData.u || // username
-    !decompressedData.r || // registration number
-    typeof decompressedData.s !== "number" || // semester
-    !Array.isArray(decompressedData.h) || // hobbies
-    !Array.isArray(decompressedData.q) || // quote
-    !decompressedData.t || // timestamp
+    !decompressedData.u ||
+    !decompressedData.r ||
+    typeof decompressedData.s !== "number" ||
+    !Array.isArray(decompressedData.h) ||
+    !Array.isArray(decompressedData.q) ||
+    !decompressedData.t ||
     !Array.isArray(decompressedData.o)
   ) {
     return { success: false, error: { message: "Invalid access code format" } };
   }
-  // Add friend using the validated decompressed data
   return await addFriend(decompressedData);
 }
 
@@ -321,31 +306,38 @@ export interface FriendStatusData {
   isLunch?: boolean;
 }
 
-function trimSeconds(timeStr: string | null | undefined): string {
+// CORRECTED: Accepts timeFormat as a parameter, does not use localStorage
+function trimSeconds(
+  timeStr: string | null | undefined,
+  timeFormat: 12 | 24
+): string {
   if (!timeStr || typeof timeStr !== "string") return "";
 
   const [hhStr, mmStr] = timeStr.split(":");
   if (!hhStr || !mmStr) return "";
 
-  const hour = parseInt(hhStr, 10);
-  const minute = mmStr.padStart(2, "0");
-
-  const timeFormat = localStorage.getItem("timeFormat");
-
-  if (timeFormat === "12") {
+  if (timeFormat === 12) {
+    const hour = parseInt(hhStr, 10);
+    const minute = mmStr.padStart(2, "0");
     const suffix = hour >= 12 ? "PM" : "AM";
-    const hour12 = hour % 12 || 12;
+    const hour12 = hour % 12 || 12; // Converts 0 to 12 for 12 AM
     return `${hour12}:${minute} ${suffix}`;
   }
 
   // default to 24-hour
-  return `${hhStr.padStart(2, "0")}:${minute}`;
+  const hour = hhStr.padStart(2, "0");
+  const minute = mmStr.padStart(2, "0");
+  return `${hour}:${minute}`;
 }
 
+// CORRECTED: Fetches user's timeFormat and passes it to trimSeconds
 export async function getFreeTimeOfAllFriends(
   currentTime: string
 ): Promise<FriendStatusData[]> {
   try {
+    const currentUser = await getCurrentUserProfile();
+    const timeFormat = currentUser?.timeFormat || 24; // Default to 24hr
+
     const friendsData = (await friendsStore.get("friends")) as
       | personData[]
       | null;
@@ -356,54 +348,32 @@ export async function getFreeTimeOfAllFriends(
 
     const results: FriendStatusData[] = [];
 
-    // Get current day (0 = Sunday, 1 = Monday, etc.)
-    const today = new Date().getDay();
-    console.log(
-      `Current day index: ${today} (${
-        [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-        ][today]
-      })`
-    );
+    const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
 
     for (const friend of friendsData) {
       const name = friend.u;
 
-      // Log available bitmap days for debugging
-      console.log(`Friend ${name} has bitmap days:`, Object.keys(friend.b));
-
-      // Use today's bitmap, with fallback to day 0 if not available
-      const bitmap = friend.b[today] || friend.b[0];
-      const kindmap = friend.k[today] || friend.k[0];
+      // The day index from getDay() will now correctly match the day index from Rust
+      const bitmap = friend.b[today] || friend.b[0]; // Fallback to first day
+      const kindmap = friend.k[today] || friend.k[0]; // Fallback to first day
 
       try {
-        console.log(
-          `Friend ${name}, using day ${today}, bitmap:`,
-          bitmap,
-          "kindmap:",
-          kindmap
-        );
         const status = await getFreeStatusDirect({
           bitmap,
           currentTime,
           kindmap,
         });
+
         const location =
           (await currentlyAt(currentTime, friend.o, today)) || "";
-        console.log(`Friend ${name} status:`, status);
+
         if (status.data) {
           results.push({
             username: name,
             available: !status.data.is_busy,
             location: location,
-            time: trimSeconds(status.data.from) || "",
-            until: trimSeconds(status.data.until) || "",
+            time: trimSeconds(status.data.from, timeFormat) || "",
+            until: trimSeconds(status.data.until, timeFormat) || "",
             isLunch: status.data.is_lunch || false,
           });
         }

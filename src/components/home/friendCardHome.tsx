@@ -10,7 +10,7 @@ const FriendCardHome = ({
   until,
   isLunch,
 }: FriendCardProps) => {
-  console.log(until);
+  console.log(name, available, location, distance, time, until, isLunch);
   return (
     <div className="flex p-4 bg-background2 rounded-xl m-4 flex-row items-center justify-between text-foreground select-none">
       <div className="flex flex-col">

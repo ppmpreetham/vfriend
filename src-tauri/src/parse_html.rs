@@ -86,7 +86,8 @@ pub fn parse_html(html_content: String) -> Result<String, String> {
                     }
 
                     // Check for green background
-                    let has_green_bg = cell.get("bgcolor").map_or(false, |bg| bg == "#CCFF33");
+                    let cell_text = cell.text().trim().to_string();
+                    let has_green_bg = cell_text.split('-').count() > 1;
 
                     if has_green_bg {
                         let cell_text = cell.text().trim().to_string();

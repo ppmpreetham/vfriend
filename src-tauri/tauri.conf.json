@@ -1,6 +1,6 @@
 {
   "productName": "VFriend",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "identifier": "com.vitfriend.app",
   "build": {
     "beforeDevCommand": "pnpm dev --host",
