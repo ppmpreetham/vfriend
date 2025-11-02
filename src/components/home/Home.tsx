@@ -168,7 +168,7 @@ const Home = () => {
   return (
     <div className="h-full w-full overflow-y-auto scrollbar-hide">
       <div className="p-4 pt-1 flex flex-col gap-4">
-        <PersonPage />
+        {/* <PersonPage /> */}
         <div className="relative">
           <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
             <Search className="w-4 h-4 text-gray-400" />
