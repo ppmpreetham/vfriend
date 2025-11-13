@@ -20,7 +20,7 @@ tauri-build = { version = "2", features = [] }
 [dependencies]
 tauri = { version = "2", features = [] }
 serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+serde_json = "1.0.145"
 
 base64 = "0.22.1"
 soup = "0.5.1"
@@ -32,6 +32,9 @@ tauri-plugin-fs = "2.4.0"
 tauri-plugin-deep-link = "2.4.0"
 tauri-plugin-os = "2"
 tauri-plugin-opener = "2"
+tokio = "1.48.0"
+iroh = { version = "0.95.1", features = ["discovery-local-network"] }
+futures-lite = "2.6.1"
 
 # [patch.crates-io]
 # base64ct = { git = "https://github.com/RustCrypto/formats", tag = "base64ct-v1.6.0" }
