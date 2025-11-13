@@ -1,3 +1,4 @@
+use futures_lite::stream::StreamExt;
 use iroh::{
     discovery::mdns::{DiscoveryEvent, MdnsDiscovery},
     endpoint::Connection,
@@ -10,6 +11,7 @@ use std::str::FromStr;
 use std::sync::Arc;
 use tauri::{Emitter, State};
 use tokio::sync::{mpsc, Mutex, RwLock};
+use tokio::task::JoinHandle;
 
 const ALPN: &[u8] = b"vfriend/request";
 
@@ -49,7 +51,9 @@ pub struct IncomingRequest {
     pub remote_id: String,
 }
 
+// MODIFIED: Added serde tag back
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", content = "data")]
 pub enum FriendEvent {
     PeerDiscovered { peer: DiscoveredPeer },
     IncomingRequest { request: IncomingRequest },
@@ -85,6 +89,7 @@ pub struct FriendExchangeService {
     event_tx: Arc<Mutex<Option<mpsc::UnboundedSender<FriendEvent>>>>,
     pending_requests: Arc<RwLock<Vec<PendingRequest>>>,
     my_share_data: Arc<RwLock<Option<ShareData>>>,
+    discovery_task: Arc<Mutex<Option<JoinHandle<()>>>>,
 }
 
 #[derive(Debug)]
@@ -120,6 +125,7 @@ impl FriendExchangeService {
             event_tx: Arc::new(Mutex::new(None)),
             pending_requests: Arc::new(RwLock::new(Vec::new())),
             my_share_data: Arc::new(RwLock::new(None)),
+            discovery_task: Arc::new(Mutex::new(None)),
         })
     }
 
@@ -154,13 +160,19 @@ impl FriendExchangeService {
     }
 
     /// Start discovering peers
-    pub async fn start_discovery(&self, event_tx: mpsc::UnboundedSender<FriendEvent>) {
-        use futures_lite::stream::StreamExt as _;
+    pub async fn start_discovery(&self) {
+        let event_tx = match self.event_tx.lock().await.as_ref() {
+            Some(tx) => tx.clone(),
+            None => {
+                eprintln!("Discovery started before service event loop.");
+                return;
+            }
+        };
 
         let mut stream = self.mdns.subscribe().await;
         let endpoint_id = self.endpoint.id();
 
-        tokio::spawn(async move {
+        let new_handle = tokio::spawn(async move {
             while let Some(event) = stream.next().await {
                 if let DiscoveryEvent::Discovered { endpoint_info, .. } = event {
                     let other = endpoint_info.endpoint_id;
@@ -177,6 +189,21 @@ impl FriendExchangeService {
                 }
             }
         });
+
+        let mut task_handle_guard = self.discovery_task.lock().await;
+        if let Some(old_handle) = task_handle_guard.take() {
+            old_handle.abort();
+        }
+        *task_handle_guard = Some(new_handle);
+    }
+
+    // ADDED: New function to explicitly stop discovery
+    /// Stop discovering peers
+    pub async fn stop_discovery(&self) {
+        let mut task_handle_guard = self.discovery_task.lock().await;
+        if let Some(handle) = task_handle_guard.take() {
+            handle.abort();
+        }
     }
 
     /// Send a friend request to a discovered peer
@@ -254,7 +281,6 @@ impl FriendExchangeService {
 
         conn.close(0u32.into(), b"bye!");
 
-        // Emit DataReceived event
         if let Some(tx) = self.event_tx.lock().await.as_ref() {
             let _ = tx.send(FriendEvent::DataReceived {
                 share_data: their_share_data.clone(),
@@ -279,7 +305,6 @@ impl FriendExchangeService {
         let pending_req = pending.remove(idx);
         drop(pending); // Release lock
 
-        // Step 2: Send acceptance response on the same stream
         let mut send = pending_req
             .response_send
             .ok_or("Response stream not available")?;
@@ -294,7 +319,6 @@ impl FriendExchangeService {
         send.finish()
             .map_err(|e| format!("Failed to finish response: {}", e))?;
 
-        // Step 3: Accept data stream and receive their share data
         let (mut send2, mut recv2) = pending_req
             .connection
             .accept_bi()
@@ -308,7 +332,6 @@ impl FriendExchangeService {
         let their_share_data: ShareData = serde_json::from_slice(&their_data_bytes)
             .map_err(|e| format!("Failed to parse their data: {}", e))?;
 
-        // Step 4: Send my share data
         let share_data_bytes = serde_json::to_vec(&my_share_data)
             .map_err(|e| format!("Failed to serialize share data: {}", e))?;
 
@@ -322,7 +345,6 @@ impl FriendExchangeService {
 
         pending_req.connection.closed().await;
 
-        // Emit RequestAccepted event
         if let Some(tx) = self.event_tx.lock().await.as_ref() {
             let _ = tx.send(FriendEvent::RequestAccepted {
                 share_data: their_share_data.clone(),
@@ -343,7 +365,6 @@ impl FriendExchangeService {
         let pending_req = pending.remove(idx);
         drop(pending);
 
-        // Send rejection response on the same stream
         let mut send = pending_req
             .response_send
             .ok_or("Response stream not available")?;
@@ -364,6 +385,10 @@ impl FriendExchangeService {
 
     /// Shutdown the service
     pub async fn shutdown(self) -> Result<(), String> {
+        if let Some(handle) = self.discovery_task.lock().await.take() {
+            handle.abort();
+        }
+
         if let Some(router) = self.router {
             router
                 .shutdown()
@@ -389,7 +414,6 @@ impl ProtocolHandler for FriendProtocolHandler {
     async fn accept(&self, connection: Connection) -> std::result::Result<(), AcceptError> {
         let remote_id = connection.remote_id().to_string();
 
-        // Step 1: Receive friend request
         let (send, mut recv) = connection.accept_bi().await?;
         let data = recv.read_to_end(1000).await.map_err(|e| {
             AcceptError::from_err(std::io::Error::new(
@@ -405,14 +429,12 @@ impl ProtocolHandler for FriendProtocolHandler {
             ))
         })?;
 
-        // Notify frontend about incoming request
         let incoming = IncomingRequest {
             from: request.from.clone(),
             name: request.name.clone(),
             remote_id: remote_id.clone(),
         };
 
-        // Store pending request with the send side of the stream for response
         let pending = PendingRequest {
             remote_id: remote_id.clone(),
             connection: Arc::new(connection),
@@ -421,12 +443,10 @@ impl ProtocolHandler for FriendProtocolHandler {
         };
         self.pending_requests.write().await.push(pending);
 
-        // Send event to frontend
         if let Some(tx) = self.event_tx.lock().await.as_ref() {
             let _ = tx.send(FriendEvent::IncomingRequest { request: incoming });
         }
 
-        // The actual accept/reject will be handled by accept_friend_request/reject_friend_request
         Ok(())
     }
 
@@ -490,7 +510,6 @@ pub async fn start_friend_service(
     let mut service = state.lock().await;
     if let Some(service) = service.as_mut() {
         service.start(tx.clone()).await?;
-        // Store the sender for discovery to use
         Ok(())
     } else {
         Err("Service not initialized".to_string())
@@ -501,12 +520,20 @@ pub async fn start_friend_service(
 pub async fn start_discovery(state: State<'_, ServiceState>) -> Result<(), String> {
     let service = state.lock().await;
     if let Some(service) = service.as_ref() {
-        if let Some(tx) = service.event_tx.lock().await.as_ref() {
-            service.start_discovery(tx.clone()).await;
-            Ok(())
-        } else {
-            Err("Service not started. Call start_friend_service first.".to_string())
-        }
+        service.start_discovery().await;
+        Ok(())
+    } else {
+        Err("Service not initialized".to_string())
+    }
+}
+
+// ADDED: New command to stop discovery
+#[tauri::command]
+pub async fn stop_discovery(state: State<'_, ServiceState>) -> Result<(), String> {
+    let service = state.lock().await;
+    if let Some(service) = service.as_ref() {
+        service.stop_discovery().await;
+        Ok(())
     } else {
         Err("Service not initialized".to_string())
     }

@@ -57,6 +57,7 @@ pub fn run() {
             p2p::accept_friend_request,
             p2p::reject_friend_request,
             p2p::get_my_endpoint_id,
+            p2p::stop_discovery,
             // commands::check_conflicts,
             // commands::find_free_times,
             // commands::is_free_at,

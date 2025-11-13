@@ -92,6 +92,8 @@ const P2P = () => {
   const unlistenFnRef = useRef<(() => void) | null>(null)
 
   useEffect(() => {
+    let isMounted = true
+
     const initialize = async () => {
       try {
         // Don't early return - wait for data
@@ -107,106 +109,191 @@ const P2P = () => {
           return
         }
 
+        // Check mount status *before* making async calls
+        if (!isMounted) return
+
         const shareableData: shareData = userData
         setMyShareData(shareableData)
 
         // Initialize service
         const endpointId = await invoke<string>("init_friend_service")
+        if (!isMounted) return
         setMyEndpointId(endpointId)
         setStatus(`Your ID: ${endpointId.slice(0, 10)}...`)
 
         // Set share data
         await invoke("set_share_data", { shareData: shareableData })
+        if (!isMounted) return
 
         // Start service
         await invoke("start_friend_service")
+        if (!isMounted) return
 
-        // Listen for events
-        unlistenFnRef.current = await listen<FriendEvent>("friend-event", (event) => {
+        // Listen for events - this is the critical part
+        // listen() returns a Promise that resolves to the unlisten function
+        const unlistenPromise = listen<FriendEvent>("friend-event", (event) => {
           console.log("Friend event:", event.payload)
           const payload = event.payload
 
+          // Use the type-safe payload
           switch (payload.type) {
             case "PeerDiscovered": {
-              const peer = (payload as any).peer as DiscoveredPeer
-              setDiscoveredPeers((prev) => {
-                if (prev.some((p) => p.endpoint_id === peer.endpoint_id)) {
-                  return prev
-                }
-                return [...prev, peer]
-              })
+              try {
+                const peer = (payload as any).peer as DiscoveredPeer
+                console.log("Peer discovered:", peer)
+
+                setDiscoveredPeers((prev) => {
+                  if (prev.some((p) => p.endpoint_id === peer.endpoint_id)) {
+                    return prev
+                  }
+                  return [...prev, peer]
+                })
+
+                setStatus(`A new device is nearby: ${peer.endpoint_id}`)
+              } catch (err) {
+                console.error("Error in PeerDiscovered:", err)
+                setStatus("Something went wrong while discovering a device.")
+              }
               break
             }
 
             case "IncomingRequest": {
-              const request = (payload as any).request as IncomingRequest
-              setIncomingRequests((prev) => [...prev, request])
+              try {
+                const request = (payload as any).request as IncomingRequest
+                console.log("Incoming connection request:", request)
+
+                setIncomingRequests((prev) => [...prev, request])
+                setStatus("Someone wants to connect with you.")
+              } catch (err) {
+                console.error("Error in IncomingRequest:", err)
+                setStatus("Failed to process an incoming request.")
+              }
               break
             }
 
             case "RequestAccepted": {
-              const share_data = (payload as any).share_data as shareData
-              setStatus(`Friend request accepted! Connected with ${share_data.u}`)
-              setConnectedPeers((prev) => {
-                // Avoid duplicates
-                if (prev.some((p) => p.r === share_data.r)) {
-                  return prev
-                }
-                return [...prev, share_data]
-              })
-              addFriend(share_data).then((result) => {
-                if (result.success) {
-                  setFriendAdded(true)
-                }
-              })
+              try {
+                const share_data = (payload as any).share_data as shareData
+                console.log("Request accepted:", share_data)
+
+                setStatus(`Connected with ${share_data.u}`)
+
+                setConnectedPeers((prev) => {
+                  if (prev.some((p) => p.r === share_data.r)) {
+                    return prev
+                  }
+                  return [...prev, share_data]
+                })
+
+                addFriend(share_data)
+                  .then((result) => {
+                    if (result.success) {
+                      setFriendAdded(true)
+                    }
+                  })
+                  .catch((err) => console.error("Error saving friend:", err))
+              } catch (err) {
+                console.error("Error in RequestAccepted:", err)
+                setStatus("Failed to finalize the connection.")
+              }
               break
             }
 
             case "RequestRejected": {
-              const reason = (payload as any).reason as string
-              setStatus(`Friend request rejected: ${reason}`)
+              try {
+                const reason = (payload as any).reason as string
+                console.log("Request rejected:", reason)
+
+                setStatus(`Your connection request was declined: ${reason}`)
+              } catch (err) {
+                console.error("Error in RequestRejected:", err)
+                setStatus("The request was rejected, but the reason could not be read.")
+              }
               break
             }
 
             case "DataReceived": {
-              const share_data = (payload as any).share_data as shareData
-              setStatus(`Received data from ${share_data.u}`)
-              setConnectedPeers((prev) => {
-                // Avoid duplicates
-                if (prev.some((p) => p.r === share_data.r)) {
-                  return prev
-                }
-                return [...prev, share_data]
-              })
-              // Save friend to store
-              addFriend(share_data).then((result) => {
-                if (result.success) {
-                  setFriendAdded(true)
-                }
-              })
+              try {
+                const share_data = (payload as any).share_data as shareData
+                console.log("Data received:", share_data)
+
+                setStatus(`Received data from ${share_data.u}`)
+
+                setConnectedPeers((prev) => {
+                  if (prev.some((p) => p.r === share_data.r)) {
+                    return prev
+                  }
+                  return [...prev, share_data]
+                })
+
+                addFriend(share_data)
+                  .then((result) => {
+                    if (result.success) {
+                      setFriendAdded(true)
+                    }
+                  })
+                  .catch((err) => console.error("Error saving friend after data:", err))
+              } catch (err) {
+                console.error("Error in DataReceived:", err)
+                setStatus("Received data, but failed to process it.")
+              }
               break
             }
 
             case "Error": {
               const message = (payload as any).message as string
-              setStatus(`Error: ${message}`)
+              console.error("Error event:", message)
+
+              setStatus(`An error occurred: ${message}`)
+              break
+            }
+
+            default: {
+              console.log("Unknown event type:", payload)
+              setStatus("Received an unrecognized event.")
               break
             }
           }
         })
+
+        // Handle the promise safely
+        unlistenPromise
+          .then((unlistenFn) => {
+            if (isMounted) {
+              // If component is still mounted, store the unlisten function
+              unlistenFnRef.current = unlistenFn
+            } else {
+              // If component unmounted while we were waiting, clean up immediately
+              unlistenFn()
+            }
+          })
+          .catch((err) => {
+            if (isMounted) {
+              console.error("Failed to set up event listener:", err)
+              setStatus(`Error: ${String(err)}`)
+            }
+          })
       } catch (error) {
-        console.error("Initialization error:", error)
-        setStatus(`Error: ${error}`)
+        if (isMounted) {
+          console.error("Initialization error:", error)
+          setStatus(`Error: ${String(error)}`)
+        }
       }
     }
 
     initialize()
 
     return () => {
+      isMounted = false
+      // Clean up the listener
       if (unlistenFnRef.current) {
         unlistenFnRef.current()
         unlistenFnRef.current = null
       }
+
+      // Optional: Add a command to stop discovery/shutdown service
+      // if the user navigates away.
+      // invoke("stop_discovery").catch(console.error);
     }
   }, [userData, timetableLoading, timetableError, setFriendAdded])
 

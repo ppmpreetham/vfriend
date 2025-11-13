@@ -5,6 +5,7 @@ import QRGiver from "./QRGiver"
 import CodeTab from "./FriendAddTypes/Access"
 import QRScanner from "./QRScanner"
 import P2P from "./P2P"
+import { invoke } from "@tauri-apps/api/core"
 
 const ShareLinkTab = () => {
   const { handleShare } = useShare()
@@ -71,6 +72,18 @@ const MainTab = () => {
 const AddFriend = () => {
   const { activeTab, goBack } = useAddFriendStore()
 
+  const handleGoBack = async () => {
+    if (activeTab === "p2p") {
+      try {
+        await invoke("stop_discovery")
+        console.log("Stopped P2P discovery.")
+      } catch (error) {
+        console.error("Failed to stop P2P discovery:", error)
+      }
+    }
+    goBack()
+  }
+
   const renderContent = () => {
     switch (activeTab) {
       case "share":
@@ -89,12 +102,12 @@ const AddFriend = () => {
   return (
     <div
       className={`
-      bg-${activeTab == "p2p" ? "black" : "primary"} rounded-xl
-      ${activeTab !== "main" ? "fixed top-0 left-0 w-screen h-screen p-8" : "w-full h-fit p-8"}
-    `}
+       bg-${activeTab == "p2p" ? "black" : "primary"} rounded-xl
+       ${activeTab !== "main" ? "fixed top-0 left-0 w-screen h-screen p-8" : "w-full h-fit p-8"}
+      `}
     >
       {activeTab !== "main" && (
-        <button onClick={goBack} className={`flex items-center gap-2 text-${activeTab == "p2p" ? "primary" : "black"} mb-4 hover:opacity-70 cursor-pointer`}>
+        <button onClick={handleGoBack} className={`flex items-center gap-2 text-${activeTab == "p2p" ? "primary" : "black"} mb-4 hover:opacity-70 cursor-pointer`}>
           <ArrowLeft size={20} />
           <span>Back</span>
         </button>
