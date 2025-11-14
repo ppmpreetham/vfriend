@@ -1,11 +1,13 @@
 use futures_lite::stream::StreamExt;
 use iroh::{
     discovery::mdns::{DiscoveryEvent, MdnsDiscovery},
+    discovery::{Discovery, EndpointData, UserData}, // MODIFIED: Correct imports
     endpoint::Connection,
     protocol::{AcceptError, ProtocolHandler, Router},
     Endpoint, EndpointAddr, PublicKey,
 };
 use serde::{Deserialize, Serialize};
+use std::convert::TryFrom; // MODIFIED: Added for UserData
 use std::future::Future;
 use std::str::FromStr;
 use std::sync::Arc;
@@ -41,6 +43,7 @@ pub struct ShareData {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DiscoveredPeer {
     pub endpoint_id: String,
+    pub name: String,
     pub timestamp: u64,
 }
 
@@ -51,9 +54,9 @@ pub struct IncomingRequest {
     pub remote_id: String,
 }
 
-// MODIFIED: Added serde tag back
+// MODIFIED: Matched your last provided version
 #[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(tag = "type", content = "data")]
+#[serde(tag = "type")]
 pub enum FriendEvent {
     PeerDiscovered { peer: DiscoveredPeer },
     IncomingRequest { request: IncomingRequest },
@@ -134,8 +137,25 @@ impl FriendExchangeService {
         self.endpoint.id().to_string()
     }
 
+    // MODIFIED: This now correctly publishes the username
     /// Set your share data
     pub async fn set_share_data(&self, share_data: ShareData) {
+        // MODIFIED: Create UserData using TryFrom<String>
+        let user_data = UserData::try_from(share_data.u.clone())
+            .unwrap_or_else(|e| {
+                // Handle case where username is too long
+                eprintln!("Username '{}' is too long for mDNS, using empty string. Error: {}", share_data.u, e);
+                UserData::try_from("".to_string()).unwrap() // Guaranteed to work
+            });
+
+        // Create default EndpointData and set the user_data
+        let mut endpoint_data = EndpointData::default();
+        endpoint_data.set_user_data(Some(user_data));
+
+        // MODIFIED: This now works because the Discovery trait is in scope
+        self.mdns.publish(&endpoint_data);
+
+        // Store the data locally
         *self.my_share_data.write().await = Some(share_data);
     }
 
@@ -177,8 +197,17 @@ impl FriendExchangeService {
                 if let DiscoveryEvent::Discovered { endpoint_info, .. } = event {
                     let other = endpoint_info.endpoint_id;
                     if other != endpoint_id {
+                        // MODIFIED: Correctly access the user_data via AsRef<str>
+                        let name = endpoint_info
+                            .data
+                            .user_data() // This returns Option<&UserData>
+                            .map(|user_data| user_data.as_ref()) // This returns &str
+                            .map(|s| s.to_string()) // Convert &str to String
+                            .unwrap_or_else(|| "Unknown".to_string()); // Default if not found
+
                         let peer = DiscoveredPeer {
                             endpoint_id: other.to_string(),
+                            name, // Use the extracted name
                             timestamp: std::time::SystemTime::now()
                                 .duration_since(std::time::UNIX_EPOCH)
                                 .unwrap()
@@ -197,7 +226,6 @@ impl FriendExchangeService {
         *task_handle_guard = Some(new_handle);
     }
 
-    // ADDED: New function to explicitly stop discovery
     /// Stop discovering peers
     pub async fn stop_discovery(&self) {
         let mut task_handle_guard = self.discovery_task.lock().await;
@@ -527,7 +555,6 @@ pub async fn start_discovery(state: State<'_, ServiceState>) -> Result<(), Strin
     }
 }
 
-// ADDED: New command to stop discovery
 #[tauri::command]
 pub async fn stop_discovery(state: State<'_, ServiceState>) -> Result<(), String> {
     let service = state.lock().await;
