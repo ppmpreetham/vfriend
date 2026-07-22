@@ -1,10 +1,10 @@
 import { LazyStore } from "@tauri-apps/plugin-store";
 import type { CompactSlot } from "../types/timeTable";
+import type { TimetableStatus } from "../utils/invokeFunctions";
 import {
   buildBitmap,
   buildKindmap,
-  currentlyAt,
-  getFreeStatusDirect,
+  getTimetableStatusDirect,
 } from "../utils/invokeFunctions";
 import { decompress } from "../utils/compressor";
 
@@ -26,20 +26,50 @@ export interface personData extends shareData {
 export interface userData extends personData {
   theme: "dark" | "light"; // theme preference
   timeFormat?: 12 | 24; // time format preference
+  showGapsAsFree?: boolean; // show 5/10 minute class gaps as free time
   welcome?: boolean; // welcome screen flag
+}
+
+export interface FriendStatusData {
+  username: string;
+  available: boolean;
+  status: TimetableStatus;
 }
 
 export const friendsStore = new LazyStore("friends.json");
 export const userStore = new LazyStore("user.json");
 
+const timetableDays = [1, 2, 3, 4, 5, 6, 7] as const;
+
+async function buildDayMaps(schedule: CompactSlot[]) {
+  const entries = await Promise.all(
+    timetableDays.map(async (day) => {
+      const [bitmap, kindmap] = await Promise.all([
+        buildBitmap(schedule, day),
+        buildKindmap(schedule, day),
+      ]);
+      return [day, bitmap, kindmap] as const;
+    })
+  );
+
+  const b: Record<number, boolean[]> = {};
+  const k: Record<number, boolean[]> = {};
+
+  for (const [day, bitmap, kindmap] of entries) {
+    b[day] = bitmap;
+    k[day] = kindmap;
+  }
+
+  return { b, k };
+}
+
+function todayForRust(): number {
+  return new Date().getDay() || 7;
+}
+
 export async function initializeUserStore({ u, r, s, h, q, t, o }: shareData) {
   try {
-    const b: Record<number, boolean[]> = {};
-    const k: Record<number, boolean[]> = {};
-    for (let day = 0; day < 7; day++) {
-      b[day] = await buildBitmap(o, day);
-      k[day] = await buildKindmap(o, day);
-    }
+    const { b, k } = await buildDayMaps(o);
 
     await userStore.set("userData", {
       u,
@@ -53,6 +83,7 @@ export async function initializeUserStore({ u, r, s, h, q, t, o }: shareData) {
       o,
       theme: "dark",
       timeFormat: 12,
+      showGapsAsFree: false,
       welcome: true,
     });
     await userStore.save();
@@ -81,7 +112,7 @@ export async function getCurrentUserProfile(): Promise<userData | null> {
     if (!userData) {
       throw new Error("User data not found");
     }
-    return userData;
+    return { ...userData, showGapsAsFree: userData.showGapsAsFree ?? false };
   } catch (error) {
     console.error("Failed to get current user profile:", error);
     return null;
@@ -112,16 +143,8 @@ export async function addFriend(friend: shareData) {
       return { success: updated };
     }
 
-    const b: Record<number, boolean[]> = {};
-    const k: Record<number, boolean[]> = {};
-    for (let day = 0; day < 7; day++) {
-      b[day] = await buildBitmap(friend.o, day);
-      k[day] = await buildKindmap(friend.o, day);
-    }
-
-    const person: personData = { ...friend, b, k };
-
-    friends.push(person);
+    const { b, k } = await buildDayMaps(friend.o);
+    friends.push({ ...friend, b, k });
     await friendsStore.set("friends", friends);
     await friendsStore.save();
     return { success: true };
@@ -154,7 +177,23 @@ export async function resetAllStores() {
   }
 }
 
-// CORRECTED: Consistently uses 0-indexed 'day' parameter
+export async function updateUserPreferences(
+  updates: Partial<Pick<userData, "theme" | "timeFormat" | "showGapsAsFree">>
+): Promise<boolean> {
+  try {
+    const currentUser = (await userStore.get("userData")) as userData | null;
+    if (!currentUser) return false;
+
+    await userStore.set("userData", { ...currentUser, ...updates });
+    await userStore.save();
+    return true;
+  } catch (error) {
+    console.error("Failed to update user preferences:", error);
+    return false;
+  }
+}
+
+// Timetable parser uses 1=Monday through 7=Sunday.
 export async function getUserBitmap(day: number): Promise<boolean[]> {
   try {
     const userData = (await userStore.get("userData")) as userData | null;
@@ -181,7 +220,6 @@ export async function getUserTimetable(): Promise<CompactSlot[]> {
   }
 }
 
-// CORRECTED: Consistently uses 0-indexed 'day' parameter
 export async function getFriendBitmap(
   username: string,
   day: number
@@ -204,7 +242,6 @@ export async function getFriendBitmap(
   }
 }
 
-// CORRECTED: Consistently uses 0-indexed 'day' parameter
 export async function getUserKindmap(day: number): Promise<boolean[]> {
   try {
     const userData = (await userStore.get("userData")) as userData | null;
@@ -249,15 +286,10 @@ export async function changeFriendData(
       (f) => f.r === registrationNumber
     );
     if (friendIndex === -1) {
-      throw new Error(`Friend not found`);
+      throw new Error("Friend not found");
     }
 
-    const b: Record<number, boolean[]> = {};
-    const k: Record<number, boolean[]> = {};
-    for (let day = 0; day < 7; day++) {
-      b[day] = await buildBitmap(newData.o, day);
-      k[day] = await buildKindmap(newData.o, day);
-    }
+    const { b, k } = await buildDayMaps(newData.o);
     friendsData[friendIndex] = { ...newData, b, k };
 
     await friendsStore.set("friends", friendsData);
@@ -297,47 +329,12 @@ export async function validateAndAddFriend(accessCode: string) {
   return await addFriend(decompressedData);
 }
 
-export interface FriendStatusData {
-  username: string;
-  available: boolean;
-  location: string;
-  time: string;
-  until: string;
-  isLunch?: boolean;
-}
-
-// CORRECTED: Accepts timeFormat as a parameter, does not use localStorage
-function trimSeconds(
-  timeStr: string | null | undefined,
-  timeFormat: 12 | 24
-): string {
-  if (!timeStr || typeof timeStr !== "string") return "";
-
-  const [hhStr, mmStr] = timeStr.split(":");
-  if (!hhStr || !mmStr) return "";
-
-  if (timeFormat === 12) {
-    const hour = parseInt(hhStr, 10);
-    const minute = mmStr.padStart(2, "0");
-    const suffix = hour >= 12 ? "PM" : "AM";
-    const hour12 = hour % 12 || 12; // Converts 0 to 12 for 12 AM
-    return `${hour12}:${minute} ${suffix}`;
-  }
-
-  // default to 24-hour
-  const hour = hhStr.padStart(2, "0");
-  const minute = mmStr.padStart(2, "0");
-  return `${hour}:${minute}`;
-}
-
-// CORRECTED: Fetches user's timeFormat and passes it to trimSeconds
 export async function getFreeTimeOfAllFriends(
   currentTime: string
 ): Promise<FriendStatusData[]> {
   try {
     const currentUser = await getCurrentUserProfile();
-    const timeFormat = currentUser?.timeFormat || 24; // Default to 24hr
-
+    const showGapsAsFree = currentUser?.showGapsAsFree ?? false;
     const friendsData = (await friendsStore.get("friends")) as
       | personData[]
       | null;
@@ -346,43 +343,30 @@ export async function getFreeTimeOfAllFriends(
       return [];
     }
 
-    const results: FriendStatusData[] = [];
-
-    const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
-
-    for (const friend of friendsData) {
-      const name = friend.u;
-
-      // The day index from getDay() will now correctly match the day index from Rust
-      const bitmap = friend.b[today] || friend.b[0]; // Fallback to first day
-      const kindmap = friend.k[today] || friend.k[0]; // Fallback to first day
-
-      try {
-        const status = await getFreeStatusDirect({
-          bitmap,
-          currentTime,
-          kindmap,
-        });
-
-        const location =
-          (await currentlyAt(currentTime, friend.o, today)) || "";
-
-        if (status.data) {
-          results.push({
-            username: name,
-            available: !status.data.is_busy,
-            location: location,
-            time: trimSeconds(status.data.from, timeFormat) || "",
-            until: trimSeconds(status.data.until, timeFormat) || "",
-            isLunch: status.data.is_lunch || false,
+    const day = todayForRust();
+    const results = await Promise.all(
+      friendsData.map(async (friend): Promise<FriendStatusData | null> => {
+        try {
+          const status = await getTimetableStatusDirect({
+            schedule: friend.o || [],
+            day,
+            currentTime,
+            showGapsAsFree,
           });
-        }
-      } catch (error) {
-        console.error(`Error getting status for friend ${name}:`, error);
-      }
-    }
 
-    return results;
+          return {
+            username: friend.u,
+            available: !status.is_busy,
+            status,
+          };
+        } catch (error) {
+          console.error(`Error getting status for friend ${friend.u}:`, error);
+          return null;
+        }
+      })
+    );
+
+    return results.filter((result): result is FriendStatusData => Boolean(result));
   } catch (error) {
     console.error("Failed to get free time of all friends:", error);
     return [];

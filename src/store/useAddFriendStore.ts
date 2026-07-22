@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type AddFriendTab = "main" | "share" | "qr" | "code" | "p2p";
+type AddFriendTab = "main" | "share" | "qr" | "code";
 
 interface AddFriendState {
   activeTab: AddFriendTab;

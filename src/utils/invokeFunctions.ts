@@ -1,22 +1,50 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { CompactSlot } from "../types/timeTable";
 import { useQuery } from "@tanstack/react-query";
-import { CompactTimetable } from "../types/timeTable";
+import type { CompactSlot, CompactTimetable } from "../types/timeTable";
 
-export interface NextFreeTimeParams {
-  bitmap: boolean[];
-  currentTime: string;
-  kindmap: boolean[];
+export interface ClassInfo {
+  period: number;
+  slot_type: string;
+  raw: string;
+  title: string;
+  place: string;
+  start: string;
+  end: string;
 }
-export interface FreeStatus {
+
+export type TimetableStatusState =
+  | "in_class"
+  | "in_transition"
+  | "free_before_first_class"
+  | "free_between_classes"
+  | "lunch"
+  | "done_for_day"
+  | "free_day";
+
+export interface TimetableStatus {
+  state: TimetableStatusState;
   is_busy: boolean;
+  is_lunch: boolean;
+  is_transition: boolean;
+  current: ClassInfo | null;
+  current_run_end: ClassInfo | null;
+  next: ClassInfo | null;
+  last_seen: ClassInfo | null;
+  last_seen_at: string | null;
   from: string;
   until: string | null;
+  minutes_until: number | null;
+  continuous_class_count: number;
+  free_for_day_after: boolean;
 }
 
-/**
- * Builds a bitmap representation of a schedule
- */
+export interface TimetableStatusParams {
+  schedule: CompactSlot[];
+  currentTime?: string;
+  day?: number;
+  showGapsAsFree?: boolean;
+}
+
 export async function buildBitmap(
   schedule: CompactSlot[],
   targetDay: number
@@ -27,9 +55,6 @@ export async function buildBitmap(
   });
 }
 
-/**
- * Builds a kindmap representation of a schedule
- */
 export async function buildKindmap(
   schedule: CompactSlot[],
   targetDay: number
@@ -47,62 +72,31 @@ export async function currentBit({
   bitmap: boolean[];
   kindmap: boolean[];
 }): Promise<number> {
-  try {
-    const result = await invoke("currentbit", {
-      bitmap,
-      kindmap,
-    });
-    return result as number;
-  } catch (error) {
-    console.error("Error in currentBit:", error);
-    throw error;
-  }
-}
-
-/**
- * Fetches the next free time after a given current time
- */
-export function nextFreeTime(params: NextFreeTimeParams) {
-  return useQuery({
-    queryKey: ["nextFreeTime", params],
-    queryFn: () => {
-      return invoke<string | null>("next_free_time_after", {
-        bitmap: params.bitmap,
-        currentTime: params.currentTime,
-        kindmap: params.kindmap,
-      });
-    },
-    refetchInterval: 60_000,
-    refetchOnWindowFocus: true,
-  });
-}
-
-/**
- * Direct invoke version of nextFreeTime that doesn't use React Query
- */
-export const nextFreeTimeDirect = async ({
-  bitmap,
-  currentTime,
-  kindmap,
-}: NextFreeTimeParams): Promise<string | null> => {
-  return invoke<string | null>("next_free_time_after", {
+  return invoke<number>("currentbit", {
     bitmap,
-    currentTime,
     kindmap,
   });
-};
+}
 
-/**
- * Fetches the status of the user's schedule
- */
-export function getFreeStatus(params: NextFreeTimeParams) {
+export function getTimetableStatus(params: TimetableStatusParams) {
+  const usesCurrentClock =
+    params.currentTime === undefined || params.day === undefined;
+
   return useQuery({
-    queryKey: ["nextFreeTime", params],
+    queryKey: ["timetableStatus", params],
     queryFn: () => {
-      return invoke<FreeStatus | null>("get_free_status", {
-        bitmap: params.bitmap,
+      if (usesCurrentClock) {
+        return invoke<TimetableStatus>("timetable_status_now", {
+          schedule: params.schedule,
+          showGapsAsFree: params.showGapsAsFree ?? false,
+        });
+      }
+
+      return invoke<TimetableStatus>("timetable_status", {
+        schedule: params.schedule,
+        day: params.day,
         currentTime: params.currentTime,
-        kindmap: params.kindmap,
+        showGapsAsFree: params.showGapsAsFree ?? false,
       });
     },
     refetchInterval: 60_000,
@@ -110,65 +104,30 @@ export function getFreeStatus(params: NextFreeTimeParams) {
   });
 }
 
-export interface FreeStatusResponse {
-  is_busy: boolean;
-  from?: string;
-  until?: string;
-  is_lunch?: boolean;
-}
-
-export async function getFreeStatusDirect({
-  bitmap,
+export async function getTimetableStatusDirect({
+  schedule,
   currentTime,
-  kindmap,
-}: {
-  bitmap: boolean[];
-  currentTime: string;
-  kindmap: boolean[];
-}): Promise<{ data: FreeStatusResponse }> {
-  try {
-    const result = await invoke("get_free_status", {
-      bitmap,
-      currentTime,
-      kindmap,
+  day,
+  showGapsAsFree,
+}: TimetableStatusParams): Promise<TimetableStatus> {
+  if (currentTime === undefined || day === undefined) {
+    return invoke<TimetableStatus>("timetable_status_now", {
+      schedule,
+      showGapsAsFree: showGapsAsFree ?? false,
     });
-    return { data: result as FreeStatusResponse };
-  } catch (error) {
-    console.error("Error in getFreeStatusDirect:", error);
-    throw error;
   }
+
+  return invoke<TimetableStatus>("timetable_status", {
+    schedule,
+    day,
+    currentTime,
+    showGapsAsFree: showGapsAsFree ?? false,
+  });
 }
 
 export async function parseHTMLTimetable(
   htmlContent: string
 ): Promise<CompactTimetable> {
-  try {
-    const jsonString = await invoke<string>("parse_html", { htmlContent });
-    const timetable = JSON.parse(jsonString) as CompactTimetable;
-    console.log("Parsed timetable:", timetable);
-    return timetable;
-  } catch (error) {
-    console.error("Error parsing HTML timetable:", error);
-    throw error;
-  }
-}
-
-export async function currentlyAt(
-  time: string,
-  timeTable: CompactSlot[],
-  day: number,
-  isEndTime: boolean = false
-): Promise<string | null> {
-  try {
-    const result = await invoke<string | null>("currently_at", {
-      time,
-      timeTable,
-      day,
-      isEndTime,
-    });
-    return result;
-  } catch (error) {
-    console.error("Error in currentlyAt:", error);
-    throw error;
-  }
+  const jsonString = await invoke<string>("parse_html", { htmlContent });
+  return JSON.parse(jsonString) as CompactTimetable;
 }

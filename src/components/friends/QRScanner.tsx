@@ -1,27 +1,33 @@
 import { useState } from "react";
-import {
-  scan,
-  Format,
-  requestPermissions,
-  checkPermissions,
-} from "@tauri-apps/plugin-barcode-scanner";
+import { platform } from "@tauri-apps/plugin-os";
 import { validateAndAddFriend } from "../../store/newtimeTableStore";
 import useAddFriendStore from "../../store/useAddFriendStore";
 
 const QRScanner = () => {
   const [scanning, setScanning] = useState(false);
-  const [result, setResult] = useState<any | null>(null);
+  const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [addStatus, setAddStatus] = useState({ message: "", isError: false });
   const { setFriendAdded } = useAddFriendStore();
 
   const startScan = async () => {
     try {
+      const currentPlatform = platform();
+      if (currentPlatform !== "android" && currentPlatform !== "ios") {
+        throw new Error("QR scanning is available on Android and iOS. Use the access code option on desktop.");
+      }
+
       setScanning(true);
       setError(null);
       setAddStatus({ message: "", isError: false });
 
-      // Check for camera permissions
+      const {
+        scan,
+        Format,
+        requestPermissions,
+        checkPermissions,
+      } = await import("@tauri-apps/plugin-barcode-scanner");
+
       let permissionStatus = await checkPermissions();
       if (permissionStatus !== "granted") {
         permissionStatus = await requestPermissions();
@@ -56,10 +62,6 @@ const QRScanner = () => {
             isError: true,
           });
         }
-
-        console.log("QR code scanned:", scanResult.content);
-      } else {
-        console.log("No QR code scanned");
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to scan QR code");
