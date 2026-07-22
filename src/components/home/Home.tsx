@@ -5,6 +5,7 @@ import { getFreeTimeOfAllFriends } from "../../store/newtimeTableStore";
 import type { FriendStatusData } from "../../store/newtimeTableStore";
 import { useUserProfile } from "../../hooks/useUserProfile";
 import { getTimetableStatusSearchText } from "../../utils/timetableDisplay";
+import { useMinuteClock } from "../../hooks/useMinuteClock";
 
 const currentMinute = () => {
   const now = new Date();
@@ -21,6 +22,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const userProfile = useUserProfile();
   const timeFormat = userProfile.data?.timeFormat ?? 24;
+  const minute = useMinuteClock();
 
   useEffect(() => {
     let isMounted = true;
@@ -41,13 +43,11 @@ const Home = () => {
     };
 
     loadFriends();
-    const interval = window.setInterval(loadFriends, 60_000);
 
     return () => {
       isMounted = false;
-      window.clearInterval(interval);
     };
-  }, []);
+  }, [minute]);
 
   const filteredFriends = friends
     .filter((friend) => {

@@ -11,11 +11,13 @@ import Settings from "./components/settings/Settings";
 import { useUserProfile } from "./hooks/useUserProfile";
 import { useEffect } from "react";
 import { useDeepLink } from "./hooks/useDeepLink";
+import { useMinuteQueryInvalidation } from "./hooks/useMinuteClock";
 
 const App = () => {
   const { activeTab } = useNavStore();
   const { data: userData } = useUserProfile();
   const deepLinkResult = useDeepLink();
+  useMinuteQueryInvalidation();
   console.log(deepLinkResult);
   // theme
   useEffect(() => {

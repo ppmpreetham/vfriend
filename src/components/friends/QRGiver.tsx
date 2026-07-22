@@ -1,25 +1,25 @@
-import QRCodeGenerator from "./QRCodeGenerator";
-import { useShareUserProfile } from "../../hooks/useShareUserProfile";
-import { compress } from "../../utils/compressor";
+import QRCodeGenerator from "./QRCodeGenerator"
+import { useShareUserProfile } from "../../hooks/useShareUserProfile"
+import { compress } from "../../utils/compressor"
 
 const QRGiver = () => {
   const {
     data: userData,
     isLoading: timetableLoading,
     error: timetableError,
-  } = useShareUserProfile();
+  } = useShareUserProfile()
 
   const getTimetableJsonString = () => {
-    if (!userData) return "";
+    if (!userData) return ""
 
     try {
-      return compress(JSON.stringify(userData));
+      return compress(JSON.stringify(userData))
     } catch (error) {
-      console.error("Error converting timetable to JSON:", error);
-      return "";
+      console.error("Error converting timetable to JSON:", error)
+      return ""
     }
-  };
-  
+  }
+
   if (timetableLoading) {
     return (
       <div className="w-screen h-full flex items-center justify-center">
@@ -28,7 +28,7 @@ const QRGiver = () => {
           <p className="text-gray-600">Loading timetable...</p>
         </div>
       </div>
-    );
+    )
   }
 
   if (timetableError) {
@@ -39,7 +39,7 @@ const QRGiver = () => {
           <p className="text-sm mt-2">{timetableError.message}</p>
         </div>
       </div>
-    );
+    )
   }
 
   if (!userData) {
@@ -50,7 +50,7 @@ const QRGiver = () => {
           <p className="text-sm mt-2">Please upload your timetable first</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -59,11 +59,7 @@ const QRGiver = () => {
         <h1 className="text-2xl font-bold mb-6 text-center">SCAN THIS QR</h1>
 
         <div className="w-fit h-fit mx-auto">
-          <QRCodeGenerator
-            url={getTimetableJsonString()}
-            size={300}
-            errorCorrectionLevel="Q"
-          />
+          <QRCodeGenerator url={getTimetableJsonString()} size={300} errorCorrectionLevel="Q" />
 
           <div className="mt-6 p-4 rounded-lg">
             <h3 className="font-semibold mb-2">My Timetable Info:</h3>
@@ -84,7 +80,7 @@ const QRGiver = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default QRGiver;
+export default QRGiver

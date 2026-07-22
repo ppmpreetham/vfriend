@@ -18,6 +18,7 @@ pub fn run() {
             println!(
                 "a new app instance was opened with {argv:?} and the deep link event was already triggered"
             );
+        }));
     }
     #[cfg(mobile)]
     {

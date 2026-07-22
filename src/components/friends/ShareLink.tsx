@@ -67,7 +67,7 @@ export function useShare() {
 
   const handleShare = async () => {
     console.log(isLoading, error);
-    await shareUserData(userData);
+    await shareUserData(userData ?? null);
   };
 
   return { handleShare, isLoading, error };

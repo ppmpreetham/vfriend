@@ -9,6 +9,8 @@ import {
   viewAllStores,
 } from "../../store/newtimeTableStore";
 
+const isDevelopment = import.meta.env.DEV;
+
 const Settings = () => {
   const { activeTab } = useNavStore();
   const [currentTheme, setCurrentTheme] = useState("dark");
@@ -144,24 +146,26 @@ const Settings = () => {
           <Star className="w-6 h-6 mr-2" />
           <div>STAR US ON GITHUB</div>
         </button>
-        <div className="flex gap-4 mx-4">
-          <div
-            className="bg-red-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"
-            onClick={() => {
-              resetAllStores();
-            }}
-          >
-            Reset everything
+        {isDevelopment && (
+          <div className="flex gap-4 mx-4">
+            <button
+              className="bg-red-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"
+              onClick={() => {
+                resetAllStores();
+              }}
+            >
+              Reset everything
+            </button>
+            <button
+              className="bg-green-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"
+              onClick={() => {
+                viewAllStores();
+              }}
+            >
+              VIEW STORES
+            </button>
           </div>
-          <div
-            className="bg-green-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"
-            onClick={() => {
-              viewAllStores();
-            }}
-          >
-            VIEW STORES
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

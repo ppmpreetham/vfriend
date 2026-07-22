@@ -99,7 +99,6 @@ export function getTimetableStatus(params: TimetableStatusParams) {
         showGapsAsFree: params.showGapsAsFree ?? false,
       });
     },
-    refetchInterval: 60_000,
     refetchOnWindowFocus: true,
   });
 }

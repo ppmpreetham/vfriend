@@ -39,15 +39,24 @@ const MainTab = () => {
     <>
       <div className="text-4xl text-black">ADD FRIEND</div>
       <div className="grid grid-cols-2 gap-4 mt-4 text-black">
-        <button className="bg-black text-foreground p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center" onClick={() => setActiveTab("share")}>
+        <button
+          className="bg-black text-foreground p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
+          onClick={() => setActiveTab("share")}
+        >
           <Share size={24} />
           <div>SHARE LINK</div>
         </button>
-        <button className="bg-black text-foreground p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center" onClick={() => setActiveTab("qr")}>
+        <button
+          className="bg-black text-foreground p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
+          onClick={() => setActiveTab("qr")}
+        >
           <QrCode size={24} />
           <div>QR CODE</div>
         </button>
-        <button className="bg-black text-foreground p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center" onClick={() => setActiveTab("code")}>
+        <button
+          className="bg-black text-foreground p-4 rounded-lg text-center flex flex-col items-center gap-2 cursor-pointer justify-center"
+          onClick={() => setActiveTab("code")}
+        >
           <Sparkles size={24} />
           <div>ACCESS CODE</div>
         </button>
@@ -84,7 +93,10 @@ const AddFriend = () => {
       `}
     >
       {activeTab !== "main" && (
-        <button onClick={handleGoBack} className={`flex items-center gap-2 text-black mb-4 hover:opacity-70 cursor-pointer`}>
+        <button
+          onClick={handleGoBack}
+          className={`flex items-center gap-2 text-black mb-4 hover:opacity-70 cursor-pointer`}
+        >
           <ArrowLeft size={20} />
           <span>Back</span>
         </button>

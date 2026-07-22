@@ -1,5 +1,5 @@
 import { LazyStore } from "@tauri-apps/plugin-store";
-import type { CompactSlot } from "../types/timeTable";
+import type { CompactSlot, CompactTimetable } from "../types/timeTable";
 import type { TimetableStatus } from "../utils/invokeFunctions";
 import {
   buildBitmap,
@@ -189,6 +189,33 @@ export async function updateUserPreferences(
     return true;
   } catch (error) {
     console.error("Failed to update user preferences:", error);
+    return false;
+  }
+}
+
+export async function updateCurrentUserTimetable(
+  timetable: CompactTimetable
+): Promise<boolean> {
+  try {
+    const currentUser = (await userStore.get("userData")) as userData | null;
+    if (!currentUser) return false;
+
+    const schedule = timetable.o || [];
+    const { b, k } = await buildDayMaps(schedule);
+
+    await userStore.set("userData", {
+      ...currentUser,
+      r: timetable.r || currentUser.r,
+      s: timetable.s || currentUser.s,
+      t: timetable.t || new Date().toISOString(),
+      o: schedule,
+      b,
+      k,
+    });
+    await userStore.save();
+    return true;
+  } catch (error) {
+    console.error("Failed to update user timetable:", error);
     return false;
   }
 }
