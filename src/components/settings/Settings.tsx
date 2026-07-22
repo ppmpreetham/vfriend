@@ -7,7 +7,11 @@ import {
   resetAllStores,
   updateUserPreferences,
   viewAllStores,
+  updateCurrentUserTimetable,
 } from "../../store/newtimeTableStore";
+import { useQueryClient } from "@tanstack/react-query";
+import { ReadHTMLFile } from "../../utils/inputHelper";
+import { parseHTMLTimetable } from "../../utils/invokeFunctions";
 
 const isDevelopment = import.meta.env.DEV;
 
@@ -16,6 +20,10 @@ const Settings = () => {
   const [currentTheme, setCurrentTheme] = useState("dark");
   const [timeFormat, setTimeFormat] = useState<12 | 24>(12);
   const [showGapsAsFree, setShowGapsAsFree] = useState(false);
+  const queryClient = useQueryClient();
+  const [updatingTimetable, setUpdatingTimetable] = useState(false);
+  const [updateMessage, setUpdateMessage] = useState<string | null>(null);
+  const [updateError, setUpdateError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadSettings() {
@@ -105,6 +113,44 @@ const Settings = () => {
     }
   };
 
+  const handleUpdateTimetable = async () => {
+    if (updatingTimetable) return;
+
+    setUpdatingTimetable(true);
+    setUpdateMessage(null);
+    setUpdateError(null);
+
+    try {
+      const content = await ReadHTMLFile();
+      if (!content) {
+        setUpdateMessage("No file selected.");
+        return;
+      }
+
+      const timetable = await parseHTMLTimetable(content);
+      const updated = await updateCurrentUserTimetable(timetable);
+
+      if (!updated) {
+        throw new Error("Could not update the saved timetable.");
+      }
+
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["userProfile"] }),
+        queryClient.invalidateQueries({ queryKey: ["userTimetable"] }),
+        queryClient.invalidateQueries({ queryKey: ["shareUserProfile"] }),
+        queryClient.invalidateQueries({ queryKey: ["timetableStatus"] }),
+      ]);
+      setUpdateMessage("Timetable updated.");
+    } catch (error) {
+      console.error("Failed to update timetable:", error);
+      setUpdateError(
+        error instanceof Error ? error.message : "Failed to update timetable."
+      );
+    } finally {
+      setUpdatingTimetable(false);
+    }
+  };
+
   return (
     <div className="p-4 text-foreground">
       <h2 className="text-2xl font-bold mb-4">Settings</h2>
@@ -146,26 +192,38 @@ const Settings = () => {
           <Star className="w-6 h-6 mr-2" />
           <div>STAR US ON GITHUB</div>
         </button>
-        {isDevelopment && (
-          <div className="flex gap-4 mx-4">
-            <button
-              className="bg-red-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"
-              onClick={() => {
-                resetAllStores();
-              }}
-            >
-              Reset everything
-            </button>
-            <button
-              className="bg-green-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"
-              onClick={() => {
-                viewAllStores();
-              }}
-            >
-              VIEW STORES
-            </button>
-          </div>
-        )}
+
+        <div className="flex flex-col gap-2 mt-4">
+          <button
+            className="w-full bg-background3 text-foreground p-4 rounded-md cursor-pointer hover:bg-gray-700 disabled:opacity-60 disabled:cursor-not-allowed uppercase"
+            onClick={handleUpdateTimetable}
+            disabled={updatingTimetable}
+          >
+            {updatingTimetable ? "Updating timetable..." : "Update Timetable"}
+          </button>
+          {updateMessage && <div className="text-sm text-primary px-4">{updateMessage}</div>}
+          {updateError && <div className="text-sm text-red-400 px-4">{updateError}</div>}
+        </div>
+
+        <div className="flex gap-4 mt-4">
+          <button
+            className="bg-red-500 text-black p-3 rounded-md cursor-pointer flex-1 text-center"
+            onClick={() => {
+              resetAllStores();
+            }}
+          >
+            Reset everything
+          </button>
+          <button
+            className="bg-green-500 text-black p-3 rounded-md cursor-pointer flex-1 text-center"
+            onClick={() => {
+              viewAllStores();
+            }}
+          >
+            VIEW STORES
+          </button>
+        </div>
+
       </div>
     </div>
   );

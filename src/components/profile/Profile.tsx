@@ -5,13 +5,9 @@ import { useUserProfile } from "../../hooks/useUserProfile";
 import { getTimetableStatus, parseHTMLTimetable } from "../../utils/invokeFunctions";
 import { useUserTimetable } from "../../hooks/useUserTimetable";
 import { TimetableStatusText } from "../../utils/timetableDisplay";
-import { ReadHTMLFile } from "../../utils/inputHelper";
 import {
   getUserBitmap,
   getUserKindmap,
-  resetAllStores,
-  updateCurrentUserTimetable,
-  viewAllStores,
 } from "../../store/newtimeTableStore";
 
 const isDevelopment = import.meta.env.DEV;
@@ -22,9 +18,6 @@ const Profile = () => {
   const [kindmapLoading, setKindmapLoading] = useState(true);
   const [allBitmaps, setAllBitmaps] = useState<Record<number, boolean[]>>({});
   const [allKindmaps, setAllKindmaps] = useState<Record<number, boolean[]>>({});
-  const [updatingTimetable, setUpdatingTimetable] = useState(false);
-  const [updateMessage, setUpdateMessage] = useState<string | null>(null);
-  const [updateError, setUpdateError] = useState<string | null>(null);
 
   const userData = useUserProfile();
   const {
@@ -65,83 +58,7 @@ const Profile = () => {
     fetchDayMaps();
   }, [fetchDayMaps, timetableData]);
 
-  const refreshProfileQueries = async () => {
-    await Promise.all([
-      queryClient.invalidateQueries({ queryKey: ["userProfile"] }),
-      queryClient.invalidateQueries({ queryKey: ["userTimetable"] }),
-      queryClient.invalidateQueries({ queryKey: ["shareUserProfile"] }),
-      queryClient.invalidateQueries({ queryKey: ["timetableStatus"] }),
-    ]);
-  };
 
-  const handleUpdateTimetable = async () => {
-    if (updatingTimetable) return;
-
-    setUpdatingTimetable(true);
-    setUpdateMessage(null);
-    setUpdateError(null);
-
-    try {
-      const content = await ReadHTMLFile();
-      if (!content) {
-        setUpdateMessage("No file selected.");
-        return;
-      }
-
-      const timetable = await parseHTMLTimetable(content);
-      const updated = await updateCurrentUserTimetable(timetable);
-
-      if (!updated) {
-        throw new Error("Could not update the saved timetable.");
-      }
-
-      await refreshProfileQueries();
-      await fetchDayMaps();
-      setUpdateMessage("Timetable updated.");
-    } catch (error) {
-      console.error("Failed to update timetable:", error);
-      setUpdateError(
-        error instanceof Error ? error.message : "Failed to update timetable."
-      );
-    } finally {
-      setUpdatingTimetable(false);
-    }
-  };
-
-  const devTools = isDevelopment ? (
-    <div className="flex gap-4 mx-4 my-2">
-      <button
-        className="bg-red-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"
-        onClick={() => {
-          resetAllStores();
-        }}
-      >
-        Reset everything
-      </button>
-      <button
-        className="bg-green-500 text-black p-3 rounded-xl text-2xl cursor-pointer flex-1 text-center"
-        onClick={() => {
-          viewAllStores();
-        }}
-      >
-        VIEW STORES
-      </button>
-    </div>
-  ) : null;
-
-  const updateTimetableButton = (
-    <div className="mx-4 my-2 flex flex-col gap-2">
-      <button
-        className="bg-background3 text-foreground p-3 rounded-xl text-xl cursor-pointer hover:bg-gray-700 disabled:opacity-60 disabled:cursor-not-allowed"
-        onClick={handleUpdateTimetable}
-        disabled={updatingTimetable}
-      >
-        {updatingTimetable ? "Updating timetable..." : "Update Timetable"}
-      </button>
-      {updateMessage && <div className="text-sm text-primary">{updateMessage}</div>}
-      {updateError && <div className="text-sm text-red-400">{updateError}</div>}
-    </div>
-  );
 
   if (userData.isLoading || timetableLoading || bitmapLoading || kindmapLoading) {
     return (
@@ -195,9 +112,7 @@ const Profile = () => {
             Upload your timetable to see your schedule
           </div>
         </div>
-        {updateTimetableButton}
-        {devTools}
-      </div>
+        </div>
     );
   }
 
@@ -243,8 +158,6 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      {updateTimetableButton}
-      {devTools}
       <ScheduleGrid bitmaps={allBitmaps} kindmaps={allKindmaps} />
     </div>
   );
