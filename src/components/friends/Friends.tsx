@@ -1,106 +1,100 @@
-import { useState, useRef, useEffect } from "react";
-import FriendCardFriend from "./FriendCardFriend";
-import FriendPage from "./FriendPage";
-import AddFriend from "./addFriend";
-import { getFriendsData } from "../../store/newtimeTableStore";
-import { useFriendStore } from "../../store/friendStore";
-import useAddFriendStore from "../../store/useAddFriendStore";
-import { UserPlus, Search, ChevronLeft, X } from "lucide-react";
+import { useState, useRef, useEffect } from "react"
+import FriendCardFriend from "./FriendCardFriend"
+import FriendPage from "./FriendPage"
+import AddFriend from "./addFriend"
+import { getFriendsData } from "../../store/newtimeTableStore"
+import { useFriendStore } from "../../store/friendStore"
+import useAddFriendStore from "../../store/useAddFriendStore"
+import { UserPlus, Search, ChevronLeft, X } from "lucide-react"
 
 interface Friend {
-  name: string;
-  registrationNumber: string;
+  name: string
+  registrationNumber: string
 }
 
 const Friends = () => {
-  const isViewingFriend = useFriendStore((state) => state.isViewingFriend);
-  const [isSearchMode, setIsSearchMode] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showAddFriendModal, setShowAddFriendModal] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null);
+  const isViewingFriend = useFriendStore((state) => state.isViewingFriend)
+  const [isSearchMode, setIsSearchMode] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [showAddFriendModal, setShowAddFriendModal] = useState(false)
+  const modalRef = useRef<HTMLDivElement>(null)
 
-  const [friends, setFriends] = useState<Friend[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [friends, setFriends] = useState<Friend[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const { friendAdded, setFriendAdded } = useAddFriendStore();
+  const { friendAdded, setFriendAdded } = useAddFriendStore()
 
-  // UI control functions BEFORE conditional rendering
   const filteredFriends = friends.filter((friend) => {
-    if (searchQuery === "") return true;
+    if (searchQuery === "") return true
 
     return (
       friend.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      friend.registrationNumber
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase())
-    );
-  });
+      friend.registrationNumber.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  })
 
   const toggleSearchMode = () => {
-    setIsSearchMode(!isSearchMode);
+    setIsSearchMode(!isSearchMode)
     if (isSearchMode) {
-      setSearchQuery("");
+      setSearchQuery("")
     }
-  };
+  }
 
   const toggleAddFriendModal = () => {
-    setShowAddFriendModal(!showAddFriendModal);
-  };
+    setShowAddFriendModal(!showAddFriendModal)
+  }
 
   // Extract loadFriendsData to a reusable function
   const loadFriendsData = async () => {
     try {
-      setLoading(true);
-      const friendsData = await getFriendsData();
+      setLoading(true)
+      const friendsData = await getFriendsData()
 
       const mappedFriends: Friend[] = friendsData.map((friend) => ({
         name: friend.u,
         registrationNumber: friend.r,
-      }));
+      }))
 
-      setFriends(mappedFriends);
+      setFriends(mappedFriends)
     } catch (error) {
-      console.error("Error loading friends data:", error);
+      console.error("Error loading friends data:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   // Initial load of friends data
   useEffect(() => {
-    loadFriendsData();
-  }, []);
+    loadFriendsData()
+  }, [])
 
   useEffect(() => {
     if (friendAdded) {
-      loadFriendsData();
-      setFriendAdded(false);
-      setShowAddFriendModal(false); // check this
+      loadFriendsData()
+      setFriendAdded(false)
+      setShowAddFriendModal(false) // check this
     }
-  }, [friendAdded, setFriendAdded]);
+  }, [friendAdded, setFriendAdded])
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
-        setShowAddFriendModal(false);
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        setShowAddFriendModal(false)
       }
-    };
+    }
 
     if (showAddFriendModal) {
-      document.addEventListener("mousedown", handleOutsideClick);
+      document.addEventListener("mousedown", handleOutsideClick)
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, [showAddFriendModal]);
+      document.removeEventListener("mousedown", handleOutsideClick)
+    }
+  }, [showAddFriendModal])
 
   // conditional rendering
   if (isViewingFriend) {
-    return <FriendPage />;
+    return <FriendPage />
   }
 
   return (
@@ -108,14 +102,8 @@ const Friends = () => {
       {/* Modal Overlay */}
       {showAddFriendModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-          <div
-            ref={modalRef}
-            className="bg-background rounded-lg w-11/12 max-w-md p-4 relative"
-          >
-            <button
-              className="absolute top-2 right-2"
-              onClick={toggleAddFriendModal}
-            >
+          <div ref={modalRef} className="bg-background rounded-lg w-11/12 max-w-md p-4 relative">
+            <button className="absolute top-2 right-2" onClick={toggleAddFriendModal}>
               <X size={24} />
             </button>
             <div className="h-full w-full px-4">
@@ -186,16 +174,14 @@ const Friends = () => {
 
             {filteredFriends.length === 0 && searchQuery !== "" && (
               <div className="text-center p-4 text-gray-500">
-                {friends.length === 0
-                  ? "No friends added yet."
-                  : "No friends match your search."}
+                {friends.length === 0 ? "No friends added yet." : "No friends match your search."}
               </div>
             )}
           </>
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Friends;
+export default Friends

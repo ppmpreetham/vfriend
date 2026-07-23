@@ -1,16 +1,18 @@
 {
   "$schema": "../gen/schemas/mobile-schema.json",
   "identifier": "mobile-capability",
-  "platforms": [
-    "android",
-    "iOS"
-  ],
-  "windows": [
-    "main"
-  ],
+  "platforms": ["android", "iOS"],
+  "windows": ["main"],
   "permissions": [
+    "core:default",
+    "dialog:default",
     "fs:allow-read",
     "fs:allow-write",
+    "store:default",
+    "os:default",
+    "deep-link:default",
+    "opener:default",
+    "sharesheet:default",
     "barcode-scanner:default",
     "barcode-scanner:allow-scan",
     "barcode-scanner:allow-cancel",

@@ -1,13 +1,13 @@
-import { LucideRefreshCw } from "lucide-react";
-import type { FriendPageFriend } from "../../types/friendCard";
-import { useFriendStore } from "../../store/friendStore";
+import { LucideRefreshCw } from "lucide-react"
+import type { FriendPageFriend } from "../../types/friendCard"
+import { useFriendStore } from "../../store/friendStore"
 
 const FriendCardFriend = ({ name, registrationNumber }: FriendPageFriend) => {
-  const selectFriend = useFriendStore((state) => state.selectFriend);
+  const selectFriend = useFriendStore((state) => state.selectFriend)
 
   const handleClick = () => {
-    selectFriend(registrationNumber);
-  };
+    selectFriend(registrationNumber)
+  }
 
   return (
     <div
@@ -25,7 +25,7 @@ const FriendCardFriend = ({ name, registrationNumber }: FriendPageFriend) => {
         <LucideRefreshCw color="#000" />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default FriendCardFriend;
+export default FriendCardFriend

@@ -1,5 +1,6 @@
 import { useMemo, useEffect, useState } from "react";
 import { currentBit } from "../../utils/invokeFunctions";
+import { useMinuteClock } from "../../hooks/useMinuteClock";
 
 type ScheduleGridProps = {
   bitmaps: Record<number, boolean[]>;
@@ -8,6 +9,7 @@ type ScheduleGridProps = {
 
 const ScheduleGrid: React.FC<ScheduleGridProps> = ({ bitmaps, kindmaps }) => {
   const currentDay = new Date().getDay(); // 0 = Sunday
+  const minute = useMinuteClock();
   const [currentClass, setCurrentClass] = useState<number | null>(null);
 
   useEffect(() => {
@@ -34,7 +36,7 @@ const ScheduleGrid: React.FC<ScheduleGridProps> = ({ bitmaps, kindmaps }) => {
     };
 
     fetchBitStatus();
-  }, [bitmaps, kindmaps, currentDay]);
+  }, [bitmaps, kindmaps, currentDay, minute]);
 
   const scheduleMatrix = useMemo(() => {
     const matrix: boolean[][] = [];

@@ -1,11 +1,11 @@
+import type { TimetableStatus } from "../utils/invokeFunctions";
+
 export interface FriendCardProps {
   name: string;
   available: boolean;
-  location: string;
-  time: string;
+  status: TimetableStatus;
   distance?: string;
-  until?: string;
-  isLunch: boolean;
+  timeFormat?: 12 | 24;
 }
 
 export interface FriendPageFriend {

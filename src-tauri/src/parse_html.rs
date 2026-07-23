@@ -1,4 +1,3 @@
-use core::time;
 use serde::{Deserialize, Serialize};
 use soup::prelude::*;
 use std::fs;
@@ -162,6 +161,7 @@ pub fn parse_html(html_content: String) -> Result<String, String> {
     Ok(json)
 }
 
+#[allow(dead_code)]
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Step 1: Load HTML file
     let html = fs::read_to_string("VIT Chennai - VTOP.html")?;

@@ -1,124 +1,63 @@
-import { useMemo, useState, useEffect } from "react";
-import { ChevronLeft } from "lucide-react";
-import ScheduleGrid from "../profile/ScheduleGrid";
-import { nextFreeTime as useNextFreeTime } from "../../utils/invokeFunctions";
-import { useFriendStore } from "../../store/friendStore";
-import { useFriendData } from "../../hooks/useFriendData";
-import QRCodeGenerator from "./QRCodeGenerator";
-import { compress } from "../../utils/compressor";
+import { useEffect, useState } from "react"
+import { ChevronLeft } from "lucide-react"
+import ScheduleGrid from "../profile/ScheduleGrid"
+import { getTimetableStatus } from "../../utils/invokeFunctions"
+import { useFriendStore } from "../../store/friendStore"
+import { useFriendData } from "../../hooks/useFriendData"
+import { useUserProfile } from "../../hooks/useUserProfile"
+import QRCodeGenerator from "./QRCodeGenerator"
+import { compress } from "../../utils/compressor"
+import { TimetableStatusText } from "../../utils/timetableDisplay"
 
 const FriendPage = () => {
-  const selectedFriendRegNumber = useFriendStore(
-    (state) => state.selectedFriendRegNumber
-  );
-  const clearSelectedFriend = useFriendStore(
-    (state) => state.clearSelectedFriend
-  );
+  const selectedFriendRegNumber = useFriendStore((state) => state.selectedFriendRegNumber)
+  const clearSelectedFriend = useFriendStore((state) => state.clearSelectedFriend)
 
   const {
     selectedFriend,
     isLoading: friendLoading,
     error: friendError,
-  } = useFriendData(selectedFriendRegNumber || "");
+  } = useFriendData(selectedFriendRegNumber || "")
+
+  const [bitmapLoading, setBitmapLoading] = useState(true)
+  const [kindmapLoading, setKindmapLoading] = useState(true)
+  const [allBitmaps, setAllBitmaps] = useState<Record<number, boolean[]>>({})
+  const [allKindmaps, setAllKindmaps] = useState<Record<number, boolean[]>>({})
+  const userSettings = useUserProfile()
+
+  const { data: timetableStatus, isLoading: statusLoading } = getTimetableStatus({
+    schedule: selectedFriend?.o || [],
+    showGapsAsFree: userSettings.data?.showGapsAsFree ?? false,
+  })
 
   const getTimetableJsonString = () => {
-    if (!selectedFriend) return "";
+    if (!selectedFriend) return ""
 
     try {
-      return compress(JSON.stringify(selectedFriend));
+      return compress(JSON.stringify(selectedFriend))
     } catch (error) {
-      console.error("Error converting timetable to JSON:", error);
-      return "";
+      console.error("Error converting timetable to JSON:", error)
+      return ""
     }
-  };
+  }
 
-  // Get current time in HH:MM format
-  const { currentTime, currentDay } = useMemo(() => {
-    const now = new Date();
-    return {
-      currentTime: `${String(now.getHours()).padStart(2, "0")}:${String(
-        now.getMinutes()
-      ).padStart(2, "0")}`,
-      currentDay: now.getDay() === 0 ? 7 : now.getDay(),
-    };
-  }, []);
-
-  // Use states for bitmap and kindmap
-  const [bitmap, setBitmap] = useState<boolean[]>([]);
-  const [kindmap, setKindmap] = useState<boolean[]>([]);
-  const [bitmapLoading, setBitmapLoading] = useState(true);
-  const [kindmapLoading, setKindmapLoading] = useState(true);
-  const [allBitmaps, setAllBitmaps] = useState<Record<number, boolean[]>>({});
-  const [allKindmaps, setAllKindmaps] = useState<Record<number, boolean[]>>({});
-  // Fetch bitmap and kindmap for the selected friend
   useEffect(() => {
-    if (!selectedFriend) return;
+    if (!selectedFriend) return
 
-    setBitmapLoading(true);
-    setKindmapLoading(true);
-
-    // Set bitmap for current day
-    if (selectedFriend.b && selectedFriend.b[currentDay]) {
-      setBitmap(selectedFriend.b[currentDay]);
-      setBitmapLoading(false);
-    }
-
-    // Set kindmap for current day
-    if (selectedFriend.k && selectedFriend.k[currentDay]) {
-      setKindmap(selectedFriend.k[currentDay]);
-      setKindmapLoading(false);
-    }
-
-    // Set all bitmaps for the schedule grid
-    if (selectedFriend.b) {
-      setAllBitmaps(selectedFriend.b);
-    }
-
-    // Set all kindmaps for the schedule grid
-    if (selectedFriend.k) {
-      setAllKindmaps(selectedFriend.k);
-    }
-  }, [selectedFriend, currentDay]);
-
-  // Only call useNextFreeTime when bitmap and kindmap are available
-  const { data: nextFreeTimeRaw, isLoading: nextFreeLoading } = useNextFreeTime(
-    {
-      bitmap: bitmap || [],
-      currentTime,
-      kindmap: kindmap || [],
-    }
-  );
-
-  const nextFreeTime = useMemo(() => {
-    if (!nextFreeTimeRaw) return null;
-
-    // Split the time string safely
-    const parts = nextFreeTimeRaw.split(":");
-    const hours = parts[0];
-    const minutes = parts[1];
-
-    // Check if we have valid hour and minutes
-    if (!hours || isNaN(parseInt(hours, 10))) {
-      return "RIGHT NOW";
-    }
-
-    const hour = parseInt(hours, 10);
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const hour12 = hour % 12 || 12;
-
-    // Use "00" as default if minutes are undefined
-    const formattedMinutes =
-      minutes && !isNaN(parseInt(minutes, 10)) ? minutes : "00";
-
-    return `${hour12}:${formattedMinutes} ${ampm}`;
-  }, [nextFreeTimeRaw]);
+    setBitmapLoading(true)
+    setKindmapLoading(true)
+    setAllBitmaps(selectedFriend.b || {})
+    setAllKindmaps(selectedFriend.k || {})
+    setBitmapLoading(false)
+    setKindmapLoading(false)
+  }, [selectedFriend])
 
   if (friendLoading) {
     return (
       <div className="w-screen h-full flex items-center justify-center">
         <div className="text-2xl">Loading friend profile...</div>
       </div>
-    );
+    )
   }
 
   if (friendError || !selectedFriend) {
@@ -126,7 +65,7 @@ const FriendPage = () => {
       <div className="w-screen h-full flex items-center justify-center">
         <div className="text-2xl text-red-500">Error loading friend data</div>
       </div>
-    );
+    )
   }
 
   return (
@@ -149,37 +88,38 @@ const FriendPage = () => {
             <div>SEM {selectedFriend.s}</div>
           </div>
           <div className="p-4 bg-white text-black flex flex-col w-full flex-2 rounded-xl gap-4">
-            <div className="text-[clamp(1.25rem,1vh,1.875rem)]">
-              I'll be at...
-            </div>
+            <div className="text-[clamp(1.25rem,1vh,1.875rem)]">I'll be at...</div>
             <ul className="list-disc pl-5">
-              {selectedFriend.h?.map((hobby, index) => (
-                <li key={index}>{hobby}</li>
-              )) || <li>No hobbies listed</li>}
+              {selectedFriend.h?.map((hobby, index) => <li key={index}>{hobby}</li>) || (
+                <li>No hobbies listed</li>
+              )}
             </ul>
           </div>
         </div>
         <div className="mr-4 w-1/2 flex flex-col gap-2">
           <div className="bg-white text-black flex flex-col w-full flex-2 rounded-xl justify-center">
-            <QRCodeGenerator
-              url={getTimetableJsonString()}
-              size={300}
-              errorCorrectionLevel="M"
-            />
+            <QRCodeGenerator url={getTimetableJsonString()} size={300} errorCorrectionLevel="M" />
           </div>
           <div className="p-4 bg-primary text-black flex flex-col w-full flex-1 rounded-xl justify-center">
             <div className="text-xl">NEXT FREE</div>
             <div className="text-3xl">
-              {bitmapLoading || kindmapLoading || nextFreeLoading
-                ? "Loading..."
-                : nextFreeTime || "Not available"}
+              {bitmapLoading || kindmapLoading || statusLoading ? (
+                "Loading..."
+              ) : timetableStatus ? (
+                <TimetableStatusText
+                  status={timetableStatus}
+                  timeFormat={userSettings.data?.timeFormat ?? 24}
+                />
+              ) : (
+                "Not available"
+              )}
             </div>
           </div>
         </div>
       </div>
       <ScheduleGrid bitmaps={allBitmaps} kindmaps={allKindmaps} />
     </div>
-  );
-};
+  )
+}
 
-export default FriendPage;
+export default FriendPage

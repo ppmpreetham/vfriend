@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
+import { platform } from "@tauri-apps/plugin-os";
 import { useShareUserProfile } from "../../hooks/useShareUserProfile";
-import { shareData } from "../../store/newtimeTableStore";
+import type { shareData } from "../../store/newtimeTableStore";
 import { compress } from "../../utils/compressor";
 
 export interface SharesheetOptions {
@@ -9,41 +10,52 @@ export interface SharesheetOptions {
   title?: string;
 }
 
+function isMobilePlatform() {
+  const currentPlatform = platform();
+  return currentPlatform === "android" || currentPlatform === "ios";
+}
+
+function buildShareCode(userData: shareData | null): string {
+  if (!userData) return "";
+
+  const shareableData: shareData = (({ u, r, s, h, q, t, o }) => ({
+    u,
+    r,
+    s,
+    h,
+    q,
+    t,
+    o,
+  }))(userData);
+
+  return compress(shareableData);
+}
+
+function buildShareText(userData: shareData | null): string {
+  const code = buildShareCode(userData);
+  return `Hey, add me on VFriend: https://vfriend.preetham.top/${code}`;
+}
+
 async function shareText(text: string, options?: SharesheetOptions) {
-  await invoke("plugin:sharesheet|share_text", { text, ...options });
+  if (isMobilePlatform()) {
+    await invoke("plugin:sharesheet|share_text", { text, ...options });
+    return;
+  }
+
+  if (navigator.share) {
+    await navigator.share({ text, title: options?.title ?? "VFriend" });
+    return;
+  }
+
+  await navigator.clipboard.writeText(text);
 }
 
 async function shareUserData(userData: shareData | null) {
-  const getTimetableJsonString = () => {
-    if (!userData) return "";
-
-    try {
-      const shareableData: shareData = (({ u, r, s, h, q, t, o }) => ({
-        u,
-        r,
-        s,
-        h,
-        q,
-        t,
-        o,
-      }))(userData);
-      console.log("Compressing shareableData:", shareableData);
-      return compress(shareableData);
-    } catch (error) {
-      console.error("Error converting timetable to JSON:", error);
-      return "";
-    }
-  };
-
   try {
-    await shareText(
-      `Hey, umm,👉🏻👈🏻... I've been using the vfriend app which lets me check other's time tables. you can add me via https://vfriend.preetham.top/${getTimetableJsonString()}`
-      // {
-      //   title: "VFriend",
-      //   thumbnailUri: "https://example.com/thumbnail.jpg",
-      //   mimeType: "text/plain",
-      // }
-    );
+    await shareText(buildShareText(userData), {
+      title: "VFriend",
+      mimeType: "text/plain",
+    });
     console.log("Content shared successfully");
   } catch (error) {
     console.error("Failed to share content:", error);
@@ -55,15 +67,8 @@ export function useShare() {
 
   const handleShare = async () => {
     console.log(isLoading, error);
-    await shareUserData(userData);
+    await shareUserData(userData ?? null);
   };
 
   return { handleShare, isLoading, error };
-}
-
-// function for backward compatibility
-export async function handleShare() {
-  console.warn("Deprecated: Use useShare hook instead");
-  const { handleShare: share } = useShare();
-  await share();
 }

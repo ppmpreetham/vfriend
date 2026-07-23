@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import QRCode from "qrcode";
+import React, { useState, useEffect } from "react"
+import QRCode from "qrcode"
 
 interface QRCodeGeneratorProps {
-  url?: string;
-  size?: number;
-  errorCorrectionLevel?: "L" | "M" | "Q" | "H";
+  url?: string
+  size?: number
+  errorCorrectionLevel?: "L" | "M" | "Q" | "H"
 }
 
 const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
@@ -12,20 +12,20 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   size = 256,
   errorCorrectionLevel = "M",
 }) => {
-  const [url, setUrl] = useState(initialUrl);
-  const [qrCodeImage, setQrCodeImage] = useState<string>("");
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [url, setUrl] = useState(initialUrl)
+  const [qrCodeImage, setQrCodeImage] = useState<string>("")
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [error, setError] = useState<string>("")
 
   const generateQRCode = async (inputUrl: string) => {
     if (!inputUrl.trim()) {
-      setQrCodeImage("");
-      setError("");
-      return;
+      setQrCodeImage("")
+      setError("")
+      return
     }
 
-    setIsGenerating(true);
-    setError("");
+    setIsGenerating(true)
+    setError("")
 
     try {
       const qrCodeDataUrl = await QRCode.toDataURL(inputUrl, {
@@ -36,23 +36,23 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
           light: "#FFFFFF",
         },
         errorCorrectionLevel,
-      });
-      setQrCodeImage(qrCodeDataUrl);
+      })
+      setQrCodeImage(qrCodeDataUrl)
     } catch (err) {
-      setError("Failed to generate QR code. Please check your URL.");
-      setQrCodeImage("");
+      setError("Failed to generate QR code. Please check your URL.")
+      setQrCodeImage("")
     } finally {
-      setIsGenerating(false);
+      setIsGenerating(false)
     }
-  };
+  }
 
   useEffect(() => {
-    generateQRCode(url);
-  }, [url, size, errorCorrectionLevel]);
+    generateQRCode(url)
+  }, [url, size, errorCorrectionLevel])
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUrl(e.target.value);
-  };
+    setUrl(e.target.value)
+  }
   console.log(handleUrlChange)
 
   return (
@@ -80,7 +80,7 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default QRCodeGenerator;
+export default QRCodeGenerator
